@@ -129,7 +129,7 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
         /**
          * Instantiate the Vuforia engine
          */
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
         /**
          * Load the data sets that for the trackable objects we wish to track. These particular data
@@ -145,7 +145,7 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
 
         VuforiaTrackable blueTarget  = stonesAndChips.get(1);
         blueTarget.setName("BlueTarget");  // Chips
-
+`
         /** For convenience, gather together all the trackable objects in one easily-iterable collection */
         List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(stonesAndChips);
