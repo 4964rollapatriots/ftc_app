@@ -107,7 +107,7 @@ public class RoverVuforia extends LinearOpMode{
             for (VuforiaTrackable picture: allTrackables){
                 telemetry.addData(picture.getName(),((VuforiaTrackableDefaultListener)picture.getListener()).isVisible() ? "Visible" : "Not Visible");
 
-                // if the picture can be seen, make the lsat location the location seen with the use of this picture
+                // if the picture can be seen, make the last location the location seen with the use of this picture
 
                 OpenGLMatrix botMovements = ((VuforiaTrackableDefaultListener)picture.getListener()).getUpdatedRobotLocation();
 
@@ -117,8 +117,12 @@ public class RoverVuforia extends LinearOpMode{
             }
             if (lastLocation != null){
                 telemetry.addData ("position ", format(lastLocation));
+                double secondAngle = Orientation.getOrientation(lastLocation,AxesReference.EXTRINSIC,AxesOrder.XYZ,AngleUnit.DEGREES).firstAngle;
+                telemetry.addData("x angle is ", secondAngle);
+                double thirdAngle = Orientation.getOrientation(lastLocation,AxesReference.EXTRINSIC,AxesOrder.XYZ,AngleUnit.DEGREES).secondAngle;
+                telemetry.addData("y angle is ", thirdAngle);
                 double angle = Orientation.getOrientation(lastLocation,AxesReference.EXTRINSIC,AxesOrder.XYZ,AngleUnit.DEGREES).thirdAngle;
-                telemetry.addData("angle might be ", angle);
+                telemetry.addData("z angle, the useful angle, is ", angle);
             }
 
             else{
