@@ -145,8 +145,7 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
 
         VuforiaTrackable blueTarget  = stonesAndChips.get(1);
         blueTarget.setName("BlueTarget");  // Chips
-`
-        /** For convenience, gather together all the trackable objects in one easily-iterable collection */
+/** For convenience, gather together all the trackable objects in one easily-iterable collection */
         List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(stonesAndChips);
 

@@ -24,7 +24,7 @@ public class FourMotorDrivetrain {
         bot = robot;
     }
 
-    public void mapMotors(){
+    public void mapHardware(){
         backLeft = map.dcMotor.get("backLeft");
         backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         frontLeft = map.dcMotor.get("frontLeft");
@@ -33,6 +33,11 @@ public class FourMotorDrivetrain {
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight = map.dcMotor.get("frontRight");
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        motors.add(backLeft);
+        motors.add(backRight);
+        motors.add(frontLeft);
+        motors.add(frontRight);
 
     }
 
@@ -64,6 +69,12 @@ public class FourMotorDrivetrain {
         setWithoutEncoders();
         backRight.setPower(power);
         frontRight.setPower(power);
+    }
+
+    public void stop(){
+        for (int i =0;i < motors.size(); i ++){
+            motors.get(i).setPower(0);
+        }
     }
 
 }
