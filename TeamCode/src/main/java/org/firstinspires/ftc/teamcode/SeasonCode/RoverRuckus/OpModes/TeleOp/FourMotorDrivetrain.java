@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class FourMotorDrivetrain {
 
-    private Robot bot;
+    private PrototypeRobot bot;
     private HardwareMap map;
 
     private DcMotor backLeft;
@@ -20,7 +20,7 @@ public class FourMotorDrivetrain {
 
     ArrayList<DcMotor> motors = new ArrayList<DcMotor>();
 
-    public FourMotorDrivetrain(Robot robot){
+    public FourMotorDrivetrain(PrototypeRobot robot){
         bot = robot;
     }
 

@@ -1,17 +1,17 @@
 package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp;
 
-public class Robot {
+public class PrototypeRobot {
 
-    private FourMotorDrivetrain drivetrain;
+    public FourMotorDrivetrain drivetrain;
 
     private String name;
     private final String DEFAULT_NAME = "My Robot";
 
-    public Robot(String s){
-        name = s;
+    public PrototypeRobot(String name){
+        this.name = name;
     }
 
-    public Robot(){
+    public PrototypeRobot(){
         name = DEFAULT_NAME;
     }
 
