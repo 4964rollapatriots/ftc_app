@@ -4,15 +4,19 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp.FourMotorDrivetrain;
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 
 @TeleOp(name = "Four Wheel Prototype")
-public class FourWheelTeleOp extends LinearOpMode {
+public class FourWheelTeleOp extends LinearOpMode
+{
+    FourMotorDrivetrain drivetrain;
 
     private PrototypeRobot robot = new PrototypeRobot("joel");
 
     @Override
-    public void runOpMode() {
+    public void runOpMode()
+    {
 
         robot.init();
         telemetry.update();

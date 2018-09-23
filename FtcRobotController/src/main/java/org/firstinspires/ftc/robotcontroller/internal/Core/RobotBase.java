@@ -11,9 +11,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * Created on 8/8/2018.
  */
 
-public abstract class RobotBase {
+public abstract class RobotBase
+{
 
-    public RobotBase (final HardwareMap hwm, final LinearOpMode op){
+    public void init (final HardwareMap hwm, final LinearOpMode op)
+    {
         hardwareMap = hwm;
         opMode = op;
     }
