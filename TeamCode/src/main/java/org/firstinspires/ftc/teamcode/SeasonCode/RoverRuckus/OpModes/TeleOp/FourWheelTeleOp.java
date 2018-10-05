@@ -4,13 +4,11 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp.FourMotorDrivetrain;
-import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
+import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.Components.Drivetrain.FourMotorDrivetrain;
 
 @TeleOp(name = "Four Wheel Prototype")
 public class FourWheelTeleOp extends LinearOpMode
 {
-    FourMotorDrivetrain drivetrain;
 
     private PrototypeRobot robot = new PrototypeRobot("joel");
 
@@ -26,8 +24,8 @@ public class FourWheelTeleOp extends LinearOpMode
         robot.drivetrain.setWithoutEncoders();
 
         while (opModeIsActive()) {
-
             powerDriveTrain();
+            powerCollector();
         }
     }
 
@@ -36,5 +34,17 @@ public class FourWheelTeleOp extends LinearOpMode
         double rightPower = gamepad1.right_stick_y;
         robot.drivetrain.powerLeftMotors(leftPower);
         robot.drivetrain.powerRightMotors(rightPower);
+
+    }
+    private void powerCollector(){
+        if (gamepad2.a){
+            robot.collector.setPower(1);
+        }
+        else if (gamepad2.b){
+            robot.collector.setPower(-1);
+        }
+        else{
+            robot.collector.setPower(0);
+        }
     }
 }

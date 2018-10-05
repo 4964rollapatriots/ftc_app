@@ -1,15 +1,18 @@
-package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp;
+package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.Components.Drivetrain;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
+import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.HardwareMapper;
+import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp.PrototypeRobot;
 
 import java.util.ArrayList;
 
-public class FourMotorDrivetrain
+public class FourMotorDrivetrain extends RobotComponent
 {
 
     private PrototypeRobot bot;
@@ -19,6 +22,16 @@ public class FourMotorDrivetrain
     private DcMotor frontLeft;
     private DcMotor backRight;
     private DcMotor frontRight;
+
+    int backLeftEncoder;
+    int frontLeftEncoder;
+    int backRightEncoder;
+    int frontRightEncoder;
+
+    static final double WHEEL_DIAMETER = 100;
+    static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
+    static final double ENCODERS_PER_ROTATION = 150;
+
 
     ArrayList<DcMotor> motors = new ArrayList<DcMotor>();
 
@@ -80,6 +93,24 @@ public class FourMotorDrivetrain
         setWithoutEncoders();
         backRight.setPower(power);
         frontRight.setPower(power);
+    }
+
+    public void driveToDistance (int cm){
+
+        double rotations =  cm/WHEEL_CIRCUMFERENCE;
+        int encoders = (int) (rotations * ENCODERS_PER_ROTATION);
+
+        setUsingEncoders();
+        resetEncoders();
+
+        for (int i = 0; i < motors.size(); i ++){
+            motors.get(i).setTargetPosition(encoders);
+        }
+        while (Math.abs(backLeft.getCurrentPosition() - backLeft.getTargetPosition()) < 5){
+            powerLeftMotors(0.5);
+            powerRightMotors(0.5);
+        }
+
     }
 
     public void stop()
