@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp;
 
-import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.Components.Drivetrain.Collector;
-import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.Components.Drivetrain.FourMotorDrivetrain;
+import org.firstinspires.ftc.teamcode.Components.Drivetrain.FourMotorDrivetrain;
 
 public class PrototypeRobot {
 
     public FourMotorDrivetrain drivetrain;
-    public Collector collector;
+    //public Collector collector;
 
     private String name;
     private final String DEFAULT_NAME = "My Robot";
@@ -28,8 +27,8 @@ public class PrototypeRobot {
         drivetrain.mapHardware();
         drivetrain.stop();
 
-        collector = new Collector(this);
-        collector.mapHardware();
-        collector.stop();
+//        collector = new Collector(this);
+//        collector.mapHardware();
+//        collector.stop();
     }
 }

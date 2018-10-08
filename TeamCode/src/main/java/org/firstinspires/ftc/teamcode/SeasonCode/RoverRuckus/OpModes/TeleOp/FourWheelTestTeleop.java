@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "Pranal's FourWheelTeleop", group = "TeleOp")
@@ -14,6 +15,10 @@ public class FourWheelTestTeleop extends OpMode
     DcMotor frontRight;
     DcMotor backRight;
     DcMotor collector;
+
+    Servo YFlipLeft;
+    Servo YFlipRight;
+    Servo YFlipRotator;
     @Override
     public void init()
     {
@@ -25,6 +30,9 @@ public class FourWheelTestTeleop extends OpMode
         backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         backRight = hardwareMap.dcMotor.get("backRight");
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        //YFlipLeft = hardwareMap.servo.get("left");
+        //YFlipRight = hardwareMap.servo.get("right");
+        //YFlipRotator = hardwareMap.servo.get("rotator");
         //collector = hardwareMap.dcMotor.get("collector");
         //collector.setDirection(DcMotorSimple.Direction.FORWARD);
     }
@@ -39,7 +47,7 @@ public class FourWheelTestTeleop extends OpMode
     public void loop()
     {
         if (gamepad1.a){
-            //collector.setPower(1);
+            //YFlipLeft.setPosition(0);
         }
         else if (gamepad1.b){
             //collector.setPower(-1);
@@ -47,6 +55,7 @@ public class FourWheelTestTeleop extends OpMode
         else{
             //collector.setPower(0);
         }
+
         frontLeft.setPower(Range.clip(gamepad1.left_stick_y,-1,1) - Range.clip(gamepad1.right_stick_x,-1,1));
         backLeft.setPower(Range.clip(gamepad1.left_stick_y,-1,1) - Range.clip(gamepad1.right_stick_x,-1,1));
         frontRight.setPower(Range.clip(gamepad1.left_stick_y,-1,1) + Range.clip(gamepad1.right_stick_x,-1,1));
