@@ -19,13 +19,20 @@ public class Drivetrain extends RobotComponent
 
     private double _powerMult = STOP;
 
+    //This will store each of the motors' encoder counts in a static array. No need for a
+    //dynamic one. The order is backLeft, backRight, frontLeft, frontRight.
+    private long[] encoderCounts = {0, 0, 0, 0};
 
-    public DcMotor backLeft;
-    public DcMotor frontLeft;
-    public DcMotor frontRight;
-    public DcMotor backRight;
+    private DcMotor backLeft;
+    private DcMotor frontLeft;
+    private DcMotor frontRight;
+    private DcMotor backRight;
 
     private REVIMU imu;
+
+    //Instantiate Commands
+
+
 
     private State currState = State.STOP;
 
@@ -71,6 +78,23 @@ public class Drivetrain extends RobotComponent
     public long frontRightEncoderCount()
     {
         return frontRight.getCurrentPosition();
+    }
+
+    public long[] getEncoderCounts()
+    {
+        encoderCounts[0] = backLeftEncoderCount();
+        encoderCounts[1] = backRightEncoderCount();
+        encoderCounts[2] = frontLeftEncoderCount();
+        encoderCounts[3] = frontRightEncoderCount();
+        return encoderCounts;
+    }
+
+    public void encoderToPos()
+    {
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void run(double drivePower, double rotatePower, boolean inverted, boolean scale)
@@ -144,6 +168,43 @@ public class Drivetrain extends RobotComponent
                 break;
         }
     }
+
+    public DcMotor.RunMode getEncoderMode()
+    {
+        //assumes that all other motors are in the same mode. It is crucial to set all the motors to the same mode each
+        //time a mode changes.
+        return backLeft.getMode();
+    }
+
+    public DcMotor backLeft()
+    {
+        return backLeft;
+    }
+
+    public DcMotor backRight()
+    {
+        return backRight;
+    }
+
+
+    public DcMotor frontLeft()
+    {
+        return frontLeft;
+    }
+
+    public DcMotor frontRight()
+    {
+        return frontRight;
+    }
+
+    public void setAllMotorPower(double SPEED)
+    {
+        backLeft.setPower(SPEED);
+        backRight.setPower(SPEED);
+        frontLeft.setPower(SPEED);
+        frontRight.setPower(SPEED);
+    }
+
     @Override
 
     public void stop()

@@ -27,7 +27,7 @@ public abstract class RobotComponent
         return base;
     }
 
-    //Stop compononent
+    //Stop component
     public abstract void stop();
     
 

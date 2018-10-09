@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 public class TeleOpMain extends LinearOpMode
 {
     private Base _base = new Base();
+
     public void runOpMode() throws InterruptedException
     {
         _base.init(hardwareMap, this);
@@ -32,6 +33,11 @@ public class TeleOpMain extends LinearOpMode
     private void run()
     {
         _base.drivetrain.run(-gamepad1.left_stick_y , gamepad1.right_stick_x, false, false);
+
+        _base.collector.run(Math.abs(gamepad1.right_trigger) - Math.abs(gamepad1.left_trigger));
+
+
+
 
     }
 
