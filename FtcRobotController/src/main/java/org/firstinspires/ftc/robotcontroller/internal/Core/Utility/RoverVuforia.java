@@ -44,9 +44,14 @@ public class RoverVuforia extends LinearOpMode{
 
         int camaraMonitorViewID = hardwareMap.appContext.getResources().getIdentifier("camaraMonitorViewID", "id", hardwareMap.appContext.getPackageName());
         parameters = new VuforiaLocalizer.Parameters(camaraMonitorViewID);
-        parameters.vuforiaLicenseKey = " the key ";
+        parameters.vuforiaLicenseKey =
+                        "AfMlGNH/////AAABmSa3gXBnC0isoB6lbpdqh+ZpQ5x6bhx9h1x1DElrGnq+v/2YOuaFpugQxIG7LoveU7vW9MigQz/qBL7oKt0eWjouuqmFOew" +
+                        "iup+NUSwmUnnsdYzF2Ofy/4Yh2Hn1es0nC2i/oOyIq/ii4aA60fRINMqkYmyvYp3g5tU+e2A76Biux6LWr/ctNRJ4KLZZeeSOV0wbJ6bbEIEtgY" +
+                        "ULHwXLyev7lz+w6TgFCYS++2BcTSmJNsLSnIMuqGOXIL8+hLbX6Lt+WGPSAlVpxr8CgTF1h+jNk6/JUB9VQuK83uUcIAT61xEr3iScylPWyF3XB" +
+                        "Ql5oTCsBDMhJ+a96DBa9DMs0LF/HlSBsm3I22CuvzX0w8eB";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 
+        //vuforia = ClassFactory.getInstance().createVuforia(parameters);
         vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
         // loads the image data from the assets folder
