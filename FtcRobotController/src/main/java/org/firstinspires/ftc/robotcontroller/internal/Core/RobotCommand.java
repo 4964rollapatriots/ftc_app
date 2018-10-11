@@ -1,7 +1,11 @@
 package org.firstinspires.ftc.robotcontroller.internal.Core;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public abstract class RobotCommand
 {
+
+    public Telemetry telemetry;
 
     protected RobotComponent component = null;
 

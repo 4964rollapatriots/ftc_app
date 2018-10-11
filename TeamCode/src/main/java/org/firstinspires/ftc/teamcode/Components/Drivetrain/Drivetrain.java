@@ -176,6 +176,11 @@ public class Drivetrain extends RobotComponent
         return backLeft.getMode();
     }
 
+    public Boolean isBusy()
+    {
+        return (backLeft.isBusy() || backRight.isBusy() || frontLeft.isBusy() || frontRight.isBusy());
+    }
+
     public DcMotor backLeft()
     {
         return backLeft;
