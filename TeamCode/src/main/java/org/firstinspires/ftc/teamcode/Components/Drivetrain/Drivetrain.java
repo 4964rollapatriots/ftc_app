@@ -31,7 +31,8 @@ public class Drivetrain extends RobotComponent
     private REVIMU imu;
 
     //Instantiate Commands
-
+    public TurnTo turnTo;
+    public DriveToDistance driveTo;
 
 
     private State currState = State.STOP;
