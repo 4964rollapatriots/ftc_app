@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "Four Wheel Prototype")
-public class FourWheelTeleOp extends LinearOpMode
+public class JoelFourWheelTeleop extends LinearOpMode
 {
 
     private PrototypeRobot robot = new PrototypeRobot("joel");
