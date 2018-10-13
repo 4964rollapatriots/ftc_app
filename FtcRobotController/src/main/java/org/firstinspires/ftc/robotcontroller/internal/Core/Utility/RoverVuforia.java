@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Computer on 9/15/2018.
+ * Created by Joel on 9/15/2018.
  */
 
 @TeleOp(name="Vuforia Locations")

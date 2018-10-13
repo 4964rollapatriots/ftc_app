@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class JoelFourWheelTeleop extends LinearOpMode
 {
 
-    private PrototypeRobot robot = new PrototypeRobot("joel");
+    private PrototypeRobot robot = new PrototypeRobot("joel", hardwareMap);
 
     @Override
     public void runOpMode()

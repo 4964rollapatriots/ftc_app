@@ -1,6 +1,12 @@
 package org.firstinspires.ftc.teamcode.Components.Drivetrain;
 
+<<<<<<< Updated upstream:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Components/Drivetrain/FourMotorDrivetrain.java
+=======
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+>>>>>>> Stashed changes:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/SeasonCode/RoverRuckus/OpModes/Components/Drivetrain/FourMotorDrivetrain.java
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorImpl;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -8,22 +14,17 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp.PrototypeRobot;
 
 import java.util.ArrayList;
+import java.util.FormatFlagsConversionMismatchException;
 
 public class FourMotorDrivetrain extends RobotComponent
 {
-
     private PrototypeRobot bot;
-    private HardwareMap map;
 
-    private DcMotor backLeft;
+    private DcMotor backLeft ;
     private DcMotor frontLeft;
     private DcMotor backRight;
     private DcMotor frontRight;
 
-    int backLeftEncoder;
-    int frontLeftEncoder;
-    int backRightEncoder;
-    int frontRightEncoder;
 
     static final double WHEEL_DIAMETER = 100;
     static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
@@ -38,14 +39,16 @@ public class FourMotorDrivetrain extends RobotComponent
 
     public void mapHardware()
     {
-        backLeft = map.dcMotor.get("backLeft");
+
+        backLeft = bot.hardware.dcMotor.get("backLeft");
         backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontLeft = map.dcMotor.get("frontLeft");
+        frontLeft = bot.hardware.dcMotor.get("frontLeft");
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRight = map.dcMotor.get("backRight");
+        backRight = bot.hardware.dcMotor.get("backRight");
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRight = map.dcMotor.get("frontRight");
+        frontRight = bot.hardware.dcMotor.get("frontRight");
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         motors.add(backLeft);
         motors.add(backRight);
