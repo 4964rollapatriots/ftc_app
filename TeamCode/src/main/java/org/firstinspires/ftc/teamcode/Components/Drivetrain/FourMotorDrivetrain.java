@@ -1,10 +1,6 @@
 package org.firstinspires.ftc.teamcode.Components.Drivetrain;
 
-<<<<<<< Updated upstream:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Components/Drivetrain/FourMotorDrivetrain.java
-=======
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
->>>>>>> Stashed changes:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/SeasonCode/RoverRuckus/OpModes/Components/Drivetrain/FourMotorDrivetrain.java
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImpl;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp.Prot
 
 public class TestAuto extends LinearOpMode {
 
-    PrototypeRobot robot = new PrototypeRobot("jim");
+    PrototypeRobot robot = new PrototypeRobot();
 
 
 
