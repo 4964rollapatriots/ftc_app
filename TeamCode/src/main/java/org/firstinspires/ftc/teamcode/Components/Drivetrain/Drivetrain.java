@@ -220,7 +220,7 @@ public class Drivetrain extends RobotComponent
         while( Math.abs(backLeft.getCurrentPosition() - backLeft.getTargetPosition())>5){
             setAllMotorPower(0.5);
         }
-        stop();
+        this.stop();
     }
 
     public void testTurnTo(double targetAngle){
@@ -229,6 +229,8 @@ public class Drivetrain extends RobotComponent
         imu.setAngle();
         double heading = imu.zAngle();
         while (Math.abs(heading - targetAngle)<5){
+            imu.setAngle();
+            heading = imu.zAngle();
             if ((heading - targetAngle) < 180){
                 leftPower = 0.5;
                 rightPower = -0.5;
@@ -242,6 +244,7 @@ public class Drivetrain extends RobotComponent
             backRight.setPower(rightPower);
             frontRight.setPower(rightPower);
         }
+        this.stop();
     }
 
 
