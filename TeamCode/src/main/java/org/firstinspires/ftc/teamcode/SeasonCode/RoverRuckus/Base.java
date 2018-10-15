@@ -19,8 +19,7 @@ public class Base extends RobotBase
     public Drivetrain drivetrain = new Drivetrain();
 
     public REVIMU imu = new REVIMU();
-
-    public Collector collector = new Collector();
+   // public Collector collector = new Collector();
 
     @Override
     public void init(final HardwareMap hwm, final LinearOpMode op)
@@ -36,9 +35,10 @@ public class Base extends RobotBase
 
 
         // Basic component initialization
-        drivetrain.init(this);
         imu.init(this, "imu", params);
-        collector.init(this);
+        drivetrain.init(this , imu);
+
+        //collector.init(this);
 
         //Try catches to prevent crashes
         //imu.write8(BNO055IMU.Register.OPR_MODE ,BNO055IMU.SensorMode.CONFIG.bVal & 0x0F);
@@ -61,6 +61,6 @@ public class Base extends RobotBase
     public void stop()
     {
         drivetrain.stop();
-        collector.stop();
+        //collector.stop();
     }
 }

@@ -23,13 +23,12 @@ public class CloseCraterBlue extends LinearOpMode
     @Override
     public void runOpMode()
     {
+        int ten = 10;
         BlocKState _block = BlocKState.UNCERTAIN;
-
         _base.init(hardwareMap, this);
         _base.imu.calibrateTo(90);//TWEAK THIS IDK
-
         waitForStart();
-
+        telemetry.addData("Test", ten);
         _base.drivetrain.driveTo.goTo(1000, .4);
         _base.drivetrain.driveTo.runSequentially();
 

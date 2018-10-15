@@ -32,8 +32,7 @@ public class Drivetrain extends RobotComponent
 
     //Instantiate Commands
     public TurnTo turnTo;
-    public DriveToDistance driveTo;
-
+    public DriveToDistance driveTo ;
 
     private State currState = State.STOP;
 
@@ -46,15 +45,17 @@ public class Drivetrain extends RobotComponent
         STOP
     }
 
-    public void init(final RobotBase BASE)
+    public void init(final RobotBase BASE, REVIMU baseIMU)
     {
         super.init(BASE);
-
         backLeft = mapper.mapMotor("backLeft", DcMotorSimple.Direction.FORWARD);
         frontLeft = mapper.mapMotor("frontLeft", DcMotorSimple.Direction.FORWARD);
         backRight = mapper.mapMotor("backRight", DcMotorSimple.Direction.REVERSE);
         frontRight = mapper.mapMotor("frontRight", DcMotorSimple.Direction.REVERSE);
-
+        driveTo = new DriveToDistance();
+        turnTo = new TurnTo();
+        driveTo.init(this);
+        turnTo.init(this, baseIMU);
     }
 
     public void setDependencies(final REVIMU IMU)
@@ -210,6 +211,39 @@ public class Drivetrain extends RobotComponent
         frontLeft.setPower(SPEED);
         frontRight.setPower(SPEED);
     }
+
+    public void testDriveForEncoders(int encoders){
+        encoderStopReset();
+        encoderOn();
+        encoderToPos();
+        backLeft.setTargetPosition(encoders);
+        while( Math.abs(backLeft.getCurrentPosition() - backLeft.getTargetPosition())>5){
+            setAllMotorPower(0.5);
+        }
+        stop();
+    }
+
+    public void testTurnTo(double targetAngle){
+        double leftPower = 0;
+        double rightPower = 0;
+        imu.setAngle();
+        double heading = imu.zAngle();
+        while (Math.abs(heading - targetAngle)<5){
+            if ((heading - targetAngle) < 180){
+                leftPower = 0.5;
+                rightPower = -0.5;
+            }
+            else{
+                leftPower = -0.5;
+                rightPower = 0.5;
+            }
+            backLeft.setPower(leftPower);
+            frontLeft.setPower(leftPower);
+            backRight.setPower(rightPower);
+            frontRight.setPower(rightPower);
+        }
+    }
+
 
     @Override
 

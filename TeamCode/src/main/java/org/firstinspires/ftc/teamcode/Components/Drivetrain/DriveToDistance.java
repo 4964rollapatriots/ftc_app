@@ -23,7 +23,7 @@ public class DriveToDistance extends RobotCommand
 
 
 
-    public DriveToDistance(Drivetrain DRIVETRAIN)
+    public void init (Drivetrain DRIVETRAIN)
     {
         _drivetrain = DRIVETRAIN;
     }

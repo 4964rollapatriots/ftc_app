@@ -29,7 +29,7 @@ public class TurnTo extends RobotCommand
 
 
 
-    public TurnTo(Drivetrain DRIVETRAIN, REVIMU IMU)
+    public void init(Drivetrain DRIVETRAIN, REVIMU IMU)
     {
         _drivetrain = DRIVETRAIN;
         _imu = IMU;
@@ -99,9 +99,7 @@ public class TurnTo extends RobotCommand
                 currSpeed = maxSpeed;
             }
 
-            telemetry.addData("Current Heading: ", _imu.zAngle());
-            telemetry.addData("Current Error: ", error);
-            telemetry.update();
+
 
         }
 
