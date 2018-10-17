@@ -52,15 +52,13 @@ public class Drivetrain extends RobotComponent
         frontLeft = mapper.mapMotor("frontLeft", DcMotorSimple.Direction.FORWARD);
         backRight = mapper.mapMotor("backRight", DcMotorSimple.Direction.REVERSE);
         frontRight = mapper.mapMotor("frontRight", DcMotorSimple.Direction.REVERSE);
-        driveTo = new DriveToDistance();
-        turnTo = new TurnTo();
-        driveTo.init(this);
-        turnTo.init(this, baseIMU);
     }
 
     public void setDependencies(final REVIMU IMU)
     {
         imu = IMU;
+        turnTo = new TurnTo(this, imu);
+        driveTo = new DriveToDistance(this);
     }
     public long backLeftEncoderCount()
     {

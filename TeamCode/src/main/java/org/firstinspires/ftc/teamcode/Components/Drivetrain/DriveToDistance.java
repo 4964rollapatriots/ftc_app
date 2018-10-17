@@ -21,13 +21,19 @@ public class DriveToDistance extends RobotCommand
 
     private long TIMEOUT = 10000;
 
+    //default constructor
+    public DriveToDistance()
+    {
 
-
+    }
+    public DriveToDistance(Drivetrain DRIVETRAIN)
+    {
+        _drivetrain = DRIVETRAIN;
+    }
     public void init (Drivetrain DRIVETRAIN)
     {
         _drivetrain = DRIVETRAIN;
     }
-
     public void goTo(double DIST, double SPEED)
     {
         distance = DIST;

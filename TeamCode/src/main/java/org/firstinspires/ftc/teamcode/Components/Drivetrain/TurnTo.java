@@ -28,8 +28,12 @@ public class TurnTo extends RobotCommand
     private int BUFFER = 5;
 
 
-
-    public void init(Drivetrain DRIVETRAIN, REVIMU IMU)
+    //default constructor
+    public TurnTo()
+    {
+        
+    }
+    public TurnTo(Drivetrain DRIVETRAIN, REVIMU IMU)
     {
         _drivetrain = DRIVETRAIN;
         _imu = IMU;
