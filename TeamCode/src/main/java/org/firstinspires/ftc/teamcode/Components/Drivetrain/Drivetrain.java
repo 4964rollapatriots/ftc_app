@@ -19,9 +19,6 @@ public class Drivetrain extends RobotComponent
 
     private double _powerMult = STOP;
 
-    //This will store each of the motors' encoder counts in a static array. No need for a
-    //dynamic one. The order is backLeft, backRight, frontLeft, frontRight.
-    private long[] encoderCounts = {0, 0, 0, 0};
 
     private DcMotor backLeft;
     private DcMotor frontLeft;
@@ -82,19 +79,37 @@ public class Drivetrain extends RobotComponent
 
     public long[] getEncoderCounts()
     {
+        //This will store each of the motors' encoder counts in a static array. No need for a
+        //dynamic one. The order is backLeft, backRight, frontLeft, frontRight.
+        long[] encoderCounts = {0, 0, 0, 0};
         encoderCounts[0] = backLeftEncoderCount();
         encoderCounts[1] = backRightEncoderCount();
         encoderCounts[2] = frontLeftEncoderCount();
         encoderCounts[3] = frontRightEncoderCount();
         return encoderCounts;
     }
+    public long[] getTargetEncoderCounts()
+    {
+        long[] targetCounts = {0,0,0,0};
+        targetCounts[0] = backLeft.getTargetPosition();
+        targetCounts[1] = backRight.getTargetPosition();
+        targetCounts[2] = frontLeft.getTargetPosition();
+        targetCounts[3] = frontRight.getTargetPosition();
+        return targetCounts;
+    }
+
+    public void setEncoderState(DcMotor.RunMode state)
+    {
+        backLeft.setMode(state);
+        backRight.setMode(state);
+        frontLeft.setMode(state);
+        frontRight.setMode(state);
+    }
+
 
     public void encoderToPos()
     {
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        setEncoderState(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void run(double drivePower, double rotatePower, boolean inverted, boolean scale)
@@ -114,27 +129,18 @@ public class Drivetrain extends RobotComponent
 
     public void encoderOn()
     {
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        setEncoderState(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
     public void encoderOff()
     {
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setEncoderState(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void encoderStopReset()
     {
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setEncoderState(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public State state()
@@ -167,6 +173,7 @@ public class Drivetrain extends RobotComponent
                 encoderStopReset();
                 break;
         }
+        currState = STATE;
     }
 
     public DcMotor.RunMode getEncoderMode()

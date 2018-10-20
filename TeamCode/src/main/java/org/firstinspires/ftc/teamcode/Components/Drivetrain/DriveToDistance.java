@@ -20,7 +20,7 @@ public class DriveToDistance extends RobotCommand
     private boolean endCommand = false;
 
     private long TIMEOUT = 10000;
-
+    private double COUNTS_PER_INCH = 60.5; //complete guess, need to calculate
     //default constructor
     public DriveToDistance()
     {
@@ -54,10 +54,15 @@ public class DriveToDistance extends RobotCommand
             _drivetrain.encoderToPos();
         }
 
+
+        _drivetrain.backLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.backLeft().getCurrentPosition());
+        _drivetrain.backRight().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.backRight().getCurrentPosition());
+        _drivetrain.frontLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.frontLeft().getCurrentPosition());
+        _drivetrain.frontRight().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.frontRight().getCurrentPosition());
+
         _busy = true;
 
         _drivetrain.setAllMotorPower(speed);
-
         long startTime = SystemClock.currentThreadTimeMillis();
 
         while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && System.currentTimeMillis() - startTime < TIMEOUT)
