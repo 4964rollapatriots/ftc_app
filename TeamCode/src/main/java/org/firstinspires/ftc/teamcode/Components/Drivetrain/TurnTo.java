@@ -115,9 +115,7 @@ public class TurnTo extends RobotCommand
     @Override
     public void runParallel()
     {
-        Thread t;
-
-
+        //Thread t;
     }
 
     @Override

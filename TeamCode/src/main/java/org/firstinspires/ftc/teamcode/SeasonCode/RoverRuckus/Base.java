@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVIMU;
 import org.firstinspires.ftc.teamcode.Components.Collector.Collector;
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.Components.HookLift.HookLift;
 
 import static java.lang.Thread.sleep;
 
@@ -19,7 +20,8 @@ public class Base extends RobotBase
     public Drivetrain drivetrain = new Drivetrain();
 
     public REVIMU imu = new REVIMU();
-   // public Collector collector = new Collector();
+    //public Collector collector = new Collector();
+    //public HookLift latchSystem = new HookLift();
 
     @Override
     public void init(final HardwareMap hwm, final LinearOpMode op)
