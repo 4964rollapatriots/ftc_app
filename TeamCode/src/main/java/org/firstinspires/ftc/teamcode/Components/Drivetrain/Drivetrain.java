@@ -218,17 +218,25 @@ public class Drivetrain extends RobotComponent
     }
 
     public void testDriveForEncoders(int encoders){
-        encoderStopReset();
         encoderOn();
+        encoderStopReset();
         encoderToPos();
         backLeft.setTargetPosition(encoders);
-        while( Math.abs(backLeft.getCurrentPosition() - backLeft.getTargetPosition())>5){
-            setAllMotorPower(0.5);
+        backRight.setTargetPosition(encoders);
+        frontLeft.setTargetPosition(encoders);
+        frontRight.setTargetPosition(encoders);
+        frontLeft.setPower(0.5);
+        frontRight.setPower(0.5);
+        backLeft.setPower(0.5);
+        backRight.setPower(0.5);
+        while (backLeft.isBusy() && backRight.isBusy() && frontLeft.isBusy() && frontRight.isBusy() ){
+
         }
         this.stop();
     }
 
     public void testTurnTo(double targetAngle){
+        encoderOff();
         double leftPower = 0;
         double rightPower = 0;
         imu.setAngle();
