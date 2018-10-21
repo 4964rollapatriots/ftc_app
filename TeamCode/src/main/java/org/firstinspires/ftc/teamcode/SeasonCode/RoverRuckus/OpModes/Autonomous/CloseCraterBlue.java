@@ -23,6 +23,7 @@ public class CloseCraterBlue extends LinearOpMode
     @Override
     public void runOpMode()
     {
+        telemetry.addData("Test", true);
         int ten = 10;
         BlocKState _block = BlocKState.UNCERTAIN;
         _base.init(hardwareMap, this);
@@ -30,36 +31,40 @@ public class CloseCraterBlue extends LinearOpMode
 
         waitForStart();
 
-        telemetry.addData("Test", ten);
-
-        _base.drivetrain.driveTo.goTo(1000, .4);
-        _base.drivetrain.driveTo.runSequentially();
-
-        switch (_block)
-        {
-            case LEFT:
-                break;
-            case RIGHT:
-                break;
-            case MIDDLE:
-                break;
-            case UNCERTAIN:
-                break;
+        while(true) {
+            _base.drivetrain.driveTo.goTo(10000, .4);
+            _base.drivetrain.driveTo.runSequentially();
         }
-        _base.drivetrain.turnTo.goTo(180, .70);
-        _base.drivetrain.turnTo.runSequentially();
+        //telemetry.addData("Test", ten);
 
-        _base.drivetrain.driveTo.goTo(500, .3);
-        _base.drivetrain.driveTo.runSequentially();
-
-        sleep(2000); //test
-
-//        while(true) //ooooffff don't use these if possible, in this case it is necessary though
-//        {
+//        _base.drivetrain.driveTo.goTo(10000, .4);
+//        _base.drivetrain.driveTo.runSequentially();
 //
-//        }
-
-        _base.drivetrain.stop();
+////        switch (_block)
+////        {
+////            case LEFT:
+////                break;
+////            case RIGHT:
+////                break;
+////            case MIDDLE:
+////                break;
+////            case UNCERTAIN:
+////                break;
+////        }
+//        _base.drivetrain.turnTo.goTo(180, .70);
+//        _base.drivetrain.turnTo.runSequentially();
+//
+//        _base.drivetrain.driveTo.goTo(500, .3);
+//        _base.drivetrain.driveTo.runSequentially();
+//
+//        sleep(2000); //test
+//
+////        while(true) //ooooffff don't use these if possible, in this case it is necessary though
+////        {
+////
+////        }
+//
+//        _base.drivetrain.stop();
     }
 
 
