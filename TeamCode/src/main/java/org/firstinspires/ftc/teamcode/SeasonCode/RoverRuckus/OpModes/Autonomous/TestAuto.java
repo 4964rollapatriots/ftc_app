@@ -13,7 +13,8 @@ public class TestAuto extends LinearOpMode {
 
     Base robot = new Base();
     final static double WHEEL_DIAMETER = 4;
-    final static double ENCODERS_PER_ROTATION = 1440;
+    final static
+    double ENCODERS_PER_ROTATION = 1440;
     final static double  CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
 
@@ -30,7 +31,7 @@ public class TestAuto extends LinearOpMode {
         drive(21);
         sleep(2000);
         drive(-30.0);
-        turnTo(90);
+        turnTo(90.0);
         telemetry.update();
 
 
@@ -44,9 +45,8 @@ public class TestAuto extends LinearOpMode {
         telemetry.update();
     }
 
-    private void turnTo(double angle){
-        telemetry.addData("current angle", robot.drivetrain.imu.zAngle());
-        robot.drivetrain.testTurnTo(angle);
+    private void turnTo(double desiredAngle){
+        robot.drivetrain.testTurnTo(desiredAngle);
     }
 
 }

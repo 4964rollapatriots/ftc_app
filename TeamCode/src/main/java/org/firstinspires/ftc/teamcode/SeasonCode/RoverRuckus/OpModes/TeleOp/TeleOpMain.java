@@ -26,6 +26,7 @@ public class TeleOpMain extends LinearOpMode
         _base.drivetrain.encoderStopReset();
         _base.drivetrain.encoderOn();
         _base.drivetrain.encoderOff();
+        _base.drivetrain.imu.calibrateTo(0);
 
         //run teleop while opmode is active
         while(opModeIsActive())
@@ -35,6 +36,10 @@ public class TeleOpMain extends LinearOpMode
             telemetry.addData("Front Left Encoder", _base.drivetrain.frontLeft().getCurrentPosition());
             telemetry.addData("Front Right Encoder", _base.drivetrain.frontRight().getCurrentPosition());
             telemetry.addData("Back Right Encoder", _base.drivetrain.backRight().getCurrentPosition());
+            _base.drivetrain.imu.setAngle();
+            telemetry.addData("x angle", _base.drivetrain.imu.xAngle());
+            telemetry.addData("y angle", _base.drivetrain.imu.yAngle());
+            telemetry.addData("z angle", _base.drivetrain.imu.zAngle());
             telemetry.update();
         }
 

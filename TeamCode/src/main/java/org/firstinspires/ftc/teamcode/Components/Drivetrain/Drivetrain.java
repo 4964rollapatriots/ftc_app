@@ -235,7 +235,7 @@ public class Drivetrain extends RobotComponent
         this.stop();
     }
 
-    public void testTurnTo(double targetAngle){
+    public double testTurnTo(double targetAngle){
         encoderOff();
         double leftPower = 0;
         double rightPower = 0;
@@ -259,6 +259,7 @@ public class Drivetrain extends RobotComponent
             frontRight.setPower(rightPower);
         }
         this.stop();
+        return heading;
     }
 
 
