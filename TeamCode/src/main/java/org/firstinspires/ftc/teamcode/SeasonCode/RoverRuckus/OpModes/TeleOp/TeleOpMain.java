@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
@@ -22,10 +23,19 @@ public class TeleOpMain extends LinearOpMode
         //Set State of the Drivetrain
         _base.drivetrain.setCurrState(Drivetrain.State.FORWARD_FAST);
 
+        _base.drivetrain.encoderStopReset();
+        _base.drivetrain.encoderOn();
+        _base.drivetrain.encoderOff();
+
         //run teleop while opmode is active
         while(opModeIsActive())
         {
             run();
+            telemetry.addData("Back Left Encoder", _base.drivetrain.backLeft().getCurrentPosition());
+            telemetry.addData("Front Left Encoder", _base.drivetrain.frontLeft().getCurrentPosition());
+            telemetry.addData("Front Right Encoder", _base.drivetrain.frontRight().getCurrentPosition());
+            telemetry.addData("Back Right Encoder", _base.drivetrain.backRight().getCurrentPosition());
+            telemetry.update();
         }
 
     }

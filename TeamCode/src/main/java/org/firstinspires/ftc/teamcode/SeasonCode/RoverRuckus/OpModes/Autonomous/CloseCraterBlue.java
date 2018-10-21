@@ -31,26 +31,22 @@ public class CloseCraterBlue extends LinearOpMode
 
         waitForStart();
 
-        while(true) {
-            _base.drivetrain.driveTo.goTo(10000, .4);
-            _base.drivetrain.driveTo.runSequentially();
-        }
         //telemetry.addData("Test", ten);
 
-//        _base.drivetrain.driveTo.goTo(10000, .4);
-//        _base.drivetrain.driveTo.runSequentially();
-//
-////        switch (_block)
-////        {
-////            case LEFT:
-////                break;
-////            case RIGHT:
-////                break;
-////            case MIDDLE:
-////                break;
-////            case UNCERTAIN:
-////                break;
-////        }
+        _base.drivetrain.driveTo.goTo(10000, .4);
+        _base.drivetrain.driveTo.runSequentially();
+
+//        switch (_block)
+//        {
+//            case LEFT:
+//                break;
+//            case RIGHT:
+//                break;
+//            case MIDDLE:
+//                break;
+//            case UNCERTAIN:
+//                break;
+//        }
 //        _base.drivetrain.turnTo.goTo(180, .70);
 //        _base.drivetrain.turnTo.runSequentially();
 //
@@ -64,7 +60,7 @@ public class CloseCraterBlue extends LinearOpMode
 ////
 ////        }
 //
-//        _base.drivetrain.stop();
+        _base.drivetrain.stop();
     }
 
 
