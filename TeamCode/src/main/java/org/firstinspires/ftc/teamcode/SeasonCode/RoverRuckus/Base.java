@@ -18,10 +18,10 @@ import static java.lang.Thread.sleep;
 public class Base extends RobotBase
 {
     public Drivetrain drivetrain = new Drivetrain();
-
     public REVIMU imu = new REVIMU();
     //public Collector collector = new Collector();
     //public HookLift latchSystem = new HookLift();
+
 
     @Override
     public void init(final HardwareMap hwm, final LinearOpMode op)
