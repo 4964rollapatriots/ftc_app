@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp.Prot
 public class TestAuto extends LinearOpMode {
 
     Base robot = new Base();
-    final static double WHEEL_DIAMETER = 8;
+    final static double WHEEL_DIAMETER = 4;
     final static double ENCODERS_PER_ROTATION = 1440;
     final static double  CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
@@ -31,12 +31,13 @@ public class TestAuto extends LinearOpMode {
         sleep(2000);
         drive(-30.0);
         turnTo(90);
+        telemetry.update();
 
 
     }
 
-    private void drive(double cm){
-        double rotations = cm/CIRCUMFERENCE;
+    private void drive(double inches){
+        double rotations = inches/CIRCUMFERENCE;
         int encoders = (int)(rotations * ENCODERS_PER_ROTATION);
         robot.drivetrain.testDriveForEncoders(encoders);
         telemetry.addData("encoders", encoders);

@@ -239,6 +239,7 @@ public class Drivetrain extends RobotComponent
         encoderOff();
         double leftPower = 0;
         double rightPower = 0;
+        imu.calibrateTo(0);
         imu.setAngle();
         double heading = imu.zAngle();
         while (Math.abs(heading - targetAngle)<5){
