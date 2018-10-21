@@ -25,7 +25,7 @@ public class Drivetrain extends RobotComponent
     private DcMotor frontRight;
     private DcMotor backRight;
 
-    private REVIMU imu;
+    public REVIMU imu;
 
     //Instantiate Commands
     public TurnTo turnTo;
@@ -249,8 +249,8 @@ public class Drivetrain extends RobotComponent
                 rightPower = -0.5;
             }
             else{
-                leftPower = -0.5;
                 rightPower = 0.5;
+                leftPower = -0.5;
             }
             backLeft.setPower(leftPower);
             frontLeft.setPower(leftPower);

@@ -21,7 +21,7 @@ public class TestAuto extends LinearOpMode {
     public void runOpMode(){
         robot.init(hardwareMap, this);
         waitForStart();
-
+        telemetry.addData("left encoder", robot.drivetrain.backLeftEncoderCount());
         drive(12);
         telemetry.addData("finish moving forward", "now");
         telemetry.update();
@@ -30,6 +30,7 @@ public class TestAuto extends LinearOpMode {
         drive(21);
         sleep(2000);
         drive(-30.0);
+        turnTo(90);
 
 
     }
@@ -43,6 +44,7 @@ public class TestAuto extends LinearOpMode {
     }
 
     private void turnTo(double angle){
+        telemetry.addData("current angle", robot.drivetrain.imu.zAngle());
         robot.drivetrain.testTurnTo(angle);
     }
 
