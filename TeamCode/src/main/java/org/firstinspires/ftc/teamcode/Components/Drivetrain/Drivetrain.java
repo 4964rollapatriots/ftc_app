@@ -250,8 +250,8 @@ public class Drivetrain extends RobotComponent
                 rightPower = -0.5;
             }
             else{
-                rightPower = 0.5;
                 leftPower = -0.5;
+                rightPower = 0.5;
             }
             backLeft.setPower(leftPower);
             frontLeft.setPower(leftPower);
