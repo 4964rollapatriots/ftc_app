@@ -5,12 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.Components.HookLift.HookLift;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
 @TeleOp(name = "MainTeleOp(Pranal)", group = "TeleOp")
 public class TeleOpMain extends LinearOpMode
 {
     private Base _base = new Base();
+
+    private HookLift _lift = new HookLift();
 
     public void runOpMode() throws InterruptedException
     {

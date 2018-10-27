@@ -130,7 +130,6 @@ public class Drivetrain extends RobotComponent
     public void encoderOn()
     {
         setEncoderState(DcMotor.RunMode.RUN_USING_ENCODER);
-
     }
 
     public void encoderOff()
@@ -185,7 +184,7 @@ public class Drivetrain extends RobotComponent
 
     public Boolean isBusy()
     {
-        return (backLeft.isBusy() || backRight.isBusy() || frontLeft.isBusy() || frontRight.isBusy());
+        return (backLeft.isBusy() && backRight.isBusy() && frontLeft.isBusy() && frontRight.isBusy());
     }
 
     public DcMotor backLeft()
@@ -229,7 +228,8 @@ public class Drivetrain extends RobotComponent
         frontRight.setPower(0.5);
         backLeft.setPower(0.5);
         backRight.setPower(0.5);
-        while (backLeft.isBusy() && backRight.isBusy() && frontLeft.isBusy() && frontRight.isBusy() ){
+        while (backLeft.isBusy() && backRight.isBusy() && frontLeft.isBusy() && frontRight.isBusy() )
+        {
 
         }
         this.stop();

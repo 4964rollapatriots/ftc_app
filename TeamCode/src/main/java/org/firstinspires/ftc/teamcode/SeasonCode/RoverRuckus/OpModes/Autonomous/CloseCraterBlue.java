@@ -23,8 +23,6 @@ public class CloseCraterBlue extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        telemetry.addData("Test", true);
-        int ten = 10;
         BlocKState _block = BlocKState.UNCERTAIN;
         _base.init(hardwareMap, this);
         _base.imu.calibrateTo(95);//TWEAK THIS IDK
@@ -33,9 +31,27 @@ public class CloseCraterBlue extends LinearOpMode
 
         //telemetry.addData("Test", ten);
 
-        _base.drivetrain.driveTo.goTo(10000, .4);
+        _base.drivetrain.driveTo.goTo(19, .4);
         _base.drivetrain.driveTo.runSequentially();
+        telemetry.addData("Check distance set Back Left,",  _base.drivetrain.getTargetEncoderCounts()[0]);
+        telemetry.addData("Check distance set Back Right,", _base.drivetrain.getTargetEncoderCounts()[1]);
+        telemetry.addData("Check distance set Front Left,", _base.drivetrain.getTargetEncoderCounts()[2]);
+        telemetry.addData("Check distance set Front Right,", _base.drivetrain.getTargetEncoderCounts()[3]);
+        telemetry.addData("Check current set Back Left,",  _base.drivetrain.getEncoderCounts()[0]);
+        telemetry.addData("Check current set Back Right,", _base.drivetrain.getEncoderCounts()[1]);
+        telemetry.addData("Check current set Front Left,", _base.drivetrain.getEncoderCounts()[2]);
+        telemetry.addData("Check current set Front Right,", _base.drivetrain.getEncoderCounts()[3]);
+        telemetry.update();
 
+//        _base.drivetrain.driveTo.goTo(25, .65);
+//        _base.drivetrain.driveTo.runSequentially();
+
+        _base.drivetrain.turnTo.goTo(129, .52);
+        _base.drivetrain.turnTo.runSequentially();
+        telemetry.addData("Angle Z: ", _base.imu.zAngle());
+        telemetry.addData("Angle X: ", _base.imu.xAngle());
+        telemetry.addData("Angle Y: ", _base.imu.yAngle());
+        telemetry.update();
 //        switch (_block)
 //        {
 //            case LEFT:
@@ -49,11 +65,11 @@ public class CloseCraterBlue extends LinearOpMode
 //        }
 //        _base.drivetrain.turnTo.goTo(180, .70);
 //        _base.drivetrain.turnTo.runSequentially();
+
+        _base.drivetrain.driveTo.goTo(500, .3);
+        _base.drivetrain.driveTo.runSequentially();
 //
-//        _base.drivetrain.driveTo.goTo(500, .3);
-//        _base.drivetrain.driveTo.runSequentially();
-//
-//        sleep(2000); //test
+        sleep(2000); //test
 //
 ////        while(true) //ooooffff don't use these if possible, in this case it is necessary though
 ////        {

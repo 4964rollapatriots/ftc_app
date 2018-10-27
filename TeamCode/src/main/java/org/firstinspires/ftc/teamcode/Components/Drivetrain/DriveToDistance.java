@@ -56,21 +56,20 @@ public class DriveToDistance extends RobotCommand
 
 
         _drivetrain.backLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.backLeft().getCurrentPosition());
-        _drivetrain.backRight().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.backRight().getCurrentPosition());
+        _drivetrain.backRight().setTargetPosition((int)(distance * COUNTS_PER_INCH)+ _drivetrain.backRight().getCurrentPosition());
         _drivetrain.frontLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.frontLeft().getCurrentPosition());
         _drivetrain.frontRight().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.frontRight().getCurrentPosition());
-
         _busy = true;
 
         _drivetrain.setAllMotorPower(speed);
         long startTime = SystemClock.currentThreadTimeMillis();
 
-        while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && System.currentTimeMillis() - startTime < TIMEOUT)
+        while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive()) //&& System.currentTimeMillis() - startTime < TIMEOUT)
         {
             //Keep running! :D
         }
 
-        _drivetrain.stop();
+        _drivetrain.setAllMotorPower(0);
 
         _drivetrain.encoderOn();
 

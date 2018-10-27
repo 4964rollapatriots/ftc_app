@@ -103,7 +103,12 @@ public class TurnTo extends RobotCommand
                 currSpeed = maxSpeed;
             }
 
+            if(currSpeed < minSpeed)
+            {
+                currSpeed = minSpeed;
+            }
 
+            _drivetrain.run(0.0, Math.abs(error) / -error * currSpeed, false, false);
 
         }
 
