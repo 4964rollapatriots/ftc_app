@@ -18,7 +18,6 @@ import java.util.List;
 
 @TeleOp(name="Vuforia Locations")
 
-.
 
 public class RoverVuforia extends LinearOpMode{
 
