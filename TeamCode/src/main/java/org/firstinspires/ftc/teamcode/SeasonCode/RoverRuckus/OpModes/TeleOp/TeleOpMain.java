@@ -13,8 +13,6 @@ public class TeleOpMain extends LinearOpMode
 {
     private Base _base = new Base();
 
-    private HookLift _lift = new HookLift();
-
     public void runOpMode() throws InterruptedException
     {
         _base.init(hardwareMap, this);
@@ -30,6 +28,7 @@ public class TeleOpMain extends LinearOpMode
         _base.drivetrain.encoderOn();
         _base.drivetrain.encoderOff();
         _base.drivetrain.imu.calibrateTo(0);
+
 
         //run teleop while opmode is active
         while(opModeIsActive())
@@ -53,6 +52,25 @@ public class TeleOpMain extends LinearOpMode
         _base.drivetrain.run(-gamepad1.left_stick_y , gamepad1.right_stick_x, false, false);
 
         //_base.collector.run(Math.abs(gamepad1.right_trigger) - Math.abs(gamepad1.left_trigger));
+//        if(gamepad1.a)
+//            _base.latchSystem.extendLift();
+//        if(gamepad1.b)
+//            _base.latchSystem.retractLift();
+//
+//        if(gamepad1.x)
+//        {
+//            _base.latchSystem.liftRobot(.9);
+//        }
+//        if(gamepad1.right_bumper)
+//        {
+//            _base.latchSystem.liftRobot(.30);
+//        }
+//        if (gamepad1.y)
+//        {
+//            _base.latchSystem.lowerRobot();
+//        }
+
+
 
 
 

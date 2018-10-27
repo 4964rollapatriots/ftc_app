@@ -16,6 +16,8 @@ public class HookLift extends RobotComponent
     private DcMotor raiseRobotSpool;
     private Servo extendHookLift;
 
+    private int LIFT_TO_POS = 50;
+
     public void init(RobotBase BASE)
     {
         raiseRobotSpool = mapper.mapMotor("spool", DcMotorSimple.Direction.FORWARD);
@@ -24,15 +26,19 @@ public class HookLift extends RobotComponent
         extendHookLift = mapper.mapServo("lift", Servo.Direction.FORWARD);
     }
 
-    public void extendLift(int POSITION)
+    public void extendLift()
     {
-        extendHookLift.setPosition(POSITION);
+        extendHookLift.setPosition(extendHookLift.getPosition() + .05);
+    }
+    public void extendToPos()
+    {
+        extendHookLift.setPosition(LIFT_TO_POS);
     }
     public void retractLift()
     {
-        extendHookLift.setPosition(0);
+        extendHookLift.setPosition(extendHookLift.getPosition() - .05);
     }
-    public void liftRobot(int POWER)
+    public void liftRobot(double POWER)
     {
         raiseRobotSpool.setPower(POWER);
     }
@@ -51,7 +57,7 @@ public class HookLift extends RobotComponent
     public void lowerRobot()
     {
         raiseRobotSpool.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //later change this to go to position 0 on encoder counts
-        raiseRobotSpool.setPower(-.75);
+        raiseRobotSpool.setPower(-.30);
     }
 
     @Override

@@ -18,8 +18,8 @@ public class TurnTo extends RobotCommand
 
     private double targetAngle = 0.0;
     private double maxSpeed = 0.0;
-    private double minSpeed = .30;
-    private double SPEED_MULT = 3.0;
+    private double minSpeed = .14;
+    private double SPEED_MULT = 2.0;
 
 
 
@@ -90,7 +90,6 @@ public class TurnTo extends RobotCommand
             _imu.setAngle();
 
             error = Util.angleError((int)_imu.zAngle(), (int)targetAngle);
-
             currSpeed = (error/initError) * SPEED_MULT * distModfication;
 
             if(currSpeed < minSpeed)
@@ -107,6 +106,15 @@ public class TurnTo extends RobotCommand
             {
                 currSpeed = minSpeed;
             }
+
+            _drivetrain.base().outTelemetry.addData("INIT ERROR: ", initError);
+            _drivetrain.base().outTelemetry.addData("Init Heading :", initHeading);
+            _drivetrain.base().outTelemetry.addData("TARGET ANGLE: ", targetAngle);
+            _drivetrain.base().outTelemetry.addData("distModification: ", distModfication);
+            _drivetrain.base().outTelemetry.addData("ERROR: ", error);
+            _drivetrain.base().outTelemetry.addData("CURRSPEED: ", currSpeed);
+            //_drivetrain.outTelemetry();
+            _drivetrain.base().outTelemetry.update();
 
             _drivetrain.run(0.0, Math.abs(error) / -error * currSpeed, false, false);
 

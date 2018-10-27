@@ -39,6 +39,7 @@ public class Base extends RobotBase
         // Basic component initialization
         imu.init(this, "imu", params);
         drivetrain.init(this , imu);
+        //latchSystem.init(this);
 
         //collector.init(this);
 

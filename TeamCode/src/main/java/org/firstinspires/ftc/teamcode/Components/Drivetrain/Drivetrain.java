@@ -115,7 +115,7 @@ public class Drivetrain extends RobotComponent
     public void run(double drivePower, double rotatePower, boolean inverted, boolean scale)
     {
         drivePower *= _powerMult;
-        rotatePower *= _powerMult;
+        rotatePower *= -1* _powerMult;
 
         if(currState == State.INVERTED_FAST || currState == State.INVERTED_SLOW)
         {
@@ -235,6 +235,20 @@ public class Drivetrain extends RobotComponent
         this.stop();
     }
 
+    public void outTelemetry()
+    {
+        base.outTelemetry.write("=========DRIVETRAIN=========");
+        base.outTelemetry.addData("Back Left Power: ", backLeft.getPower());
+        base.outTelemetry.addData("Back Right Power: ", backRight.getPower());
+        base.outTelemetry.addData("Front Left Power: ", frontLeft.getPower());
+        base.outTelemetry.addData("Front Right Power: ", frontRight.getPower());
+        base.outTelemetry.newLine();
+        base.outTelemetry.addData("Back Left Encoder", backLeftEncoderCount());
+        base.outTelemetry.addData("Front Left Encoder", frontLeftEncoderCount());
+        base.outTelemetry.addData("Back Right Encoder", backRightEncoderCount());
+        base.outTelemetry.addData("Front Right Encoder", frontRightEncoderCount());
+        base.outTelemetry.newLine();
+    }
     public double testTurnTo(double targetAngle){
         encoderOff();
         double leftPower = 0;

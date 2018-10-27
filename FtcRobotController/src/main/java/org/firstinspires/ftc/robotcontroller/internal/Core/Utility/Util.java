@@ -2,18 +2,16 @@ package org.firstinspires.ftc.robotcontroller.internal.Core.Utility;
 
 public final class Util
 {
-
-
-    public static int angleError(final int CURRENT, int target)
+    public static int angleError(final int CURRENT, double target)
     {
-        int initTarget = target;
+        double initTarget = target;
 
         int error = 0;
 
         if(initTarget < CURRENT)
             target += 360;
 
-        error = target - CURRENT;
+        error = (int) target - CURRENT;
 
         if(Math.abs(error) > 180)
         {
@@ -30,6 +28,8 @@ public final class Util
 
     public static int standardizeAngle(int angle)
     {
+
+        angle %= 360;
         if(angle < 0)
         {
             angle += 360;
