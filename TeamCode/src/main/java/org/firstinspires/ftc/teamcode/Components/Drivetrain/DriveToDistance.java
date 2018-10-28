@@ -34,9 +34,9 @@ public class DriveToDistance extends RobotCommand
     {
         _drivetrain = DRIVETRAIN;
     }
-    public void goTo(double DIST, double SPEED)
+    public void goTo(double INCHES, double SPEED)
     {
-        distance = DIST;
+        distance = INCHES;
         speed = SPEED;
     }
 
