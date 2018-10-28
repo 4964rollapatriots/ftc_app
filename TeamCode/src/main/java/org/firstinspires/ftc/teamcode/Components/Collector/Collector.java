@@ -20,8 +20,8 @@ public class Collector extends RobotComponent {
         super.init(BASE);
         collector = mapper.mapMotor("collector", DcMotorSimple.Direction.FORWARD);
         collector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        collectorPivot = mapper.mapMotor("pivot", DcMotorSimple.Direction.REVERSE);
-        collectorPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        collectorPivot = mapper.mapMotor("pivot", DcMotorSimple.Direction.REVERSE);
+//        collectorPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
 
@@ -37,7 +37,7 @@ public class Collector extends RobotComponent {
     {
         if(DOWN)
         {
-            collectorPivot.setPower(.20);
+            //collectorPivot.setPower(.20);
         }
     }
 
@@ -45,7 +45,7 @@ public class Collector extends RobotComponent {
     {
         if(UP)
         {
-            collectorPivot.setPower(-.20);
+            //collectorPivot.setPower(-.20);
         }
     }
 
@@ -54,6 +54,6 @@ public class Collector extends RobotComponent {
 
     {
         collector.setPower(0);
-        collectorPivot.setPower(0);
+        //collectorPivot.setPower(0);
     }
 }

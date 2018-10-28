@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
 
 public class LanderDump extends RobotComponent
 {
-    private DcMotor flipOuttake;
+    private DcMotor liftBuckets;
     private Servo leftBucket;
     private Servo rightBucket;
 
@@ -28,24 +28,24 @@ public class LanderDump extends RobotComponent
     public void init(RobotBase BASE)
     {
         super.init(BASE);
-        flipOuttake = mapper.mapMotor("flipOuttake", DcMotorSimple.Direction.FORWARD); //check this
-        flipOuttake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftBuckets = mapper.mapMotor("liftBuckets", DcMotorSimple.Direction.FORWARD); //check this
+        liftBuckets.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftBucket = mapper.mapServo("leftBucket", Servo.Direction.FORWARD);
         rightBucket = mapper.mapServo("rightBucket", Servo.Direction.FORWARD);
     }
 
     public void flip()
     {
-        flipOuttake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flipOuttake.setTargetPosition(FLIP_POS);
-        flipOuttake.setPower(FLIP_POWER);
+        liftBuckets.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftBuckets.setTargetPosition(FLIP_POS);
+        liftBuckets.setPower(FLIP_POWER);
     }
 
     public void unFlip()
     {
-        flipOuttake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flipOuttake.setTargetPosition(STANDARD_POS);
-        flipOuttake.setPower(.60);
+        liftBuckets.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftBuckets.setTargetPosition(STANDARD_POS);
+        liftBuckets.setPower(.60);
     }
 
     public void dumpBothBuckets()
@@ -73,6 +73,6 @@ public class LanderDump extends RobotComponent
     @Override
     public void stop()
     {
-        flipOuttake.setPower(0);
+        liftBuckets.setPower(0);
     }
 }

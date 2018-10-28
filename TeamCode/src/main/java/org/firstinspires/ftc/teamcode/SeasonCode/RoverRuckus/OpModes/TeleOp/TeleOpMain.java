@@ -16,9 +16,7 @@ public class TeleOpMain extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         _base.init(hardwareMap, this);
-
         waitForStart();
-
         _base.drivetrain.encoderOn();
 
         //Set State of the Drivetrain
@@ -50,6 +48,8 @@ public class TeleOpMain extends LinearOpMode
     private void run()
     {
         _base.drivetrain.run(-gamepad1.left_stick_y , gamepad1.right_stick_x, false, false);
+        _base.collector.runCollector(gamepad1.right_trigger);
+        _base.collector.runCollector(-gamepad1.left_trigger);
 
         //_base.collector.run(Math.abs(gamepad1.right_trigger) - Math.abs(gamepad1.left_trigger));
 //        if(gamepad1.a)
@@ -69,13 +69,6 @@ public class TeleOpMain extends LinearOpMode
 //        {
 //            _base.latchSystem.lowerRobot();
 //        }
-
-
-
-
-
-
     }
-
 
 }
