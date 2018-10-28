@@ -22,6 +22,7 @@ public class Collector extends RobotComponent {
         collector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        collectorPivot = mapper.mapMotor("pivot", DcMotorSimple.Direction.REVERSE);
 //        collectorPivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //
     }
 
 
