@@ -10,8 +10,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
 
-@Autonomous(name= "Blue: CRATER")
-public class CloseCraterBlue extends LinearOpMode
+@Autonomous(name= "CRATER")
+public class Crater extends LinearOpMode
 {
 
 
@@ -20,7 +20,7 @@ public class CloseCraterBlue extends LinearOpMode
     //private RoverVuforia _vuforia = new RoverVuforia();
 
     //Hold state of where gold block is sitting
-    private enum BlocKState
+    private enum blockState
     {
         LEFT, MIDDLE, RIGHT, UNCERTAIN
     }
@@ -28,7 +28,7 @@ public class CloseCraterBlue extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        BlocKState _block = BlocKState.UNCERTAIN;
+        blockState _block = blockState.UNCERTAIN;
         _base.init(hardwareMap, this);
         _base.imu.calibrateTo(0);//TWEAK THIS IDK
 
