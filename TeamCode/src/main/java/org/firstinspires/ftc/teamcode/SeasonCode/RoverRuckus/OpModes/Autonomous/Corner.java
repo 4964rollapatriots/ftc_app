@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 @Autonomous(name = "CORNER")
 
 public class Corner extends LinearOpMode {
+    //
     public Base _base = new Base();
     public UtilGoldDetector eye = new UtilGoldDetector(hardwareMap);
 
