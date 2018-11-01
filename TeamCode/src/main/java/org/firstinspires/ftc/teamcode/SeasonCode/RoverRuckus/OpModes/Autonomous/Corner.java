@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 @Autonomous(name = "CORNER")
 
 public class Corner extends LinearOpMode {
+    //
     public Base _base = new Base();
 
     //Hold state of where gold block is sitting
