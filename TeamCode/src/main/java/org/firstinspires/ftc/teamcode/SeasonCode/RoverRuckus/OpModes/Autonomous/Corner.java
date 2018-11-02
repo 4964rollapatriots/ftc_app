@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.UtilCV;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
 @Autonomous(name = "CORNER")
@@ -10,7 +11,9 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 public class Corner extends LinearOpMode {
     //
     public Base _base = new Base();
+    private UtilCV eye;
 
+    private static int FIRST_TURN = 32;
     //Hold state of where gold block is sitting
     private enum blockState
     {
@@ -23,12 +26,35 @@ public class Corner extends LinearOpMode {
         blockState _block = blockState.UNCERTAIN;
         _base.init(hardwareMap, this);
         _base.imu.calibrateTo(0);//TWEAK THIS IDK
-
+        eye = new UtilCV(hardwareMap);
         waitForStart();
 
         //telemetry.addData("Test", ten);
+        sleep(1500);
+        if (eye.isAligned()){
+            _block = blockState.MIDDLE;
+            telemetry.addData("block is", _block);
+        }
+        if (_block == blockState.UNCERTAIN){
+            _base.drivetrain.turnTo.goTo(360 - FIRST_TURN, 0.1);
+            _base.drivetrain.turnTo.runSequentially();
+            if (eye.isAligned()){
+                _block = blockState.RIGHT;
+                telemetry.addData("block is", _block);
+            }
+        }
+        if (_block == blockState.UNCERTAIN){
+            _base.drivetrain.turnTo.goTo(FIRST_TURN, 0.1);
+            _base.drivetrain.turnTo.runSequentially();
+            if (eye.isAligned()){
+                _block = blockState.LEFT;
+                telemetry.addData("block is", _block);
+            }
+        }
+        telemetry.addData("block state is ", _block);
+        sleep(1000);
 
-        _base.drivetrain.driveTo.goTo(36, .4);
+        _base.drivetrain.driveTo.goTo(30,0.5);
         _base.drivetrain.driveTo.runSequentially();
 //        telemetry.addData("Check distance set Back Left,",  _base.drivetrain.getTargetEncoderCounts()[0]);
 //        telemetry.addData("Check distance set Back Right,", _base.drivetrain.getTargetEncoderCounts()[1]);
