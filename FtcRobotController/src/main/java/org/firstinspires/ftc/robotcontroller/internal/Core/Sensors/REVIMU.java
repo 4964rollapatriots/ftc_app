@@ -79,7 +79,6 @@ public class REVIMU
         {
             angle3 += 360;
             angle3 %= 360;
-            //
             //angle3 = 360 - angle3;
         }
         accel = imu.getLinearAcceleration();

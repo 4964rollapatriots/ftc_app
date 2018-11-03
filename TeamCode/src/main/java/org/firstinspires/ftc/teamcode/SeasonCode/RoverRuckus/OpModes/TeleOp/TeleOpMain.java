@@ -36,6 +36,10 @@ public class TeleOpMain extends LinearOpMode
             telemetry.addData("Front Left Encoder", _base.drivetrain.frontLeft().getCurrentPosition());
             telemetry.addData("Front Right Encoder", _base.drivetrain.frontRight().getCurrentPosition());
             telemetry.addData("Back Right Encoder", _base.drivetrain.backRight().getCurrentPosition());
+            telemetry.addData("Get  Power BACKLEFT", _base.drivetrain.backLeft().getPower());
+            telemetry.addData("Get  Power BACKRIGHT", _base.drivetrain.backRight().getPower());
+            telemetry.addData("Get  Power FRONTLEFT", _base.drivetrain.frontLeft().getPower());
+            telemetry.addData("Get  Power FRONTRIGHT", _base.drivetrain.frontRight().getPower());
             _base.drivetrain.imu.setAngle();
             telemetry.addData("x angle", _base.drivetrain.imu.xAngle());
             telemetry.addData("y angle", _base.drivetrain.imu.yAngle());
