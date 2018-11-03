@@ -81,18 +81,23 @@ public class Corner extends LinearOpMode {
         telemetry.addData("block state is", _block);
         telemetry.update();
 
-        _base.drivetrain.driveTo.goTo(30,.5);
-        _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.driveTo.goTo(-30,.5);
-        _base.drivetrain.driveTo.runSequentially();
+        driveToDistance(-30,-0.5);
 
-        //_base.drivetrain.turnTo.
+        driveToDistance(30,0.5);
 
+        turnToAngle(SECOND_TURN, 0.5);
 
-        //_base.drivetrain.driveTo.goTo(36, .4);
-        //_base.drivetrain.driveTo.runSequentially();
+        driveToDistance(-37, -0.7);
 
+        turnToAngle(360 - 45, 0.3);
 
+        driveToDistance(-48, -0.6);
+
+        //dump relic
+
+        turnToAngle(135, 0.4);
+
+        driveToDistance( -68, -0.9);
 //        telemetry.addData("Check distance set Back Left,",  _base.drivetrain.getTargetEncoderCounts()[0]);
 //        telemetry.addData("Check distance set Back Right,", _base.drivetrain.getTargetEncoderCounts()[1]);
 //        telemetry.addData("Check distance set Front Left,", _base.drivetrain.getTargetEncoderCounts()[2]);
@@ -112,7 +117,6 @@ public class Corner extends LinearOpMode {
         telemetry.addData("Angle X: ", _base.imu.xAngle());
         telemetry.addData("Angle Y: ", _base.imu.yAngle());
         telemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
-        telemetry.addData("robot is lined up", eye.isAligned());
         telemetry.update();
 //        switch (_block)
 //        {
@@ -125,8 +129,23 @@ public class Corner extends LinearOpMode {
 //            case UNCERTAIN:
 //                break;
 //        }
+//        _base.drivetrain.turnTo.goTo(180, .70);
+//        _base.drivetrain.turnTo.runSequentially();
+
+        //_base.drivetrain.driveTo.goTo(500, .3);
+        //_base.drivetrain.driveTo.runSequentially();
 //
         _base.drivetrain.stop();
     }
 
+    private void turnToAngle(double angle, double speed){
+        _base.drivetrain.turnTo.goTo(angle, speed);
+        _base.drivetrain.turnTo.runSequentially();
+    }
+
+    private void driveToDistance(double inches, double speed){
+        _base.drivetrain.driveTo.goTo(inches, speed);
+        _base.drivetrain.driveTo.runSequentially();
+    }
 }
+
