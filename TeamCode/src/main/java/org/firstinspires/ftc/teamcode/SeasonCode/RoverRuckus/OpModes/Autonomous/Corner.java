@@ -37,7 +37,7 @@ public class Corner extends LinearOpMode {
             telemetry.addData("block is", _block);
         }
         if (_block == blockState.UNCERTAIN){
-            driveToDistance(360 - FIRST_TURN, 0.18);
+            turnToAngle(360 - FIRST_TURN, 0.18);
             sleep(500);
             if (eye.isAligned()){
                 _block = blockState.RIGHT;
