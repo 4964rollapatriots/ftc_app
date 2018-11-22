@@ -26,7 +26,7 @@ public class HookLift extends RobotComponent
         extendHookLift = mapper.mapServo("lift", Servo.Direction.FORWARD);
     }
 
-    public void extendLift()
+    public void extendHook()
     {
         extendHookLift.setPosition(extendHookLift.getPosition() + .05);
     }
@@ -34,13 +34,13 @@ public class HookLift extends RobotComponent
     {
         extendHookLift.setPosition(LIFT_TO_POS);
     }
-    public void retractLift()
+    public void retractHook()
     {
         extendHookLift.setPosition(extendHookLift.getPosition() - .05);
     }
-    public void liftRobot(double POWER)
+    public void liftRobot()
     {
-        winch.setPower(POWER);
+        winch.setPower(.90);
     }
 
     public void liftRobot(int POWER, int DIST)
