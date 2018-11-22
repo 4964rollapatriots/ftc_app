@@ -13,6 +13,7 @@ public class TeleOpMain extends LinearOpMode
 {
     private Base _base = new Base();
 
+    double joelAngle = 0;
     public void runOpMode() throws InterruptedException
     {
         _base.init(hardwareMap, this);
@@ -32,18 +33,30 @@ public class TeleOpMain extends LinearOpMode
         while(opModeIsActive())
         {
             run();
-            telemetry.addData("Back Left Encoder", _base.drivetrain.backLeft().getCurrentPosition());
-            telemetry.addData("Front Left Encoder", _base.drivetrain.frontLeft().getCurrentPosition());
-            telemetry.addData("Front Right Encoder", _base.drivetrain.frontRight().getCurrentPosition());
-            telemetry.addData("Back Right Encoder", _base.drivetrain.backRight().getCurrentPosition());
-            telemetry.addData("Get  Power BACKLEFT", _base.drivetrain.backLeft().getPower());
-            telemetry.addData("Get  Power BACKRIGHT", _base.drivetrain.backRight().getPower());
-            telemetry.addData("Get  Power FRONTLEFT", _base.drivetrain.frontLeft().getPower());
-            telemetry.addData("Get  Power FRONTRIGHT", _base.drivetrain.frontRight().getPower());
+//            telemetry.addData("Back Left Encoder", _base.drivetrain.backLeft().getCurrentPosition());
+//            telemetry.addData("Front Left Encoder", _base.drivetrain.frontLeft().getCurrentPosition());
+//            telemetry.addData("Front Right Encoder", _base.drivetrain.frontRight().getCurrentPosition());
+//            telemetry.addData("Back Right Encoder", _base.drivetrain.backRight().getCurrentPosition());
+//            telemetry.addData("Get  Power BACKLEFT", _base.drivetrain.backLeft().getPower());
+//            telemetry.addData("Get  Power BACKRIGHT", _base.drivetrain.backRight().getPower());
+//            telemetry.addData("Get  Power FRONTLEFT", _base.drivetrain.frontLeft().getPower());
+//            telemetry.addData("Get  Power FRONTRIGHT", _base.drivetrain.frontRight().getPower());
             _base.drivetrain.imu.setAngle();
+//
+            joelAngle = _base.drivetrain.imu.zAngle() + 360;
+            joelAngle %= 360;
+
+
+
+            telemetry.addData("z angle strd", _base.drivetrain.imu.zAngle());
+            telemetry.addData("z Joel Angle (what we used have)", joelAngle);
+
+            joelAngle += 360;
+            telemetry.addData("z angle + 360", joelAngle);
+
+
             telemetry.addData("x angle", _base.drivetrain.imu.xAngle());
             telemetry.addData("y angle", _base.drivetrain.imu.yAngle());
-            telemetry.addData("z angle", _base.drivetrain.imu.zAngle());
             telemetry.update();
         }
 

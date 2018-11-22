@@ -6,9 +6,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVIMU;
-import org.firstinspires.ftc.teamcode.Components.Collector.Collector;
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
-import org.firstinspires.ftc.teamcode.Components.HookLift.HookLift;
+import org.firstinspires.ftc.teamcode.Components.MarkerDelivery.MarkerDelivery;
 
 import static java.lang.Thread.sleep;
 
@@ -19,9 +18,9 @@ public class Base extends RobotBase
 {
     public Drivetrain drivetrain = new Drivetrain();
     public REVIMU imu = new REVIMU();
-    //public Collector collector = new Collector();
+    //public CollectorSystem collector = new CollectorSystem();
     //public HookLift latchSystem = new HookLift();
-
+    public MarkerDelivery deliver = new MarkerDelivery();
 
     @Override
     public void init(final HardwareMap hwm, final LinearOpMode op)
@@ -39,6 +38,7 @@ public class Base extends RobotBase
         // Basic component initialization
         imu.init(this, "imu", params);
         drivetrain.init(this , imu);
+        deliver.init(this);
         //latchSystem.init(this);
 
         //collector.init(this);

@@ -65,6 +65,8 @@ public class TurnTo extends RobotCommand
         //Init heading stored from imu to variable.
         double initHeading = _imu.zAngle();
 
+        double heading = 0;
+
         //Tracks the current speed of the robot.
         double currSpeed = 0;
 
@@ -88,7 +90,7 @@ public class TurnTo extends RobotCommand
                 && !endCommand && _drivetrain.base().opMode.opModeIsActive())
         {
             _imu.setAngle();
-
+            heading = _imu.zAngle();
             error = Util.angleError((int)_imu.zAngle(), (int)targetAngle);
             currSpeed = (error/initError) * SPEED_MULT * distModfication;
 
@@ -110,6 +112,7 @@ public class TurnTo extends RobotCommand
             _drivetrain.base().outTelemetry.addData("INIT ERROR: ", initError);
             _drivetrain.base().outTelemetry.addData("Init Heading :", initHeading);
             _drivetrain.base().outTelemetry.addData("TARGET ANGLE: ", targetAngle);
+            _drivetrain.base().outTelemetry.addData("Current ANGLE: ", heading);
             _drivetrain.base().outTelemetry.addData("distModification: ", distModfication);
             _drivetrain.base().outTelemetry.addData("ERROR: ", error);
             _drivetrain.base().outTelemetry.addData("CURRSPEED: ", currSpeed);

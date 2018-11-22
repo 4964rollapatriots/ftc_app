@@ -56,9 +56,12 @@ public class REVIMU
     {
         angle1 = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle - angle1Offset;
 
-        angle2 = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).secondAngle - angle2Offset;
+        angle2 = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle - angle2Offset;
 
-        angle3 = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle - angle3Offset;
+        angle3 = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).secondAngle - angle3Offset;
+
+
+
 
         //Adjustments to have angle values between 0 and 360.
 
@@ -79,8 +82,8 @@ public class REVIMU
         {
             angle3 += 360;
             angle3 %= 360;
-            //angle3 = 360 - angle3;
         }
+
         accel = imu.getLinearAcceleration();
     }
 

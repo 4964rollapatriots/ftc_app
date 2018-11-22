@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.UtilCV;
+import org.firstinspires.ftc.teamcode.Components.MarkerDelivery.MarkerDelivery;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
 @Autonomous(name = "CORNER")
@@ -12,6 +13,7 @@ public class Corner extends LinearOpMode {
     //
     public Base _base = new Base();
     private UtilCV eye;
+
 
     private static int FIRST_TURN = 32;
     private static int SECOND_TURN = 50;
@@ -34,44 +36,48 @@ public class Corner extends LinearOpMode {
         sleep(500);
         if (eye.isAligned()){
             _block = blockState.MIDDLE;
+
             telemetry.addData("block is", _block);
+            telemetry.update();
         }
         if (_block == blockState.UNCERTAIN){
-            turnToAngle(360 - FIRST_TURN, 0.18);
+            turnToAngle(360 - FIRST_TURN, 0.30);
             sleep(500);
             if (eye.isAligned()){
                 _block = blockState.RIGHT;
                 telemetry.addData("block is", _block);
+                telemetry.update();
             }
         }
         if (_block == blockState.UNCERTAIN){
-            turnToAngle(FIRST_TURN,0.2);
+            turnToAngle(FIRST_TURN,0.30);
             sleep(500);
             if (eye.isAligned()){
                 _block = blockState.LEFT;
                 telemetry.addData("block is", _block);
+                telemetry.update();
             }
         }
         telemetry.addData("block state is ", _block);
         sleep(500);
 
-        driveToDistance(-30,-0.5);
+        driveToDistance(20,0.15);
 
-        driveToDistance(30,0.5);
-
-        turnToAngle(SECOND_TURN, 0.5);
-
-        driveToDistance(-37, -0.7);
-
-        turnToAngle(360 - 45, 0.3);
-
-        driveToDistance(-48, -0.6);
+//        driveToDistance(30,0.5);
+//
+//        turnToAngle(SECOND_TURN, 0.5);
+//
+//        driveToDistance(-37, -0.7);
+//
+//        turnToAngle(360 - 45, 0.3);
+//
+//        driveToDistance(-48, -0.6);
 
         //dump relic
 
-        turnToAngle(135, 0.4);
+//        turnToAngle(135, 0.4);
 
-        driveToDistance( -68, -0.9);
+        //driveToDistance( -30, -0.9);
 //        telemetry.addData("Check distance set Back Left,",  _base.drivetrain.getTargetEncoderCounts()[0]);
 //        telemetry.addData("Check distance set Back Right,", _base.drivetrain.getTargetEncoderCounts()[1]);
 //        telemetry.addData("Check distance set Front Left,", _base.drivetrain.getTargetEncoderCounts()[2]);
@@ -115,6 +121,7 @@ public class Corner extends LinearOpMode {
     private void turnToAngle(double angle, double speed){
         _base.drivetrain.turnTo.goTo(angle, speed);
         _base.drivetrain.turnTo.runSequentially();
+
     }
 
     private void driveToDistance(double inches, double speed){
