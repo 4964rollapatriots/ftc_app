@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Components.MarkerDelivery;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
 
 /**
@@ -13,17 +14,35 @@ public class MarkerDelivery extends RobotComponent
     public Servo markerDelivery;
 
 
-    public final double CLOSED = 0;
-    public final double OPEN = .75;
+    public final double RAISE = 0;
+    public final double DELIVERY = .75;
 
-    //@Override
-    public void init()
+    public void init(final RobotBase BASE)
     {
+        super.init(BASE);
+        markerDelivery = mapper.mapServo("marker", Servo.Direction.FORWARD);
+    }
 
+    public void deliverMarker()
+    {
+        markerDelivery.setPosition(DELIVERY);
+    }
+
+    public void raiseMarker()
+    {
+        markerDelivery.setPosition(RAISE);
+    }
+
+    public void outTelemetry()
+    {
+        base.outTelemetry.write("----------------MARKER DELIVERY---------------");
+        base.outTelemetry.addData("Delivery Position", markerDelivery.getPosition());
+        base.outTelemetry.write("-------------END MARKER DELIVERY--------------");
+        base.outTelemetry.newLine();
     }
     @Override
     public void stop()
     {
-
+        raiseMarker();
     }
 }

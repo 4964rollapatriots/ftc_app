@@ -81,23 +81,23 @@ public class Corner extends LinearOpMode {
         telemetry.addData("block state is", _block);
         telemetry.update();
 
-        driveToDistance(-30,-0.5);
+        driveToDistance(20,0.15);
 
-        driveToDistance(30,0.5);
-
-        turnToAngle(SECOND_TURN, 0.5);
-
-        driveToDistance(-37, -0.7);
-
-        turnToAngle(360 - 45, 0.3);
-
-        driveToDistance(-48, -0.6);
+//        driveToDistance(30,0.5);
+//
+//        turnToAngle(SECOND_TURN, 0.5);
+//
+//        driveToDistance(-37, -0.7);
+//
+//        turnToAngle(360 - 45, 0.3);
+//
+//        driveToDistance(-48, -0.6);
 
         //dump relic
 
-        turnToAngle(135, 0.4);
+//        turnToAngle(135, 0.4);
 
-        driveToDistance( -68, -0.9);
+        //driveToDistance( -30, -0.9);
 //        telemetry.addData("Check distance set Back Left,",  _base.drivetrain.getTargetEncoderCounts()[0]);
 //        telemetry.addData("Check distance set Back Right,", _base.drivetrain.getTargetEncoderCounts()[1]);
 //        telemetry.addData("Check distance set Front Left,", _base.drivetrain.getTargetEncoderCounts()[2]);
@@ -141,6 +141,7 @@ public class Corner extends LinearOpMode {
     private void turnToAngle(double angle, double speed){
         _base.drivetrain.turnTo.goTo(angle, speed);
         _base.drivetrain.turnTo.runSequentially();
+
     }
 
     private void driveToDistance(double inches, double speed){
