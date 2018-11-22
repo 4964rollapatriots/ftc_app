@@ -6,8 +6,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVIMU;
+import org.firstinspires.ftc.teamcode.Components.CollectorSystem.CollectorSystem;
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.Components.HookLift.HookLift;
 import org.firstinspires.ftc.teamcode.Components.MarkerDelivery.MarkerDelivery;
+import org.firstinspires.ftc.teamcode.Components.PulleyTilt.PulleyTilt;
 
 import static java.lang.Thread.sleep;
 
@@ -18,8 +21,9 @@ public class Base extends RobotBase
 {
     public Drivetrain drivetrain = new Drivetrain();
     public REVIMU imu = new REVIMU();
-    //public CollectorSystem collector = new CollectorSystem();
-    //public HookLift latchSystem = new HookLift();
+    public CollectorSystem collector = new CollectorSystem();//
+    public HookLift latchSystem = new HookLift();//
+    public PulleyTilt pulley = new PulleyTilt();//
     public MarkerDelivery deliver = new MarkerDelivery();
 
     @Override
@@ -39,10 +43,9 @@ public class Base extends RobotBase
         imu.init(this, "imu", params);
         drivetrain.init(this , imu);
         deliver.init(this);
-        //latchSystem.init(this);
-
-        //collector.init(this);
-
+        latchSystem.init(this);//
+        collector.init(this);//
+        pulley.init(this);//
         //Try catches to prevent crashes
         //imu.write8(BNO055IMU.Register.OPR_MODE ,BNO055IMU.SensorMode.CONFIG.bVal & 0x0F);
         try
@@ -59,6 +62,16 @@ public class Base extends RobotBase
         // Dependency setting
         drivetrain.setDependencies(imu);
 
+    }
+
+    public void outTelemetry()
+    {
+        drivetrain.outTelemetry();
+        pulley.outTelemetry();
+        collector.outTelemetry();
+        latchSystem.outTelemetry();
+        deliver.outTelemetry();
+        outTelemetry.update();
     }
     @Override
     public void stop()

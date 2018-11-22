@@ -41,6 +41,18 @@ public class TeleOpMain extends LinearOpMode
 //            telemetry.addData("Get  Power BACKRIGHT", _base.drivetrain.backRight().getPower());
 //            telemetry.addData("Get  Power FRONTLEFT", _base.drivetrain.frontLeft().getPower());
 //            telemetry.addData("Get  Power FRONTRIGHT", _base.drivetrain.frontRight().getPower());
+
+
+            /*
+            TELEMETRY CONFIG
+             */
+            _base.outTelemetry();
+
+
+
+            /*
+            ANGLE TESTING BELOW
+             */
             _base.drivetrain.imu.setAngle();
 //
             joelAngle = _base.drivetrain.imu.zAngle() + 360;
