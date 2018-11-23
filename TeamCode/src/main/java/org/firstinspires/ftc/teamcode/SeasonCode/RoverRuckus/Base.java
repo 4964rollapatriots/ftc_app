@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVIMU;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
 import org.firstinspires.ftc.teamcode.Components.Collector.Collector;
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.Components.HookLift.HookLift;
