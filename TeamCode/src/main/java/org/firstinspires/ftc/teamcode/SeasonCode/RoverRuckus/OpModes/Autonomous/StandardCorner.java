@@ -28,10 +28,15 @@ public class StandardCorner extends LinearOpMode {
     {
         blockState _block = blockState.UNCERTAIN;
         _base.init(hardwareMap, this);
-        _base.imu.calibrateTo(0);//TWEAK THIS IDK
+        _base.imu.calibrateTo(0);
         eye = new UtilCV(hardwareMap);
         waitForStart();
+        /*
 
+         Come down from lift and go forward needs to be added HERE
+
+
+         */
         sleep(500);
         if (eye.isAligned()){
             _block = blockState.MIDDLE;
@@ -65,9 +70,9 @@ public class StandardCorner extends LinearOpMode {
         telemetry.addData("block state is ", _block);
         sleep(500);
 
-        driveToDistance(15,0.15);
+        driveToDistance(20,0.15);
 
-        //driveToDistance(-15, .15);
+        //driveToDistance(-20, .15);
 
 
 //        turnToAngle(SECOND_TURN, 0.5);

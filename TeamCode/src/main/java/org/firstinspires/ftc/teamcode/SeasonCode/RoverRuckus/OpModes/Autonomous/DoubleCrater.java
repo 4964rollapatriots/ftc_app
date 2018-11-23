@@ -7,16 +7,16 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.UtilCV;
 import org.firstinspires.ftc.teamcode.Components.MarkerDelivery.MarkerDelivery;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-@Autonomous(name = "STANDARD CORNER")
+@Autonomous(name = "DOUBLE CRATER")
 
-public class StandardCrater extends LinearOpMode {
+public class DoubleCrater extends LinearOpMode {
     //
     public Base _base = new Base();
     private UtilCV eye;
 
 
     private static int FIRST_TURN = 32;
-    private static int SECOND_TURN = 50;
+    private static int SECOND_TURN = 70;
     //Hold state of where gold block is sitting
     private enum blockState
     {
@@ -37,7 +37,7 @@ public class StandardCrater extends LinearOpMode {
 
 
          */
-        sleep(500);
+        sleep(300);
         if (eye.isAligned()){
             _block = blockState.MIDDLE;
 
@@ -68,24 +68,63 @@ public class StandardCrater extends LinearOpMode {
             }
         }
         telemetry.addData("block state is ", _block);
-        sleep(500);
+        sleep(300);
 
         driveToDistance(15,0.15);
 
-        //driveToDistance(-15, .15);
+        driveToDistance(-15, .15);
 
 
-//        turnToAngle(SECOND_TURN, 0.5);
-        // _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
-        //_base.outTelemetry.update();
-//
-//        driveToDistance(37, 0.7);
+        //face next set of blocks/balls
+        turnToAngle(SECOND_TURN, 0.5);
+        _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
+        _base.outTelemetry.update();
+        //drive towards next set
+        driveToDistance(37, 0.7);
 //
 //        turnToAngle(SECOND_TURN + 15, 0.5);
         //_base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
         //_base.outTelemetry.update();
 //
-//        driveToDistance(48, 0.6);
+        //put code again to hit gold blocks will have adjust angle turns though
+        sleep(300);
+//        if (eye.isAligned()){
+//            _block = blockState.MIDDLE;
+//
+//            telemetry.addData("block is", _block);
+//            _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
+//            telemetry.update();
+//        }
+//        if (_block == blockState.UNCERTAIN){
+//            turnToAngle(SOME ANGLE, 0.50);
+//            _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
+//            _base.outTelemetry.update();
+//            sleep(500);
+//            if (eye.isAligned()){
+//                _block = blockState.RIGHT;
+//                telemetry.addData("block is", _block);
+//                telemetry.update();
+//            }
+//        }
+//        if (_block == blockState.UNCERTAIN){
+//            turnToAngle(SOME OTHER ANGLE,0.30);
+//            _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
+//            _base.outTelemetry.update();
+//            sleep(500);
+//            if (eye.isAligned()){
+//                _block = blockState.LEFT;
+//                telemetry.addData("block is", _block);
+//                telemetry.update();
+//            }
+//        }
+//        driveToDistance(15, 0.6);
+
+        driveToDistance(-15,.5);
+
+        turnToAngle(SECOND_TURN + 19, 0.5);
+        _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
+        _base.outTelemetry.update();
+
 
 
         //dump relic
@@ -101,7 +140,7 @@ public class StandardCrater extends LinearOpMode {
         //_base.outTelemetry.update();
 //
 //        driveToDistance(100, .50);
-        //DONE
+
 
         _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
         _base.outTelemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
@@ -121,6 +160,5 @@ public class StandardCrater extends LinearOpMode {
         _base.drivetrain.driveTo.goTo(-inches, speed);
         _base.drivetrain.driveTo.runSequentially();
     }
-
 
 }
