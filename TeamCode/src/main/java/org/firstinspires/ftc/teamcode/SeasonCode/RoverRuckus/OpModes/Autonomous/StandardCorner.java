@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Components.MarkerDelivery.MarkerDelivery;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
 @Autonomous(name = "STANDARD CORNER")
+//not 
 
 public class StandardCorner extends LinearOpMode {
     //
