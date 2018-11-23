@@ -76,7 +76,7 @@ public class StandardCrater extends LinearOpMode {
 //
 //        driveToDistance(37, 0.7);
 //
-//        turnToAngle(360 - 45, 0.3);
+//        turnToAngle(SECOND_TURN + 15, 0.5);
         //_base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
         //_base.outTelemetry.update();
 //
@@ -85,17 +85,17 @@ public class StandardCrater extends LinearOpMode {
 
         //dump relic
 
-//        turnToAngle(SOME ANGLE, .50);
+//        turnToAngle(15, .50);
         //_base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
         //_base.outTelemetry.update();
 //        _base.deliver.deliverMarker();
 //
 //        //re align with other crater
-//        turnToAngle(360-45, .50);
+//        turnToAngle(320, .50);    
         //_base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
         //_base.outTelemetry.update();
 //
-//        driveToDistance(-100, .50);
+//        driveToDistance(100, .50);
         //DONE
 
         _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
