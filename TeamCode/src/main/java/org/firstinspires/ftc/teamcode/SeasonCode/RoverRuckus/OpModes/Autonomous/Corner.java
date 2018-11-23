@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.UtilCV;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
 @Autonomous(name = "CORNER")
@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 public class Corner extends LinearOpMode {
     //
     public Base _base = new Base();
-    public UtilGoldDetector eye = new UtilGoldDetector(hardwareMap);
+    public UtilCV eye = new UtilCV(hardwareMap);
 
     private final static double FIRST_TURN_ANGLE = 35;
     private final static double MIDDLE_ANGLE = 10;
