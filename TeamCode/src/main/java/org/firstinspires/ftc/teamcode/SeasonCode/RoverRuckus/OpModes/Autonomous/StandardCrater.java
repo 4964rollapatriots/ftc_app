@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
 @Autonomous(name = "STANDARD CORNER")
 
-public class StandardCorner extends LinearOpMode {
+public class StandardCrater extends LinearOpMode {
     //
     public Base _base = new Base();
     private UtilCV eye;
@@ -71,7 +71,7 @@ public class StandardCorner extends LinearOpMode {
 
 
 //        turnToAngle(SECOND_TURN, 0.5);
-       // _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
+        // _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
         //_base.outTelemetry.update();
 //
 //        driveToDistance(37, 0.7);
