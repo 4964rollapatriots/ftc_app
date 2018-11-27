@@ -237,16 +237,18 @@ public class Drivetrain extends RobotComponent
 
     public void outTelemetry()
     {
-        base.outTelemetry.write("=========DRIVETRAIN=========");
+        base.outTelemetry.write("-----------DRIVETRAIN-----------");
         base.outTelemetry.addData("Back Left Power: ", backLeft.getPower());
         base.outTelemetry.addData("Back Right Power: ", backRight.getPower());
         base.outTelemetry.addData("Front Left Power: ", frontLeft.getPower());
         base.outTelemetry.addData("Front Right Power: ", frontRight.getPower());
         base.outTelemetry.newLine();
-        base.outTelemetry.addData("Back Left Encoder", backLeftEncoderCount());
-        base.outTelemetry.addData("Front Left Encoder", frontLeftEncoderCount());
-        base.outTelemetry.addData("Back Right Encoder", backRightEncoderCount());
-        base.outTelemetry.addData("Front Right Encoder", frontRightEncoderCount());
+        base.outTelemetry.addData("Back Left Encoder: ", backLeftEncoderCount());
+        base.outTelemetry.addData("Front Left Encoder: ", frontLeftEncoderCount());
+        base.outTelemetry.addData("Back Right Encoder: ", backRightEncoderCount());
+        base.outTelemetry.addData("Front Right Encoder: ", frontRightEncoderCount());
+        base.outTelemetry.addData("IMU Z Angle: ", imu.zAngle());
+        base.outTelemetry.write("-----END DRIVETRAIN -------------");
         base.outTelemetry.newLine();
     }
     public double testTurnTo(double targetAngle){

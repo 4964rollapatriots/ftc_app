@@ -13,20 +13,20 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
 
 public class HookLift extends RobotComponent
 {
-    private DcMotor raiseRobotSpool;
+    private DcMotor winch;
     private Servo extendHookLift;
 
     private int LIFT_TO_POS = 50;
 
     public void init(RobotBase BASE)
     {
-        raiseRobotSpool = mapper.mapMotor("spool", DcMotorSimple.Direction.FORWARD);
-        raiseRobotSpool.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //change this later,once the amount of encoder
+        winch = mapper.mapMotor("winch", DcMotorSimple.Direction.FORWARD);
+        winch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //change this later,once the amount of encoder
         //counts needed to lift up are found.
         extendHookLift = mapper.mapServo("lift", Servo.Direction.FORWARD);
     }
 
-    public void extendLift()
+    public void extendHook()
     {
         extendHookLift.setPosition(extendHookLift.getPosition() + .05);
     }
@@ -34,35 +34,45 @@ public class HookLift extends RobotComponent
     {
         extendHookLift.setPosition(LIFT_TO_POS);
     }
-    public void retractLift()
+    public void retractHook()
     {
         extendHookLift.setPosition(extendHookLift.getPosition() - .05);
     }
-    public void liftRobot(double POWER)
+    public void liftRobot()
     {
-        raiseRobotSpool.setPower(POWER);
+        winch.setPower(.90);
     }
 
     public void liftRobot(int POWER, int DIST)
     {
-        raiseRobotSpool.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        raiseRobotSpool.setTargetPosition(DIST);
+        winch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        winch.setTargetPosition(DIST);
         do {
-            raiseRobotSpool.setPower(POWER);
-        }while(!(raiseRobotSpool.getCurrentPosition() >= raiseRobotSpool.getTargetPosition() - 7 ||
-                raiseRobotSpool.getCurrentPosition() <=  raiseRobotSpool.getTargetPosition() + 7));
-        raiseRobotSpool.setPower(0);
+            winch.setPower(POWER);
+        }while(!(winch.getCurrentPosition() >= winch.getTargetPosition() - 7 &&
+                winch.getCurrentPosition() <=  winch.getTargetPosition() + 7));
+        winch.setPower(0);
     }
 
     public void lowerRobot()
     {
-        raiseRobotSpool.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //later change this to go to position 0 on encoder counts
-        raiseRobotSpool.setPower(-.30);
+        winch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //later change this to go to position 0 on encoder counts
+        winch.setPower(-.30);
+    }
+
+    public void outTelemetry()
+    {
+        base.outTelemetry.write("----------------HOOK LIFT---------------");
+        base.outTelemetry.addData("Winch Power", winch.getPower());
+        base.outTelemetry.addData("Winch Position", winch.getCurrentPosition());
+        base.outTelemetry.addData("ExtendHook Position", extendHookLift.getPosition());
+        base.outTelemetry.write("-------------END HOOK LIFT ---------");
+        base.outTelemetry.newLine();
     }
 
     @Override
     public void stop()
     {
-        raiseRobotSpool.setPower(0);
+        winch.setPower(0);
     }
 }

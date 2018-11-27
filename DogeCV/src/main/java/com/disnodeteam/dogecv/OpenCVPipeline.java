@@ -95,7 +95,6 @@ public abstract class OpenCVPipeline implements CameraBridgeViewBase.CvCameraVie
                     cameraView.setCameraIndex(cameraIndex);
                     cameraView.setCvCameraViewListener(self);
                     cameraView.enableFpsMeter();
-
                 }
                 inited = true;
             }
