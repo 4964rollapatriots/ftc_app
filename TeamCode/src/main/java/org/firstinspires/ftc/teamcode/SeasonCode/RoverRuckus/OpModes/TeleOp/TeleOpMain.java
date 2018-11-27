@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-@TeleOp(name = "MainTeleOp(Pranal)", group = "TeleOp")
+@TeleOp(name = "MainTeleOp", group = "TeleOp")
 public class TeleOpMain extends LinearOpMode
 {
     private Base _base = new Base();
@@ -94,20 +94,20 @@ public class TeleOpMain extends LinearOpMode
             _base.latchSystem.lowerRobot();
 
         /* -------------- COLLECTING SYSTEM ---------------------*/
-        if(gamepad2.right_bumper)
-            _base.collector.extendLifts();
-        if(gamepad2.left_bumper)
-            _base.collector.retractLifts();
-        if(gamepad2.right_trigger > .2)
-            if(gamepad2.right_trigger > .65)
-                _base.collector.runCollector(1);
-            else
-                _base.collector.runCollector(gamepad2.right_trigger);
-        if(gamepad2.left_trigger > .2)
-            if(gamepad2.left_trigger > .65)
-                _base.collector.runCollector(-1);
-            else
-                _base.collector.runCollector(-gamepad2.left_trigger);
+//        if(gamepad2.right_bumper)
+//            _base.collector.extendLifts();
+//        if(gamepad2.left_bumper)
+//            _base.collector.retractLifts();
+//        if(gamepad2.right_trigger > .2)
+//            if(gamepad2.right_trigger > .65)
+//                _base.collector.runCollector(1);
+//            else
+//                _base.collector.runCollector(gamepad2.right_trigger);
+//        if(gamepad2.left_trigger > .2)
+//            if(gamepad2.left_trigger > .65)
+//                _base.collector.runCollector(-1);
+//            else
+//                _base.collector.runCollector(-gamepad2.left_trigger);
 
     }
 

@@ -1,24 +1,18 @@
-// This autonomous is intended for an initial setup where the robot is hanging from the lander facing the crater
-// The robot will detach and lower itself and then locate the position of the block using the phone
-// The robot will knock the block off and then drive to our teammate's side, where it will knock their block off also
-// The robot will then deposit our team marker and park in the crater in was initially facing
-
 package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
-import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
-import org.firstinspires.ftc.teamcode.Components.Drivetrain.TurnTo;
-import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
+import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 
-@Autonomous(name = "TWO BLOCK FACING CRATER")
+@Autonomous(name = "DT ONLY TWO BLOCK FACING CRATER")
+//We will use this base to only test auto without only the drivetrain attached. This will be convenient
+//as we won't need to always comment the rest of the robot out in Base.java when we aren't using it.
 
-// the name of the class is misleading, refer to the Autonomous name
-public class DoubleCrater extends LinearOpMode {
+public class DTDoubleCraterOnly extends LinearOpMode {
 
-    private Base _base = new Base();
+    private DTBaseOnly _base = new DTBaseOnly();
     private UtilGoldDetector eye = new UtilGoldDetector(hardwareMap);
 
     private blockState _block;
@@ -206,4 +200,3 @@ public class DoubleCrater extends LinearOpMode {
 
 
 }
-
