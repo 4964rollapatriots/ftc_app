@@ -1,22 +1,41 @@
+// This autonomous is intended for an initial setup where the robot is hanging from the lander facing the crater
+// The robot will detach and lower itself and then locate the position of the block using the phone
+// The robot will knock the block off and then drive to our teammate's side, where it will knock their block off also
+// The robot will then deposit our team marker and park in the crater in was initially facing
+
 package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.UtilCV;
-import org.firstinspires.ftc.teamcode.Components.MarkerDelivery.MarkerDelivery;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
+import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.Components.Drivetrain.TurnTo;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-@Autonomous(name = "DOUBLE CRATER")
+@Autonomous(name = "TWO BLOCK FACING CRATER")
 
+// the name of the class is misleading, refer to the Autonomous name
 public class DoubleCrater extends LinearOpMode {
-    //
-    public Base _base = new Base();
-    private UtilCV eye;
 
+    private Base _base = new Base();
+    private UtilGoldDetector eye = new UtilGoldDetector(hardwareMap);
 
-    private static int FIRST_TURN = 32;
-    private static int SECOND_TURN = 70;
+    private blockState _block;
+    private boolean secondBlockFound;
+
+    private final static double FIRST_BLOCK_TURN_ANGLE = 35;
+    private final static double MIDDLE_ANGLE = 10;
+    private final static double SECOND_BLOCK_ABORT_ANGLE = 30;
+    private final static double MARKER_ANGLE = 45;
+
+    private final static double TURN_SPEED = 0.3;
+    private final static double DRIVING_SPEED = 0.65;
+
+    // these are the only final values that are used multiple times
+    private final static double BLOCK_DISTANCE = 36.0;
+    private final static double SECOND_BLOCK_DISTANCE = 22.0;
+
     //Hold state of where gold block is sitting
     private enum blockState
     {
@@ -26,139 +45,161 @@ public class DoubleCrater extends LinearOpMode {
     @Override
     public void runOpMode()
     {
-        blockState _block = blockState.UNCERTAIN;
+        _block = blockState.UNCERTAIN;
+        secondBlockFound = false;
         _base.init(hardwareMap, this);
-        _base.imu.calibrateTo(0);//TWEAK THIS IDK
-        eye = new UtilCV(hardwareMap);
+        _base.imu.calibrateTo(0);
+        //This calibration is done before landing because the landing could "bump" the robot and change our angle
+
         waitForStart();
-        /*
 
-         Come down from lift and go forward needs to be added HERE
+        //Gets the robot onto the field from the hanger
+        // code here
 
+        //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
+        _base.drivetrain.turnTo.goTo(0,TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially();
+        // method that sends information about our angles and powers
+        sendTelemetry();
 
-         */
-        sleep(300);
+        // sees if the block is initially aligned in the middle, if so it does not need to turn
         if (eye.isAligned()){
             _block = blockState.MIDDLE;
-
-            telemetry.addData("block is", _block);
-            _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
-            telemetry.update();
         }
-        if (_block == blockState.UNCERTAIN){
-            turnToAngle(360 - FIRST_TURN, 0.30);
-            _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
-            _base.outTelemetry.update();
-            sleep(500);
-            if (eye.isAligned()){
-                _block = blockState.RIGHT;
-                telemetry.addData("block is", _block);
-                telemetry.update();
+        // if it does not see it, it will turn by single degrees until it reaches the first angle
+        // if the block is on the left, the robot will see it as it turns
+        else if (_block == blockState.UNCERTAIN){
+            for (int i = 0; i < FIRST_BLOCK_TURN_ANGLE; i ++){
+                _base.drivetrain.turnTo.goTo(i,TURN_SPEED);
+                _base.drivetrain.turnTo.runSequentially();
+                if (eye.isAligned()){
+                    _block = blockState.LEFT;
+                    break;
+                }
             }
         }
-        if (_block == blockState.UNCERTAIN){
-            turnToAngle(FIRST_TURN,0.30);
-            _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
-            _base.outTelemetry.update();
-            sleep(500);
-            if (eye.isAligned()){
-                _block = blockState.LEFT;
-                telemetry.addData("block is", _block);
-                telemetry.update();
+        //if the block is not on the left, then the robot turns to the initial zero degrees
+        // it then turns slightly to the right to make sure that the block is not in the middle
+        // this is necessary because of the offset of our camera on the left of our robot
+        else if (_block == blockState.UNCERTAIN){
+            _base.drivetrain.turnTo.goTo(0,TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+            for (int i = 0; i < MIDDLE_ANGLE; i ++){
+                _base.drivetrain.turnTo.goTo(360-i, TURN_SPEED);
+                _base.drivetrain.turnTo.runSequentially();
+                if (eye.isAligned()){
+                    _block = blockState.MIDDLE;
+                    break;
+                }
             }
         }
-        telemetry.addData("block state is ", _block);
-        sleep(300);
-
-        driveToDistance(15,0.15);
-
-        driveToDistance(-15, .15);
-
-
-        //face next set of blocks/balls
-        turnToAngle(SECOND_TURN, 0.5);
-        _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
-        _base.outTelemetry.update();
-        //drive towards next set
-        driveToDistance(37, 0.7);
-//
-//        turnToAngle(SECOND_TURN + 15, 0.5);
-        //_base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
-        //_base.outTelemetry.update();
-//
-        //put code again to hit gold blocks will have adjust angle turns though
-        sleep(300);
-//        if (eye.isAligned()){
-//            _block = blockState.MIDDLE;
-//
-//            telemetry.addData("block is", _block);
-//            _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
-//            telemetry.update();
-//        }
-//        if (_block == blockState.UNCERTAIN){
-//            turnToAngle(SOME ANGLE, 0.50);
-//            _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
-//            _base.outTelemetry.update();
-//            sleep(500);
-//            if (eye.isAligned()){
-//                _block = blockState.RIGHT;
-//                telemetry.addData("block is", _block);
-//                telemetry.update();
-//            }
-//        }
-//        if (_block == blockState.UNCERTAIN){
-//            turnToAngle(SOME OTHER ANGLE,0.30);
-//            _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
-//            _base.outTelemetry.update();
-//            sleep(500);
-//            if (eye.isAligned()){
-//                _block = blockState.LEFT;
-//                telemetry.addData("block is", _block);
-//                telemetry.update();
-//            }
-//        }
-//        driveToDistance(15, 0.6);
-
-        driveToDistance(-15,.5);
-
-        turnToAngle(SECOND_TURN + 19, 0.5);
-        _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
-        _base.outTelemetry.update();
+        // if and only if the robot has not yet found the ball,
+        // it turns to the right by small increments until it reaches its target or sees the block
+        else if (_block == blockState.UNCERTAIN){
+            _base.drivetrain.turnTo.goTo(360 - MIDDLE_ANGLE,TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+            for (int i = 0; i < FIRST_BLOCK_TURN_ANGLE - MIDDLE_ANGLE; i ++){
+                _base.drivetrain.turnTo.goTo(360-MIDDLE_ANGLE-i,TURN_SPEED);
+                _base.drivetrain.turnTo.runSequentially();
+                if (eye.isAligned()){
+                    _block = blockState.RIGHT;
+                    break;
+                }
+            }
+        }
 
 
+        sendTelemetry();
+        telemetry.addData("block state is", _block);
+        telemetry.update();
 
-        //dump relic
+        //drive forward to knock the block off and then go back the same distance
+        // this works because at this point the robot is facing the block
+        _base.drivetrain.driveTo.goTo(BLOCK_DISTANCE,DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
+        _base.drivetrain.driveTo.goTo(-BLOCK_DISTANCE,DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
 
-//        turnToAngle(15, .50);
-        //_base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
-        //_base.outTelemetry.update();
-//        _base.deliver.deliverMarker();
-//
-//        //re align with other crater
-//        turnToAngle(320, .50);
-        //_base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
-        //_base.outTelemetry.update();
-//
-//        driveToDistance(100, .50);
-
-
-        _base.outTelemetry.addData("Angle Z: ", _base.imu.zAngle());
-        _base.outTelemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
-        _base.outTelemetry.update();
-
-        _base.drivetrain.stop();
-    }
-
-    private void turnToAngle(double angle, double speed){
-        _base.drivetrain.turnTo.goTo(angle, speed);
+        // the robot is at a common spot, but a different angle based on where the block was
+        // since the turnTo class uses a gyroscope, turning to 60 gives a common angle also
+        _base.drivetrain.turnTo.goTo(60,TURN_SPEED);
         _base.drivetrain.turnTo.runSequentially();
 
+
+        // drives between the lander and the far left particle so the path is clear to our teammate's side
+        _base.drivetrain.driveTo.goTo(37.5, DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
+
+        // turns in preparation for moving towards our teammate's block
+        _base.drivetrain.turnTo.goTo(180, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially();
+
+        //establishes the robot on our teammate's side at which point it can see all the particles and turn to hit them
+        _base.drivetrain.driveTo.goTo(32.5,DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
+
+        // turns by single degrees clockwise until the robot sees the second block or it is passes a certain angle
+        for (int i = 0; i < SECOND_BLOCK_ABORT_ANGLE; i ++){
+            _base.drivetrain.turnTo.goTo(_base.imu.zAngle() - i, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+            if (eye.isAligned()){
+                break;
+            }
+        }
+
+        // knock the second block off and comes back
+        _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE,DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
+        _base.drivetrain.driveTo.goTo(-SECOND_BLOCK_DISTANCE,DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
+
+        // turn back to go around the particles
+        _base.drivetrain.turnTo.goTo(0, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially();
+
+        // drive away from the particles
+        _base.drivetrain.driveTo.goTo(55,DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
+
+        // turn to face the deposit corner
+        _base.drivetrain.turnTo.goTo(135,TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially();
+
+        // drive around the particles towards the deposit corner
+        _base.drivetrain.driveTo.goTo(60,DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
+
+        // turn the robot to deposit the marker
+        _base.drivetrain.turnTo.goTo(MARKER_ANGLE, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially();
+
+        // deposit the marker
+        // servo movement code here
+
+        // turn back to face the crater
+        _base.drivetrain.turnTo.goTo(360-MARKER_ANGLE, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially();
+
+        //drive to the crater
+        _base.drivetrain.driveTo.goTo(87,DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
+
+        //we are done, so stop the robot
+        _base.drivetrain.stop();
+
+
     }
 
-    private void driveToDistance(double inches, double speed){
-        //this negative sign is to correct the negation
-        _base.drivetrain.driveTo.goTo(-inches, speed);
-        _base.drivetrain.driveTo.runSequentially();
+    private void sendTelemetry(){
+        telemetry.addData("Angle Z: ", _base.imu.zAngle());
+        telemetry.addData("Angle X: ", _base.imu.xAngle());
+        telemetry.addData("Angle Y: ", _base.imu.yAngle());
+        telemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
+        telemetry.addData("robot is lined up", eye.isAligned());
+        telemetry.update();
     }
+
+
 
 }
+

@@ -22,7 +22,7 @@ public class Base extends RobotBase
 {
     public Drivetrain drivetrain = new Drivetrain();
     public REVIMU imu = new REVIMU();
-    public CollectorSystem collector = new CollectorSystem();//
+    //public CollectorSystem collector = new CollectorSystem();//
     public HookLift latchSystem = new HookLift();//
     public PulleyTilt pulley = new PulleyTilt();//
     public MarkerDelivery deliver = new MarkerDelivery();
@@ -45,7 +45,7 @@ public class Base extends RobotBase
         drivetrain.init(this , imu);
         deliver.init(this);
         latchSystem.init(this);//
-        collector.init(this);//
+        //collector.init(this);//
         pulley.init(this);//
         //Try catches to prevent crashes
         //imu.write8(BNO055IMU.Register.OPR_MODE ,BNO055IMU.SensorMode.CONFIG.bVal & 0x0F);
@@ -69,7 +69,7 @@ public class Base extends RobotBase
     {
         drivetrain.outTelemetry();
         pulley.outTelemetry();
-        collector.outTelemetry();
+        //collector.outTelemetry();
         latchSystem.outTelemetry();
         deliver.outTelemetry();
         outTelemetry.update();
