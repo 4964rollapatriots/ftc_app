@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.UtilCV;
 import org.firstinspires.ftc.teamcode.Components.MarkerDelivery.MarkerDelivery;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-@Autonomous(name = "STANDARD CORNER")
+@Autonomous(name = "STANDARD CRATER")
 
 public class StandardCrater extends LinearOpMode {
     //

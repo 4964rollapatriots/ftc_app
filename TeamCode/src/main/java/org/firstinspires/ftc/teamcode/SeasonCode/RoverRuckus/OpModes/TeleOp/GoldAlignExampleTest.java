@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@TeleOp(name="GoldAlign Example", group="DogeCV")
+@TeleOp(name="GoldAlign Example 2", group="DogeCV")
 
 public class GoldAlignExampleTest extends OpMode
 {
