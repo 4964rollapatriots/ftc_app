@@ -29,6 +29,12 @@
 
 package org.firstinspires.ftc.robotcontroller.internal.Core.Utility;
 
+<<<<<<< HEAD
+
+
+public class TensorFlowVision {
+
+=======
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -177,4 +183,5 @@ public class TensorFlowVision extends LinearOpMode {
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
+>>>>>>> master
 }
