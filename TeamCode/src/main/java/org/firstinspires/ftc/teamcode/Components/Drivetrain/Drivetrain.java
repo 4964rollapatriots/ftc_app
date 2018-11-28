@@ -88,6 +88,16 @@ public class Drivetrain extends RobotComponent
         encoderCounts[3] = frontRightEncoderCount();
         return encoderCounts;
     }
+    public long getAverageEncoderCounts()
+    {
+        long[] encoderArr = getEncoderCounts();
+        int total = 0;
+        for(int i = 0; i < encoderArr.length; i++)
+        {
+            total += encoderArr[i];
+        }
+        return (total/encoderArr.length);
+    }
     public long[] getTargetEncoderCounts()
     {
         long[] targetCounts = {0,0,0,0};

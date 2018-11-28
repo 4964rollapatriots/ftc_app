@@ -20,7 +20,7 @@ public class DriveToDistance extends RobotCommand
     private boolean endCommand = false;
 
     private long TIMEOUT = 10000;
-    private double COUNTS_PER_INCH = 40.78651685; //complete guess, need to calculate
+    public double COUNTS_PER_INCH = 40.78651685; //complete guess, need to calculate
     //default constructor
     public DriveToDistance()
     {

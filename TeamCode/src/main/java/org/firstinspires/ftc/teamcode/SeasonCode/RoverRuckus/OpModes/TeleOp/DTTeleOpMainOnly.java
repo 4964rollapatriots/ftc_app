@@ -53,19 +53,13 @@ public class DTTeleOpMainOnly extends LinearOpMode
             joelAngle = _base.drivetrain.imu.zAngle() + 360;
             joelAngle %= 360;
 
-
-
             telemetry.addData("z angle strd", _base.drivetrain.imu.zAngle());
             telemetry.addData("z Joel Angle (what we used have)", joelAngle);
 
             joelAngle += 360;
             telemetry.addData("z angle + 360", joelAngle);
 
-
-            telemetry.addData("x angle", _base.drivetrain.imu.xAngle());
-            telemetry.addData("y angle", _base.drivetrain.imu.yAngle());
-
-            telemetry.addData("Inches Travelled: ", _base.drivetrain.getEncoderCounts());
+            telemetry.addData(" Avg Inches Travelled: ", _base.drivetrain.getAverageEncoderCounts()/_base.drivetrain.driveTo.COUNTS_PER_INCH);
             telemetry.update();
         }
 

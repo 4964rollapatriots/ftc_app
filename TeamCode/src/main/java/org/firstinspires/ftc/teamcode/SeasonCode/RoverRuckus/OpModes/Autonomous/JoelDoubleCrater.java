@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 @Autonomous(name = "Joel Double Crater")
 
 // the name of the class is misleading, refer to the Autonomous name
+//this is the main double crater auto
 public class JoelDoubleCrater extends LinearOpMode {
 
     private DTBaseOnly _base = new DTBaseOnly();
