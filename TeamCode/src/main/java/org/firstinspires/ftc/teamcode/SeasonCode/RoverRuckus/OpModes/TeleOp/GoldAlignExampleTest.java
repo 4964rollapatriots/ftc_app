@@ -1,107 +1,79 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// This autonomous is intended for an initial setup where the robot is hanging from the lander facing the crater
+// The robot will detach and lower itself and then locate the position of the block using the phone
+// The robot will knock the block off and then drive to our teammate's side, where it will knock their block off also
+// The robot will then deposit our team marker and park in the crater in was initially facing
 
 package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp;
 
-import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
-import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.UtilCV;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
+import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
+import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 
-@TeleOp(name="GoldAlign Example 2", group="DogeCV")
+@TeleOp (name = "Vision Test")
 
-public class GoldAlignExampleTest extends OpMode
-{
-    // Detector object
-    private GoldAlignDetector detector;
+// the name of the class is misleading, refer to the Autonomous name
+//this is the main double crater auto
+public class GoldAlignExampleTest extends LinearOpMode {
 
+    private DTBaseOnly _base = new DTBaseOnly();
+    private UtilGoldDetector eye;
 
-    @Override
-    public void init() {
-        telemetry.addData("Status", "DogeCV 2018.0 - Gold Align Example");
-
-        // Set up detector
-        detector = new GoldAlignDetector(); // Create detector
-        detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Initialize it with the app context and camera
-        detector.useDefaults(); // Set detector to use default settings
-
-        // Optional tuning
-        detector.alignSize = 100; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
-        detector.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
-        detector.downscale = 0.4; // How much to downscale the input frames
-
-        detector.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
-        //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
-        detector.maxAreaScorer.weight = 0.005; //
-
-        detector.ratioScorer.weight = 5; //
-        detector.ratioScorer.perfectRatio = 1.0; // Ratio adjustment
-
-        detector.enable(); // Start the detector!
+    private blockState _block;
+    private boolean secondBlockFound;
 
 
+    //Hold state of where gold block is sitting
+    private enum blockState
+    {
+        LEFT, MIDDLE, RIGHT, UNCERTAIN
     }
 
-    /*
-     * Code to run REPEATEDLY when the driver hits INIT
-     */
     @Override
-    public void init_loop() {
+    public void runOpMode()
+    {
+        _block = blockState.UNCERTAIN;
+        secondBlockFound = false;
+        eye = new UtilGoldDetector(hardwareMap);
+        //This calibration is done before landing because the landing could "bump" the robot and change our angle
+
+        waitForStart();
+
+        //Gets the robot onto the field from the hanger
+        // code here
+
+        // method that sends information about our angles and powers
+        //sendTelemetry();
+        while(opModeIsActive())
+        {
+            telemetry.addData("Align Size: ", eye.getAlignSize());
+            telemetry.addData("Eye is Aligned: ", eye.isAligned());
+            telemetry.update();
+            if (gamepad1.right_stick_y > .1)
+            {
+                eye.setAlignSize(eye.getAlignSize() + 2);
+            }
+            if (gamepad1.right_stick_y < -.1)
+            {
+                eye.setAlignSize(eye.getAlignSize() - 2);
+            }
+
+        }
     }
 
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
-    public void start() {
-
-    }
-
-    /*
-     * Code to run REPEATEDLY when the driver hits PLAY
-     */
-    @Override
-    public void loop() {
-        telemetry.addData("IsAligned" , detector.getAligned()); // Is the bot aligned with the gold mineral?
-        telemetry.addData("X Pos" , detector.getXPosition()); // Gold X position.
-    }
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop() {
-        // Disable the detector
-        detector.disable();
+    private void sendTelemetry(){
+        telemetry.addData("Angle Z: ", _base.imu.zAngle());
+        telemetry.addData("Angle X: ", _base.imu.xAngle());
+        telemetry.addData("Angle Y: ", _base.imu.yAngle());
+        telemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
+        telemetry.addData("robot is lined up", eye.isAligned());
+        telemetry.update();
     }
 
 }
+
+

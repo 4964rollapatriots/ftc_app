@@ -108,11 +108,11 @@ public class TeleOpMain extends LinearOpMode
 //                _base.collector.runCollector(-gamepad2.left_trigger);
 
         /*----------------Tilt C-Channel Holding Lifts---------------*/
-        if(gamepad2.right_trigger > .2)
+        if(gamepad2.right_stick_y > .2)
         {
             _base.tiltChannel.tiltUpByPower();
         }
-        if(gamepad2.right_trigger < -.2)
+        if(gamepad2.right_stick_y < -.2)
         {
             _base.tiltChannel.tiltDownByPower();
         }

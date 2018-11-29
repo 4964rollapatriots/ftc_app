@@ -35,7 +35,8 @@ public class UtilGoldDetector {
     public double getPos(){
         return detector.getXPosition();
     }
-
+    public double getAlignSize(){return detector.alignSize;}
+    public void setAlignSize(double size){detector.alignSize = size;}
     public void stop(){
         detector.disable();
     }
