@@ -16,11 +16,11 @@ public class PulleyTilt extends RobotComponent
 
     DcMotor pulleys;
 
-    public double TILT_UP_POW = -1;
-    public double TILT_DOWN_POW = 1;
+    private double TILT_UP_POW = -1;
+    private double TILT_DOWN_POW = 1;
 
-    public int TILT_UP_ENC = 2000; //test this
-    public int TILT_DOWN_ENC = 0;
+    private int TILT_UP_ENC = 2000; //test this
+    private int TILT_DOWN_ENC = 0;
 
     public int BUFFER = 6;
 

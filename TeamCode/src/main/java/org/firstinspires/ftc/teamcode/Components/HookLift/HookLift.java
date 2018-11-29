@@ -40,7 +40,7 @@ public class HookLift extends RobotComponent
     }
     public void liftRobot()
     {
-        winch.setPower(.90);
+        winch.setPower(1);
     }
 
     public void liftRobot(int POWER, int DIST)
@@ -57,7 +57,7 @@ public class HookLift extends RobotComponent
     public void lowerRobot()
     {
         winch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //later change this to go to position 0 on encoder counts
-        winch.setPower(-.30);
+        winch.setPower(-1);
     }
 
     public void outTelemetry()

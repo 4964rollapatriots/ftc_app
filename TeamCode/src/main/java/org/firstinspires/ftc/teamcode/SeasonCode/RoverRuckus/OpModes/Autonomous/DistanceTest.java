@@ -18,6 +18,8 @@ public class DistanceTest extends LinearOpMode
     {
         _base.init(hardwareMap, this);
         _base.imu.calibrateTo(0);
+        _base.drivetrain.encoderStopReset();
+        _base.drivetrain.encoderOn();
         //This calibration is done before landing because the landing could "bump" the robot and change our angle
 
         waitForStart();
