@@ -9,7 +9,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.UtilCV;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.CustomTensorFlow;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 
@@ -21,6 +23,10 @@ public class JoelDoubleCrater extends LinearOpMode {
 
     private DTBaseOnly _base = new DTBaseOnly();
     private UtilGoldDetector eye;
+    private CustomTensorFlow detector;
+
+
+    private boolean RUN_USING_TENSOR_FLOW; // if not, then running with open cv is assumed
 
     private blockState _block;
     private boolean secondBlockFound;
@@ -37,6 +43,10 @@ public class JoelDoubleCrater extends LinearOpMode {
     private final static double BLOCK_DISTANCE = 36.0;
     private final static double SECOND_BLOCK_DISTANCE = 32.0;
 
+    private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
+    private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
+    private static final double ACCEPTABLE_CONFIDENCE = 0.85;
+
     //Hold state of where gold block is sitting
     private enum blockState
     {
@@ -51,6 +61,8 @@ public class JoelDoubleCrater extends LinearOpMode {
         _base.init(hardwareMap, this);
         _base.imu.calibrateTo(0);
         eye = new UtilGoldDetector(hardwareMap);
+        detector = new CustomTensorFlow(hardwareMap);
+        RUN_USING_TENSOR_FLOW = true;
         //This calibration is done before landing because the landing could "bump" the robot and change our angle
 
         waitForStart();
@@ -65,7 +77,7 @@ public class JoelDoubleCrater extends LinearOpMode {
         sendTelemetry();
 
         // sees if the block is initially aligned in the middle, if so it does not need to turn
-        if (eye.isAligned()){
+        if (aligned()){
             _block = blockState.MIDDLE;
         }
         // if it does not see it, it will turn by single degrees until it reaches the first angle
@@ -74,7 +86,7 @@ public class JoelDoubleCrater extends LinearOpMode {
             for (int i = 0; i < FIRST_BLOCK_TURN_ANGLE; i += 4){
                 _base.drivetrain.turnTo.goTo(i,TURN_SPEED);
                 _base.drivetrain.turnTo.runSequentially();
-                if (eye.isAligned()){
+                if (aligned()){
                     _block = blockState.LEFT;
                     break;
                 }
@@ -89,7 +101,7 @@ public class JoelDoubleCrater extends LinearOpMode {
             for (int i = 0; i < MIDDLE_ANGLE; i += 4){
                 _base.drivetrain.turnTo.goTo(360-i, TURN_SPEED);
                 _base.drivetrain.turnTo.runSequentially();
-                if (eye.isAligned()){
+                if (aligned()){
                     _block = blockState.MIDDLE;
                     break;
                 }
@@ -103,7 +115,7 @@ public class JoelDoubleCrater extends LinearOpMode {
             for (int i = 0; i < FIRST_BLOCK_TURN_ANGLE - MIDDLE_ANGLE; i += 4){
                 _base.drivetrain.turnTo.goTo(360-MIDDLE_ANGLE-i,TURN_SPEED);
                 _base.drivetrain.turnTo.runSequentially();
-                if (eye.isAligned()){
+                if (aligned()){
                     _block = blockState.RIGHT;
                     break;
                 }
@@ -163,7 +175,7 @@ public class JoelDoubleCrater extends LinearOpMode {
         for (int i = 0; i < SECOND_BLOCK_ABORT_ANGLE; i ++){
             _base.drivetrain.turnTo.goTo(_base.imu.zAngle() + i, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
-            if (eye.isAligned()){
+            if (aligned()){
                 break;
             }
         }
@@ -198,8 +210,29 @@ public class JoelDoubleCrater extends LinearOpMode {
         telemetry.addData("Angle X: ", _base.imu.xAngle());
         telemetry.addData("Angle Y: ", _base.imu.yAngle());
         telemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
-        telemetry.addData("robot is lined up", eye.isAligned());
+        telemetry.addData("robot is lined up", aligned());
         telemetry.update();
+    }
+
+    private boolean aligned(){
+        boolean aligned = false;
+        if (RUN_USING_TENSOR_FLOW){
+            detector.refresh();
+            for (Recognition rec : detector.updatedRecognitions){
+                if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
+                    aligned = true;
+                    break;
+                }
+            }
+        }
+        else{
+            if (eye.isAligned()){
+                aligned = true;
+            }
+        }
+        return aligned;
+
+
     }
 
 }
