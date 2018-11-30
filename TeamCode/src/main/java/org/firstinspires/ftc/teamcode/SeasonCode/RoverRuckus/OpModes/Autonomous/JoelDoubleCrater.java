@@ -27,7 +27,7 @@ public class JoelDoubleCrater extends LinearOpMode {
     private final static double FIRST_BLOCK_TURN_ANGLE = 35;
     private final static double MIDDLE_ANGLE = 10;
     private final static double SECOND_BLOCK_ABORT_ANGLE = 233;
-    private final static double MARKER_ANGLE = 45;
+    private final static double MARKER_ANGLE = 170;
 
     private final static double TURN_SPEED = 0.3;
     private final static double DRIVING_SPEED = 0.65;
@@ -135,7 +135,7 @@ public class JoelDoubleCrater extends LinearOpMode {
         _base.drivetrain.turnTo.runSequentially();
 
         //drives to the deposit zone
-        _base.drivetrain.driveTo.goTo(59, DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(61, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
         // turn the robot to deposit the marker

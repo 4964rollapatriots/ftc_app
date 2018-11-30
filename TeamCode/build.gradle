@@ -13,4 +13,5 @@ apply from: '../build.common.gradle'
 dependencies {
     implementation project(':openCVLibrary3')
     implementation project(':DogeCV')
+    implementation (name: 'tensorflow-lite-0.0.0-nightly', ext:'aar')
 }
