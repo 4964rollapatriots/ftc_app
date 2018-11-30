@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetec
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 
-@TeleOp (name = "Vision Test")
+@TeleOp (name = "Vision Test Teleop")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
@@ -23,21 +23,9 @@ public class GoldAlignExampleTest extends LinearOpMode {
     private DTBaseOnly _base = new DTBaseOnly();
     private UtilGoldDetector eye;
 
-    private blockState _block;
-    private boolean secondBlockFound;
-
-
-    //Hold state of where gold block is sitting
-    private enum blockState
-    {
-        LEFT, MIDDLE, RIGHT, UNCERTAIN
-    }
-
     @Override
     public void runOpMode()
     {
-        _block = blockState.UNCERTAIN;
-        secondBlockFound = false;
         eye = new UtilGoldDetector(hardwareMap);
         //This calibration is done before landing because the landing could "bump" the robot and change our angle
 
@@ -52,6 +40,7 @@ public class GoldAlignExampleTest extends LinearOpMode {
         {
             telemetry.addData("Align Size: ", eye.getAlignSize());
             telemetry.addData("Eye is Aligned: ", eye.isAligned());
+            telemetry.addData("block y value ", eye.detector.goldYPos);
             telemetry.update();
             if (gamepad1.right_stick_y > .1)
             {

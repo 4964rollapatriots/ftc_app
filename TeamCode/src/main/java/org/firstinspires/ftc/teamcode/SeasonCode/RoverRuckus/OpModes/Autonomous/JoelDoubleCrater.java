@@ -30,7 +30,7 @@ public class JoelDoubleCrater extends LinearOpMode {
     private final static double SECOND_BLOCK_ABORT_ANGLE = 233;
     private final static double MARKER_ANGLE = 180;
 
-    private final static double TURN_SPEED = 0.4;
+    private final static double TURN_SPEED = 0.52;
     private final static double DRIVING_SPEED = 0.65;
 
     // these are the only final values that are used multiple times

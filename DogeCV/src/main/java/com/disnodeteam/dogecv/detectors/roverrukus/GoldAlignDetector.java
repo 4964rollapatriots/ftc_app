@@ -36,13 +36,15 @@ public class GoldAlignDetector extends DogeCVDetector {
     // Results of the detector
     private boolean found    = false; // Is the gold mineral found
     private boolean aligned  = false; // Is the gold mineral aligned
-    private double  goldXPos = 0;     // X Position (in pixels) of the gold element
+    private double  goldXPos = 0;// X Position (in pixels) of the gold element
+    public double goldYPos = 0;
+
 
     // Detector settings
     public boolean debugAlignment = true; // Show debug lines to show alignment settings
     public double alignPosOffset  = 0;    // How far from center frame is aligned
     public double alignSize       = 100;  // How wide is the margin of error for alignment
-
+    public double alignYMax = 160;
     public DogeCV.AreaScoringMethod areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Setting to decide to use MaxAreaScorer or PerfectAreaScorer
 
 
@@ -115,13 +117,15 @@ public class GoldAlignDetector extends DogeCVDetector {
             xPos = bestRect.x + (bestRect.width / 2);
             goldXPos = xPos;
 
+            goldYPos = bestRect.y + (bestRect.height/2);
+
 
 
             // Draw center point
             Imgproc.circle(displayMat, new Point( xPos, bestRect.y + (bestRect.height / 2)), 5, new Scalar(0,255,0),2);
 
             // Check if the mineral is aligned
-            if(xPos < alignXMax && xPos > alignXMin){
+            if(xPos < alignXMax && xPos > alignXMin && goldYPos < alignYMax){
                 aligned = true;
             }
             else{
