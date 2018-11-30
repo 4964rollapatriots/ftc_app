@@ -20,7 +20,7 @@ public class DriveToDistance extends RobotCommand
     private boolean endCommand = false;
 
     private long TIMEOUT = 10000;
-    public double COUNTS_PER_INCH = 40.78651685; //complete guess, need to calculate
+    public double COUNTS_PER_INCH = 40.78651685 * .80; //complete guess, need to calculate
     //default constructor
     public DriveToDistance()
     {
@@ -75,6 +75,7 @@ public class DriveToDistance extends RobotCommand
 
         //Command is finished, for teleop now manually drive the robot, for autonomous supply more commands.
         _busy = false;
+
 
     }
 

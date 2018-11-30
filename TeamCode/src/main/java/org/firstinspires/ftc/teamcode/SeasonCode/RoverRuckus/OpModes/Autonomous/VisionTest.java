@@ -13,11 +13,11 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetec
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 
-@Autonomous(name = "Joel Double Crater")
+@Autonomous(name = "Vision Test")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
-public class JoelDoubleCrater extends LinearOpMode {
+public class VisionTest extends LinearOpMode {
 
     private DTBaseOnly _base = new DTBaseOnly();
     private UtilGoldDetector eye;
@@ -34,7 +34,7 @@ public class JoelDoubleCrater extends LinearOpMode {
     private final static double DRIVING_SPEED = 0.65;
 
     // these are the only final values that are used multiple times
-    private final static double BLOCK_DISTANCE = 36.0;
+    private final static double BLOCK_DISTANCE = 30.0;
     private final static double SECOND_BLOCK_DISTANCE = 32.0;
 
     //Hold state of where gold block is sitting
@@ -121,76 +121,6 @@ public class JoelDoubleCrater extends LinearOpMode {
         _base.drivetrain.driveTo.runSequentially();
         _base.drivetrain.driveTo.goTo(-BLOCK_DISTANCE/2,DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
-
-        // the robot is at a common spot, but a different angle based on where the block was
-        // since the turnTo class uses a gyroscope, turning to 60 gives a common angle also
-        _base.drivetrain.turnTo.goTo(60,TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially();
-
-
-        // drives between the lander and the far left particle so the path is clear to our teammate's side
-        _base.drivetrain.driveTo.goTo(40, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
-
-        // turns in preparation for moving towards the deposit zone
-        _base.drivetrain.turnTo.goTo(135, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially();
-
-        //drives to the deposit zone
-        _base.drivetrain.driveTo.goTo(61, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
-
-        // turn the robot to deposit the marker
-        _base.drivetrain.turnTo.goTo(MARKER_ANGLE, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially();
-
-        // deposits the marker
-        _base.deliver.deliverMarker();
-        // gives time for the marker to slide off
-        try{
-            Thread.sleep(800);}
-        catch(Exception ex){ex.printStackTrace();}
-
-        //raises the delivery system
-        _base.deliver.raiseMarker();
-
-        // turn to face the second group of particles
-        _base.drivetrain.turnTo.goTo(180, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially();
-
-
-        // turns by single degrees clockwise until the robot sees the second block or it is passes a certain angle
-        for (int i = 0; i < SECOND_BLOCK_ABORT_ANGLE; i ++){
-            _base.drivetrain.turnTo.goTo(_base.imu.zAngle() + i, TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
-            if (eye.isAligned()){
-                break;
-            }
-        }
-
-        // since the phone is on the left of our robot, we turn a small amount so the robot's center is aligned with the block
-        _base.drivetrain.turnTo.goTo(_base.imu.zAngle() + 6, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially();
-
-
-        // knock the second block off and comes back
-        _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE,DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.driveTo.goTo(-SECOND_BLOCK_DISTANCE,DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
-
-        // turn back to face the crater
-        _base.drivetrain.turnTo.goTo(360-45, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially();
-
-        // drive to the crater
-        _base.drivetrain.driveTo.goTo(80,DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
-
-        //we are done, so stop the robot
-        _base.drivetrain.stop();
-
-
     }
 
     private void sendTelemetry(){

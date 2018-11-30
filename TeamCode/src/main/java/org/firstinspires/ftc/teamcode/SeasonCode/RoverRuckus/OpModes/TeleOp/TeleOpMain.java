@@ -57,7 +57,6 @@ public class TeleOpMain extends LinearOpMode
             joelAngle %= 360;
 
 
-
             telemetry.addData("z angle strd", _base.drivetrain.imu.zAngle());
             telemetry.addData("z Joel Angle (what we used have)", joelAngle);
 
@@ -69,7 +68,6 @@ public class TeleOpMain extends LinearOpMode
             telemetry.addData("y angle", _base.drivetrain.imu.yAngle());
             telemetry.update();
         }
-
     }
     //The Actual Teleop commands
     private void run()
@@ -108,6 +106,19 @@ public class TeleOpMain extends LinearOpMode
 //                _base.collector.runCollector(-1);
 //            else
 //                _base.collector.runCollector(-gamepad2.left_trigger);
+
+        /*----------------Tilt C-Channel Holding Lifts---------------*/
+        if(gamepad2.right_stick_y > .2)
+        {
+            _base.tiltChannel.tiltUpByPower();
+        }
+        if(gamepad2.right_stick_y < -.2)
+        {
+            _base.tiltChannel.tiltDownByPower();
+        }
+
+
+
 
     }
 
