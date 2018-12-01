@@ -34,9 +34,9 @@ public class JoelDoubleCrater extends LinearOpMode {
     private final static double FIRST_BLOCK_TURN_ANGLE = 35;
     private final static double MIDDLE_ANGLE = 10;
     private final static double SECOND_BLOCK_ABORT_ANGLE = 233;
-    private final static double MARKER_ANGLE = 180;
+    private final static double MARKER_ANGLE = 184;
 
-    private final static double TURN_SPEED = 0.52;
+    private final static double TURN_SPEED = 0.55;
     private final static double DRIVING_SPEED = 0.65;
 
     // these are the only final values that are used multiple times
@@ -45,7 +45,7 @@ public class JoelDoubleCrater extends LinearOpMode {
 
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
-    private static final double ACCEPTABLE_CONFIDENCE = 0.85;
+    private static final double ACCEPTABLE_CONFIDENCE = 0.50;
 
     //Hold state of where gold block is sitting
     private enum blockState
@@ -149,7 +149,7 @@ public class JoelDoubleCrater extends LinearOpMode {
         _base.drivetrain.turnTo.runSequentially();
 
         //drives to the deposit zone
-        _base.drivetrain.driveTo.goTo(61, DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(64, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
         // turn the robot to deposit the marker
