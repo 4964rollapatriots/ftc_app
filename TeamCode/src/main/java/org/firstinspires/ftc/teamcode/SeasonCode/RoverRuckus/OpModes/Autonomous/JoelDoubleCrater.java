@@ -8,7 +8,6 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.UtilCV;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.CustomTensorFlow;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -36,6 +35,8 @@ public class JoelDoubleCrater extends LinearOpMode {
     private final static double SECOND_BLOCK_ABORT_ANGLE = 233;
     private final static double MARKER_ANGLE = 184;
 
+    private final static double TURN_INCREMENT = 3;
+
     private final static double TURN_SPEED = 0.55;
     private final static double DRIVING_SPEED = 0.65;
 
@@ -56,6 +57,8 @@ public class JoelDoubleCrater extends LinearOpMode {
     @Override
     public void runOpMode()
     {
+        _base.outTelemetry.write("Initializing - DO NOT START UNTIL NEXT MESSAGE");
+        _base.outTelemetry.update();
         _block = blockState.UNCERTAIN;
         secondBlockFound = false;
         _base.init(hardwareMap, this);
@@ -64,6 +67,8 @@ public class JoelDoubleCrater extends LinearOpMode {
         detector = new CustomTensorFlow(hardwareMap);
         RUN_USING_TENSOR_FLOW = true;
         //This calibration is done before landing because the landing could "bump" the robot and change our angle
+        _base.outTelemetry.write("All Systems Go");
+        _base.outTelemetry.update();
 
         waitForStart();
 
@@ -83,11 +88,13 @@ public class JoelDoubleCrater extends LinearOpMode {
         // if it does not see it, it will turn by single degrees until it reaches the first angle
         // if the block is on the left, the robot will see it as it turns
         else if (_block == blockState.UNCERTAIN){
-            for (int i = 0; i < FIRST_BLOCK_TURN_ANGLE; i += 4){
+            for (int i = 20; i < FIRST_BLOCK_TURN_ANGLE; i += TURN_INCREMENT){
                 _base.drivetrain.turnTo.goTo(i,TURN_SPEED);
                 _base.drivetrain.turnTo.runSequentially();
                 if (aligned()){
                     _block = blockState.LEFT;
+                    // turn some to account for the phone being on the left of our robot
+                    turnToAlign();
                     break;
                 }
             }
@@ -98,11 +105,13 @@ public class JoelDoubleCrater extends LinearOpMode {
         else if (_block == blockState.UNCERTAIN){
             _base.drivetrain.turnTo.goTo(0,TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
-            for (int i = 0; i < MIDDLE_ANGLE; i += 4){
+            for (int i = 20; i < MIDDLE_ANGLE; i += TURN_INCREMENT){
                 _base.drivetrain.turnTo.goTo(360-i, TURN_SPEED);
                 _base.drivetrain.turnTo.runSequentially();
                 if (aligned()){
                     _block = blockState.MIDDLE;
+                    // turn some to account for the phone being on the left of our robot
+                    turnToAlign();
                     break;
                 }
             }
@@ -112,11 +121,12 @@ public class JoelDoubleCrater extends LinearOpMode {
         else if (_block == blockState.UNCERTAIN){
             _base.drivetrain.turnTo.goTo(360 - MIDDLE_ANGLE,TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
-            for (int i = 0; i < FIRST_BLOCK_TURN_ANGLE - MIDDLE_ANGLE; i += 4){
+            for (int i = 0; i < FIRST_BLOCK_TURN_ANGLE - MIDDLE_ANGLE; i += TURN_INCREMENT){
                 _base.drivetrain.turnTo.goTo(360-MIDDLE_ANGLE-i,TURN_SPEED);
                 _base.drivetrain.turnTo.runSequentially();
                 if (aligned()){
                     _block = blockState.RIGHT;
+                    turnToAlign();
                     break;
                 }
             }
@@ -141,11 +151,11 @@ public class JoelDoubleCrater extends LinearOpMode {
 
 
         // drives between the lander and the far left particle so the path is clear to our teammate's side
-        _base.drivetrain.driveTo.goTo(40, DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(38, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
         // turns in preparation for moving towards the deposit zone
-        _base.drivetrain.turnTo.goTo(135, TURN_SPEED);
+        _base.drivetrain.turnTo.goTo(122.5, TURN_SPEED);
         _base.drivetrain.turnTo.runSequentially();
 
         //drives to the deposit zone
@@ -160,7 +170,7 @@ public class JoelDoubleCrater extends LinearOpMode {
         _base.deliver.deliverMarker();
         // gives time for the marker to slide off
         try{
-            Thread.sleep(800);}
+            Thread.sleep(600);}
         catch(Exception ex){ex.printStackTrace();}
 
         //raises the delivery system
@@ -172,23 +182,21 @@ public class JoelDoubleCrater extends LinearOpMode {
 
 
         // turns by single degrees clockwise until the robot sees the second block or it is passes a certain angle
-        for (int i = 0; i < SECOND_BLOCK_ABORT_ANGLE; i ++){
+        for (int i = 15; i < SECOND_BLOCK_ABORT_ANGLE; i += TURN_INCREMENT){
             _base.drivetrain.turnTo.goTo(_base.imu.zAngle() + i, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
             if (aligned()){
+                // since the phone is on the left of our robot, we turn a small amount so the robot's center is aligned with the block
+                turnToAlign();
                 break;
             }
         }
-
-        // since the phone is on the left of our robot, we turn a small amount so the robot's center is aligned with the block
-        _base.drivetrain.turnTo.goTo(_base.imu.zAngle() + 6, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially();
 
 
         // knock the second block off and comes back
         _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE,DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.driveTo.goTo(-SECOND_BLOCK_DISTANCE,DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(-(SECOND_BLOCK_DISTANCE + 5),DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
         // turn back to face the crater
@@ -201,6 +209,8 @@ public class JoelDoubleCrater extends LinearOpMode {
 
         //we are done, so stop the robot
         _base.drivetrain.stop();
+        eye.stop();
+        detector.deactivate();
 
 
     }
@@ -214,16 +224,30 @@ public class JoelDoubleCrater extends LinearOpMode {
         telemetry.update();
     }
 
+    private void turnToAlign(){
+        _base.drivetrain.turnTo.goTo(_base.imu.zAngle() + 5, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially();
+    }
+
     private boolean aligned(){
         boolean aligned = false;
         if (RUN_USING_TENSOR_FLOW){
             detector.refresh();
-            for (Recognition rec : detector.updatedRecognitions){
-                if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
-                    aligned = true;
-                    break;
+            if(detector.updatedRecognitions == null)
+            {
+                aligned = false;
+            }
+            else{
+                for (int i = 0; i < detector.updatedRecognitions.size(); i ++){
+                    Recognition rec = detector.updatedRecognitions.get(i);
+                    if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
+                        aligned = true;
+                        break;
+                    }
                 }
             }
+
+
         }
         else{
             if (eye.isAligned()){

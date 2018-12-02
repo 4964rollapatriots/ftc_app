@@ -19,7 +19,7 @@ public class TurnTo extends RobotCommand
     private double targetAngle = 0.0;
     private double maxSpeed = 0.0;
     private double minSpeed = .14;
-    private double SPEED_MULT = 3.0;
+    private double SPEED_MULT = 2;
 
 
 
