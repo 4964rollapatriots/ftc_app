@@ -30,16 +30,10 @@ public class PulleyTilt extends RobotComponent
         pulleys =  mapper.mapMotor("pulleys", DcMotorSimple.Direction.FORWARD);
     }
 
-    public void tiltUpByPower()
+    public void tiltByPower(double POWER)
     {
         pulleys.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleys.setPower(TILT_UP_POW);
-    }
-
-    public void tiltDownByPower()
-    {
-        pulleys.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        pulleys.setPower(TILT_DOWN_POW);
+        pulleys.setPower(POWER);
     }
 
     public void tiltUpByEnc()
@@ -47,7 +41,7 @@ public class PulleyTilt extends RobotComponent
         pulleys.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pulleys.setTargetPosition(TILT_UP_ENC);
         pulleys.setPower(TILT_UP_POW);
-        if(pulleys.getCurrentPosition() >= TILT_UP_ENC - BUFFER && pulleys.getCurrentPosition() <= TILT_UP_ENC + 7)
+        if(pulleys.getCurrentPosition() >= TILT_UP_ENC - BUFFER && pulleys.getCurrentPosition() <= TILT_UP_ENC + BUFFER)
         {
             stop();
         }
@@ -59,7 +53,7 @@ public class PulleyTilt extends RobotComponent
         pulleys.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pulleys.setTargetPosition(TILT_DOWN_ENC);
         pulleys.setPower(TILT_DOWN_POW);
-        if(pulleys.getCurrentPosition() >= TILT_DOWN_ENC - BUFFER && pulleys.getCurrentPosition() <= TILT_DOWN_ENC + 7)
+        if(pulleys.getCurrentPosition() >= TILT_DOWN_ENC - BUFFER && pulleys.getCurrentPosition() <= TILT_DOWN_ENC + BUFFER)
         {
             stop();
         }
