@@ -22,7 +22,7 @@ public class Base extends RobotBase
     public Drivetrain drivetrain = new Drivetrain();
     public REVIMU imu = new REVIMU();
     public CollectorSystem collector = new CollectorSystem();//
-    //public HookLift latchSystem = new HookLift();
+    public HookLift latchSystem = new HookLift();
     public PulleyTilt tiltChannel = new PulleyTilt();
     public MarkerDelivery deliver = new MarkerDelivery();
 
@@ -43,7 +43,7 @@ public class Base extends RobotBase
         imu.init(this, "imu", params);
         drivetrain.init(this , imu);
         deliver.init(this);
-        //latchSystem.init(this);//
+        latchSystem.init(this);//
         collector.init(this);//
         tiltChannel.init(this);//
         //Try catches to prevent crashes
