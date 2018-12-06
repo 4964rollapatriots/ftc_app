@@ -16,7 +16,7 @@ public abstract class RobotCommand
 
     }
 
-    //Constructor - ties teh command to a compononent.
+    //Constructor - ties the command to a component.
 
     public RobotCommand(RobotComponent COMPONENT)
     {

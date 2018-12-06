@@ -36,4 +36,18 @@ public final class Util
         }
         return angle;
     }
+
+    public static double scaleValue(final double VALUE)
+    {
+        double result = 0;
+
+        result = Math.pow(VALUE, 2);
+
+        if(result != 0)
+        {
+            result *= VALUE / Math.abs(VALUE);
+        }
+
+        return result;
+    }
 }

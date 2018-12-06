@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Components.CollectorSystem;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -11,14 +12,16 @@ public class CollectorSystem extends RobotComponent {
 
     private DcMotor collector;
     private DcMotor extendCollector;
+    private CRServo particleRelease;
 
     public void init(RobotBase BASE)
     {
         super.init(BASE);
-        collector = mapper.mapMotor("collector", DcMotorSimple.Direction.FORWARD);
+        collector = mapper.mapMotor("collector", DcMotorSimple.Direction.REVERSE);
         collector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        extendCollector = mapper.mapMotor("extend", DcMotorSimple.Direction.FORWARD);
-        collector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        extendCollector = mapper.mapMotor("extend", DcMotorSimple.Direction.REVERSE);
+        extendCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        particleRelease = mapper.mapCRServo("release", CRServo.Direction.FORWARD);
     }
 
 
@@ -43,6 +46,19 @@ public class CollectorSystem extends RobotComponent {
         collector.setPower(SPEED);
     }
 
+    public void releaseParticles()
+    {
+        particleRelease.setPower(.4);
+    }
+
+    public void stopCRServo()
+    {
+        particleRelease.setPower(0);
+    }
+    public void containParticles()
+    {
+        particleRelease.setPower(-.4);
+    }
     public void outTelemetry()
     {
         base.outTelemetry.write("----------COLLECTOR SYSTEM-----------");

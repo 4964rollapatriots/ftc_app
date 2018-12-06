@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.robotcontroller.internal.Core.Utility;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+import com.qualcomm.hardware.motors.TetrixMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -35,6 +37,19 @@ public final class HardwareMapper
         DcMotor tempMotor;
         tempMotor = robot.hardwareMap.dcMotor.get(NAME);
         tempMotor.setDirection(DIRECTION);
+
+        return tempMotor;
+    }
+    public TetrixMotor mapMotor()
+    {
+        TetrixMotor tempMotor = null;
+        //tempMotor = robot.hardwareMap.TetrixMotor;
+        return tempMotor;
+    }
+    public DcMotor mapMotor(final String NAME)
+    {
+        DcMotor tempMotor;
+        tempMotor = robot.hardwareMap.dcMotor.get(NAME);
 
         return tempMotor;
     }
@@ -102,6 +117,11 @@ public final class HardwareMapper
         tempIMU.initialize(PARAMETERS);
 
         return tempIMU;
+    }
+
+    public ModernRoboticsI2cRangeSensor mapMRRange(final String NAME)
+    {
+        return mapMRRange(NAME);
     }
 
 }

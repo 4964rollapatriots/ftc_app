@@ -3,16 +3,18 @@ Gamepad 1 (Wheels Driver)
 
 Left Joystick: Up and Down (Moves Robot Forward and Backward, respectively)
 Right Joystick: Left and Right( Rotates Robot Counterclockwise and Clockwise, respectively)
-A:
+A: Toggle Scale Mode
 B:
-X:
-Y:
+X: Lift Robot Up
+Y: Lower Robot
 Right Trigger:
 Left Trigger:
-Left Bumper:
-Right Bumper:
+Left Bumper: Slow Mode
+Right Bumper: Inverted Mode
 DPAD Up: Raise team marker (won't really need this, just in case)
 DPAD Down: Lower team marker(won't really need this, just in case)
+
+
 
 Gamepad 2 (Operator, controls almost everything)
 
@@ -27,12 +29,11 @@ Right Joystick: (Up means Rotate C-Channel Holding Collector System Up,
 
 A: Extend Hook Using Servo
 B: Retract Hook Using Servo
-X: Lift Robot
-Y: Lower Robot
+X: Release Particles
+Y: Contain Particles
 
 
 Right Trigger: Collector Intaking
 Left Trigger: Collector Extracting
 Left Bumper: Lift Extension Retract
 Right Bumper: Lift Extension Intake
-DPAD

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Components.HookLift;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -14,29 +15,34 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
 public class HookLift extends RobotComponent
 {
     private DcMotor winch;
-    private Servo extendHookLift;
+    private CRServo extendHookLift;
 
     private int LIFT_TO_POS = 50;
+    private double SERVO_POWER = .40;
 
     public void init(RobotBase BASE)
     {
-        winch = mapper.mapMotor("winch", DcMotorSimple.Direction.FORWARD);
-        winch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //change this later,once the amount of encoder
+        winch = mapper.mapMotor("winch");
+        if (winch == null){
+            base.outTelemetry.write("winch is null");
+            base.outTelemetry.update();
+        }
         //counts needed to lift up are found.
-        extendHookLift = mapper.mapServo("lift", Servo.Direction.FORWARD);
+        extendHookLift = mapper.mapCRServo("lift", CRServo.Direction.FORWARD);
     }
 
     public void extendHook()
     {
-        extendHookLift.setPosition(extendHookLift.getPosition() + .05);
+        extendHookLift.setPower(SERVO_POWER);
+
     }
-    public void extendToPos()
-    {
-        extendHookLift.setPosition(LIFT_TO_POS);
-    }
+    //public void extendToPos()
+   //{
+        //extendHookLift.setPosition(LIFT_TO_POS);
+    //}
     public void retractHook()
     {
-        extendHookLift.setPosition(extendHookLift.getPosition() - .05);
+        extendHookLift.setPower(-SERVO_POWER);
     }
     public void liftRobot()
     {
@@ -47,10 +53,12 @@ public class HookLift extends RobotComponent
     {
         winch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         winch.setTargetPosition(DIST);
-        do {
+        while(winch.getCurrentPosition() >= winch.getTargetPosition() - 7 &&
+                winch.getCurrentPosition() <=  winch.getTargetPosition() + 7)
+        {
             winch.setPower(POWER);
-        }while(!(winch.getCurrentPosition() >= winch.getTargetPosition() - 7 &&
-                winch.getCurrentPosition() <=  winch.getTargetPosition() + 7));
+            extendHookLift.setPower(SERVO_POWER);
+        }
         winch.setPower(0);
     }
 
@@ -65,7 +73,7 @@ public class HookLift extends RobotComponent
         base.outTelemetry.write("----------------HOOK LIFT---------------");
         base.outTelemetry.addData("Winch Power", winch.getPower());
         base.outTelemetry.addData("Winch Position", winch.getCurrentPosition());
-        base.outTelemetry.addData("ExtendHook Position", extendHookLift.getPosition());
+        base.outTelemetry.addData("ExtendHook Power: ", extendHookLift.getPower());
         base.outTelemetry.write("-------------END HOOK LIFT ---------");
         base.outTelemetry.newLine();
     }

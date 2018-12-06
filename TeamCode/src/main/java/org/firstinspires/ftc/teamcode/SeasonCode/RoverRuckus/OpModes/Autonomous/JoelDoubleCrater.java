@@ -38,14 +38,15 @@ public class JoelDoubleCrater extends LinearOpMode {
 
     private final static double TURN_INCREMENT = 3;
 
-    private final static double TURN_SPEED = 0.55;
-    private final static double DRIVING_SPEED = 0.69;
+    private final static double TURN_SPEED = 0.45;
+    private final static double BLOCK_TURN_SPEED = 0.55;
+    private final static double DRIVING_SPEED = 0.63;
     private final static double DRIVING_SPEED_CRATER = .88;
     private final static double DRIVING_SPEED_BLOCK = .53;
 
     // these are the only final values that are used multiple times
     private final static double BLOCK_DISTANCE = 30.5;
-    private final static double SECOND_BLOCK_DISTANCE = 32.0;
+    private final static double SECOND_BLOCK_DISTANCE = 28.0;
 
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -68,7 +69,7 @@ public class JoelDoubleCrater extends LinearOpMode {
         _base.imu.calibrateTo(0);
         eye = new UtilGoldDetector(hardwareMap);
         detector = new CustomTensorFlow(hardwareMap);
-        RUN_USING_TENSOR_FLOW = true;
+        RUN_USING_TENSOR_FLOW = false;
         //This calibration is done before landing because the landing could "bump" the robot and change our angle
         _base.outTelemetry.write("All Systems Go");
         _base.outTelemetry.update();
@@ -87,17 +88,20 @@ public class JoelDoubleCrater extends LinearOpMode {
         // sees if the block is initially aligned in the middle, if so it does not need to turn
         if (aligned()){
             _block = blockState.MIDDLE;
+            telemetry.addData("FOUND IN MIDDLE" , "");
         }
         // if it does not see it, it will turn by single degrees until it reaches the first angle
         // if the block is on the left, the robot will see it as it turns
-        else if (_block == blockState.UNCERTAIN){
+        if (_block == blockState.UNCERTAIN){
             for (int i = 20; i < FIRST_BLOCK_TURN_ANGLE; i += TURN_INCREMENT){
-                _base.drivetrain.turnTo.goTo(i,TURN_SPEED);
+                _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED);
                 _base.drivetrain.turnTo.blockRunSequentially();
                 if (aligned()){
                     _block = blockState.LEFT;
                     // turn some to account for the phone being on the left of our robot
                     turnToAlign();
+                    telemetry.addData("FOUND IN LEFT" , "");
+                    telemetry.update();
                     break;
                 }
             }
@@ -105,27 +109,29 @@ public class JoelDoubleCrater extends LinearOpMode {
         //if the block is not on the left, then the robot turns to the initial zero degrees
         // it then turns slightly to the right to make sure that the block is not in the middle
         // this is necessary because of the offset of our camera on the left of our robot
-        else if (_block == blockState.UNCERTAIN){
-            _base.drivetrain.turnTo.goTo(0,TURN_SPEED);
+        if (_block == blockState.UNCERTAIN){
+            _base.drivetrain.turnTo.goTo(7,TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
             for (int i = 20; i < MIDDLE_ANGLE; i += TURN_INCREMENT){
-                _base.drivetrain.turnTo.goTo(360-i, TURN_SPEED);
+                _base.drivetrain.turnTo.goTo(360-i, BLOCK_TURN_SPEED);
                 _base.drivetrain.turnTo.blockRunSequentially();
                 if (aligned()){
                     _block = blockState.MIDDLE;
                     // turn some to account for the phone being on the left of our robot
                     turnToAlign();
+                    telemetry.addData("FOUND IN RIGHT" , "");
+                    telemetry.update();
                     break;
                 }
             }
         }
         // if and only if the robot has not yet found the ball,
         // it turns to the right by small increments until it reaches its target or sees the block
-        else if (_block == blockState.UNCERTAIN){
+        if (_block == blockState.UNCERTAIN){
             _base.drivetrain.turnTo.goTo(360 - MIDDLE_ANGLE,TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
             for (int i = 0; i < FIRST_BLOCK_TURN_ANGLE - MIDDLE_ANGLE; i += TURN_INCREMENT){
-                _base.drivetrain.turnTo.goTo(360-MIDDLE_ANGLE-i,TURN_SPEED);
+                _base.drivetrain.turnTo.goTo(360-MIDDLE_ANGLE-i,BLOCK_TURN_SPEED);
                 _base.drivetrain.turnTo.blockRunSequentially();
                 if (aligned()){
                     _block = blockState.RIGHT;
@@ -144,7 +150,7 @@ public class JoelDoubleCrater extends LinearOpMode {
         // this works because at this point the robot is facing the block
         _base.drivetrain.driveTo.goTo(BLOCK_DISTANCE,DRIVING_SPEED_BLOCK);
         _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.driveTo.goTo(-BLOCK_DISTANCE/2,DRIVING_SPEED_BLOCK);
+        _base.drivetrain.driveTo.goTo(-(BLOCK_DISTANCE-5),DRIVING_SPEED_BLOCK);
         _base.drivetrain.driveTo.runSequentially();
 
         // the robot is at a common spot, but a different angle based on where the block was
@@ -154,16 +160,17 @@ public class JoelDoubleCrater extends LinearOpMode {
 
 
         // drives between the lander and the far left particle so the path is clear to our teammate's side
-        _base.drivetrain.driveTo.goTo(34, DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(40, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
         //turn to drive in between particle on teammate's side and wall
-        _base.drivetrain.turnTo.goTo(115, TURN_SPEED);
+        _base.drivetrain.turnTo.goTo(122, TURN_SPEED);
         _base.drivetrain.turnTo.runSequentially();
 
-        //
-        _base.drivetrain.driveTo.goTo(23, DRIVING_SPEED);
+        //drives between the particle on teammate's side and wall
+        _base.drivetrain.driveTo.goTo(20, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
+
 
 
         // turns in preparation for moving towards the deposit zone
@@ -171,20 +178,27 @@ public class JoelDoubleCrater extends LinearOpMode {
         _base.drivetrain.turnTo.runSequentially();
 
         //drives to the deposit zone
-        _base.drivetrain.driveTo.goTo(32, DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(36, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
-        // turn a little amount so the robot does not hit the wall
-        _base.drivetrain.turnTo.goTo(MARKER_ANGLE-5, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially();
 
-        //drives a bit so the robot does not get stuck on the wall
-        _base.drivetrain.driveTo.goTo(5, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
+//
+//        // turn a little amount so the robot does not hit the wall
+//        _base.drivetrain.turnTo.goTo(MARKER_ANGLE-7, TURN_SPEED *1.3);
+//        _base.drivetrain.turnTo.runSequentially();
+//
+//        //drives a bit so the robot does not get stuck on the wall
+//        _base.drivetrain.driveTo.goTo(7, DRIVING_SPEED);
+//        _base.drivetrain.driveTo.runSequentially();
+//
+//
+//        // turn the robot to deposit the marker
+//        _base.drivetrain.turnTo.goTo(MARKER_ANGLE, TURN_SPEED * 1.3);
+//        _base.drivetrain.turnTo.runSequentially();
 
-        // turn the robot to deposit the marker
-        _base.drivetrain.turnTo.goTo(MARKER_ANGLE, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially();
+        _base.drivetrain.turnTo.goTo(180, TURN_SPEED);
+        _base.drivetrain.turnTo.arcSequentially(1.8);
+
 
         // deposits the marker
         _base.deliver.deliverMarker();

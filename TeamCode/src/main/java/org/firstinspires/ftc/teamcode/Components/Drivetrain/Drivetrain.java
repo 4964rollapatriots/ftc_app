@@ -122,15 +122,39 @@ public class Drivetrain extends RobotComponent
         setEncoderState(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void run(double drivePower, double rotatePower, boolean inverted, boolean scale)
+    public void arcRun(double leftPower,double rightPower)
     {
-        drivePower *= _powerMult;
-        rotatePower *= -1* _powerMult;
+        frontLeft.setPower(leftPower);
+        backLeft.setPower(leftPower);
+        backRight.setPower(rightPower);
+        frontRight.setPower(rightPower);
+    }
+    public void run(double drivePower, double rotatePower, boolean inverted, boolean slowMode, boolean scale)
+    {
 
+        drivePower *= _powerMult;
+        rotatePower *= -1 * _powerMult;
+        if(inverted)
+        {
+            setCurrState(State.INVERTED_FAST);
+            if (slowMode)
+            {
+                setCurrState(State.INVERTED_SLOW);
+            }
+        }
+        else
+        {
+            setCurrState(State.FORWARD_FAST);
+            if(slowMode)
+            {
+                setCurrState(State.FORWARD_SLOW);
+            }
+        }
         if(currState == State.INVERTED_FAST || currState == State.INVERTED_SLOW)
         {
-            rotatePower *= _powerMult;
+            rotatePower *= -1;
         }
+
         backRight.setPower(drivePower + rotatePower);
         backLeft.setPower(drivePower - rotatePower);
         frontRight.setPower(drivePower + rotatePower);
