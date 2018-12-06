@@ -109,6 +109,7 @@ public class TeleOpMain extends LinearOpMode
             _base.latchSystem.lowerRobot();
         else
             _base.latchSystem.stop();
+        _base.outTelemetry();
 
         /* -------------- COLLECTING SYSTEM ---------------------*/
 
