@@ -42,6 +42,9 @@ public class TurnTo extends RobotCommand
 
     public void goTo(double ANGLE, double MAXSPEED)
     {
+        if (ANGLE > 360){
+            ANGLE -= 360;
+        }
         targetAngle = ANGLE;
         maxSpeed = MAXSPEED;
     }

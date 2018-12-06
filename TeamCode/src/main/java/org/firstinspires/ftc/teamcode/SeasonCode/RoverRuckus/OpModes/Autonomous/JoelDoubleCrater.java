@@ -29,9 +29,8 @@ public class JoelDoubleCrater extends LinearOpMode {
     private boolean RUN_USING_TENSOR_FLOW; // if not, then running with open cv is assumed
 
     private blockState _block;
-    private boolean secondBlockFound;
 
-    private final static double FIRST_BLOCK_TURN_ANGLE = 35;
+    private final static double FAR_PARTICLE_ANGLE = 25;
     private final static double MIDDLE_ANGLE = 10;
     private final static double SECOND_BLOCK_ABORT_ANGLE = 315;
     private final static double MARKER_ANGLE = 184;
@@ -65,7 +64,6 @@ public class JoelDoubleCrater extends LinearOpMode {
         _base.outTelemetry.write("Initializing - DO NOT START UNTIL NEXT MESSAGE");
         _base.outTelemetry.update();
         _block = blockState.UNCERTAIN;
-        secondBlockFound = false;
         _base.imu.calibrateTo(0);
         eye = new UtilGoldDetector(hardwareMap);
         detector = new CustomTensorFlow(hardwareMap);
@@ -76,12 +74,19 @@ public class JoelDoubleCrater extends LinearOpMode {
 
         waitForStart();
 
+
         //Gets the robot onto the field from the hanger
         // code here
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
         _base.drivetrain.turnTo.goTo(0,TURN_SPEED);
         _base.drivetrain.turnTo.blockRunSequentially();
+
+        //drives forward to avoid hitting the lander while turning
+        _base.drivetrain.driveTo.goTo(6,DRIVING_SPEED/2);
+        _base.drivetrain.driveTo.runSequentially();
+
+
         // method that sends information about our angles and powers
         sendTelemetry();
 
@@ -90,56 +95,54 @@ public class JoelDoubleCrater extends LinearOpMode {
             _block = blockState.MIDDLE;
             telemetry.addData("FOUND IN MIDDLE" , "");
         }
-        // if it does not see it, it will turn by single degrees until it reaches the first angle
-        // if the block is on the left, the robot will see it as it turns
+
+        //turns to the far right in preparation for panning across the particles from right to left
+        _base.drivetrain.turnTo.goTo(320, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially();
+
+        // pans across the particles until it either sees the block or reaches 335 degrees
+        // 335 degrees should be past the far right particle
         if (_block == blockState.UNCERTAIN){
-            for (int i = 20; i < FIRST_BLOCK_TURN_ANGLE; i += TURN_INCREMENT){
+            for  (double i = 320; i < 360 - FAR_PARTICLE_ANGLE; i += TURN_INCREMENT){
                 _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED);
                 _base.drivetrain.turnTo.blockRunSequentially();
                 if (aligned()){
-                    _block = blockState.LEFT;
-                    // turn some to account for the phone being on the left of our robot
-                    turnToAlign();
-                    telemetry.addData("FOUND IN LEFT" , "");
-                    telemetry.update();
+                    _block = blockState.RIGHT;
                     break;
                 }
             }
         }
-        //if the block is not on the left, then the robot turns to the initial zero degrees
-        // it then turns slightly to the right to make sure that the block is not in the middle
-        // this is necessary because of the offset of our camera on the left of our robot
-        if (_block == blockState.UNCERTAIN){
-            _base.drivetrain.turnTo.goTo(7,TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
-            for (int i = 20; i < MIDDLE_ANGLE; i += TURN_INCREMENT){
-                _base.drivetrain.turnTo.goTo(360-i, BLOCK_TURN_SPEED);
-                _base.drivetrain.turnTo.blockRunSequentially();
-                if (aligned()){
-                    _block = blockState.MIDDLE;
-                    // turn some to account for the phone being on the left of our robot
-                    turnToAlign();
-                    telemetry.addData("FOUND IN RIGHT" , "");
-                    telemetry.update();
-                    break;
-                }
-            }
-        }
-        // if and only if the robot has not yet found the ball,
-        // it turns to the right by small increments until it reaches its target or sees the block
+
+        //if the block is not on the right, the robot turns to the middle and then pans the middle
         if (_block == blockState.UNCERTAIN){
             _base.drivetrain.turnTo.goTo(360 - MIDDLE_ANGLE,TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
-            for (int i = 0; i < FIRST_BLOCK_TURN_ANGLE - MIDDLE_ANGLE; i += TURN_INCREMENT){
-                _base.drivetrain.turnTo.goTo(360-MIDDLE_ANGLE-i,BLOCK_TURN_SPEED);
-                _base.drivetrain.turnTo.blockRunSequentially();
+            for (double i = 360 - MIDDLE_ANGLE; i < 360 + MIDDLE_ANGLE; i += TURN_INCREMENT){
+                _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED);
+                _base.drivetrain.turnTo.runSequentially();
                 if (aligned()){
-                    _block = blockState.RIGHT;
-                    turnToAlign();
+                    _block = blockState.MIDDLE;
                     break;
                 }
             }
         }
+
+        // if the block is still not found, the robot turns to the left and pans the far left particle
+        if (_block == blockState.UNCERTAIN){
+            _base.drivetrain.turnTo.goTo(FAR_PARTICLE_ANGLE, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+            for (double i = FAR_PARTICLE_ANGLE; i < 35; i += TURN_INCREMENT){
+                _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED);
+                _base.drivetrain.turnTo.runSequentially();
+                if (aligned()){
+                    _block = blockState.LEFT;
+                    break;
+                }
+            }
+        }
+
+        //this turns a small amount to account for the offset of our phone on the left side of our robot
+        turnToAlign();
 
 
         sendTelemetry();
@@ -168,7 +171,7 @@ public class JoelDoubleCrater extends LinearOpMode {
         _base.drivetrain.turnTo.runSequentially();
 
         //drives between the particle on teammate's side and wall
-        _base.drivetrain.driveTo.goTo(20, DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(12, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
 
@@ -215,16 +218,17 @@ public class JoelDoubleCrater extends LinearOpMode {
         _base.drivetrain.turnTo.runSequentially();
 
 
-        // turns by single degrees clockwise until the robot sees the second block or it is passes a certain angle
+        // turns by degrees clockwise until the robot sees the second block or it is passes a certain angle
         for (double i = 15; i < SECOND_BLOCK_ABORT_ANGLE; i += TURN_INCREMENT / 2){
             _base.drivetrain.turnTo.goTo(_base.imu.zAngle() + i, TURN_SPEED);
             _base.drivetrain.turnTo.blockRunSequentially();
             if (aligned()){
-                // since the phone is on the left of our robot, we turn a small amount so the robot's center is aligned with the block
-                turnToAlign();
                 break;
             }
         }
+
+        // since the phone is on the left of our robot, we turn a small amount so the robot's center is aligned with the block
+        turnToAlign();
 
 
         // knock the second block off and comes back
