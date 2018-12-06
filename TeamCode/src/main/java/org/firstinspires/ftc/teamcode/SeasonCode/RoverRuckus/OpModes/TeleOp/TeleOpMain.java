@@ -99,14 +99,16 @@ public class TeleOpMain extends LinearOpMode
             _base.deliver.deliverMarker();
 
         /*---------------------------- HOOK EXTENSION/LIFT ROBOT --------------------------------*/
-//        if(gamepad2.a)
-//            _base.latchSystem.extendHook();
-//        if(gamepad2.b)
-//            _base.latchSystem.retractHook();
-//        if(gamepad1.x)
-//            _base.latchSystem.liftRobot();
-//        if (gamepad1.y)
-//            _base.latchSystem.lowerRobot();
+        if(gamepad2.a)
+            _base.latchSystem.extendHook();
+        else if(gamepad2.b)
+            _base.latchSystem.retractHook();
+        else if(gamepad1.x)
+            _base.latchSystem.liftRobot();
+        else if (gamepad1.y)
+            _base.latchSystem.lowerRobot();
+        else
+            _base.latchSystem.stop();
 
         /* -------------- COLLECTING SYSTEM ---------------------*/
 

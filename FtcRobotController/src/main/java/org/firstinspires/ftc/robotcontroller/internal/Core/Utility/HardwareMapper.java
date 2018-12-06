@@ -40,10 +40,10 @@ public final class HardwareMapper
 
         return tempMotor;
     }
-    public TetrixMotor mapMotor()
+    public DcMotor mapTetrixMotor(String NAME)
     {
-        TetrixMotor tempMotor = null;
-        //tempMotor = robot.hardwareMap.TetrixMotor;
+        DcMotor tempMotor = null;
+        tempMotor = robot.hardwareMap.get(DcMotor.class, NAME);
         return tempMotor;
     }
     public DcMotor mapMotor(final String NAME)
