@@ -123,7 +123,7 @@ public class JoelDoubleCrater extends LinearOpMode {
             }
         }
 
-        //if the block is not on the right, the robot turns to the middle and then pans the middle
+        // if it is not in the middle, the robot turns until it sees the right block or reaches 325 degrees
         if (_block == blockState.UNCERTAIN){
             _base.drivetrain.turnTo.goTo(3, BLOCK_TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
@@ -139,9 +139,10 @@ public class JoelDoubleCrater extends LinearOpMode {
             }
         }
 
-        // if the block is still not found, the robot turns to the left and pans the far left particle
+        //if the block is still not found, the block is on the left
+        // the robot turns until it reaches 17 degrees and then pans until it sees the block
         if (_block == blockState.UNCERTAIN){
-            _base.drivetrain.turnTo.goTo(FAR_PARTICLE_ANGLE, TURN_SPEED);
+            _base.drivetrain.turnTo.goTo( 17, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
             this.sleep(300);
             for (double i = FAR_PARTICLE_ANGLE; i < 35; i += TURN_INCREMENT){
