@@ -21,21 +21,21 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 //this is the main double crater auto
 public class JoelDoubleCrater extends LinearOpMode {
 
-    private DTBaseOnly _base = new DTBaseOnly();
+    private Base _base = new Base();
     private UtilGoldDetector eye;
     private CustomTensorFlow detector;
 
 
-    private boolean RUN_USING_TENSOR_FLOW; // if not, then running with open cv is assumed
+    private boolean RUN_USING_TENSOR_FLOW = true; // if not, then running with open cv is assumed
 
     private blockState _block;
 
-    private final static double FAR_PARTICLE_ANGLE = 25;
+    private final static double FAR_PARTICLE_ANGLE = 10;
     private final static double MIDDLE_ANGLE = 10;
     private final static double SECOND_BLOCK_ABORT_ANGLE = 315;
     private final static double MARKER_ANGLE = 184;
 
-    private final static double TURN_INCREMENT = 3;
+    private final static double TURN_INCREMENT = 5;
 
     private final static double TURN_SPEED = 0.45;
     private final static double BLOCK_TURN_SPEED = 0.55;
@@ -67,7 +67,7 @@ public class JoelDoubleCrater extends LinearOpMode {
         _base.imu.calibrateTo(0);
         eye = new UtilGoldDetector(hardwareMap);
         detector = new CustomTensorFlow(hardwareMap);
-        RUN_USING_TENSOR_FLOW = false;
+        RUN_USING_TENSOR_FLOW = true;
         //This calibration is done before landing because the landing could "bump" the robot and change our angle
         _base.outTelemetry.write("All Systems Go");
         _base.outTelemetry.update();
@@ -76,12 +76,18 @@ public class JoelDoubleCrater extends LinearOpMode {
 
 
         //Gets the robot onto the field from the hanger
-        // code here
+
+//        _base.latchSystem.extendHook();
+//        _base.latchSystem.lowerRobot();
+//
+//        this.sleep(4000);
+
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
         _base.drivetrain.turnTo.goTo(0,TURN_SPEED);
         _base.drivetrain.turnTo.blockRunSequentially();
 
+        _base.deliver.markerDelivery.setPower(-.05);
         //drives forward to avoid hitting the lander while turning
         _base.drivetrain.driveTo.goTo(6,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
@@ -91,23 +97,27 @@ public class JoelDoubleCrater extends LinearOpMode {
         sendTelemetry();
 
         // sees if the block is initially aligned in the middle, if so it does not need to turn
-        if (aligned()){
-            _block = blockState.MIDDLE;
-            telemetry.addData("FOUND IN MIDDLE" , "");
-        }
+
 
         //turns to the far right in preparation for panning across the particles from right to left
-        _base.drivetrain.turnTo.goTo(320, TURN_SPEED);
+        _base.drivetrain.turnTo.goTo(347, TURN_SPEED);
         _base.drivetrain.turnTo.runSequentially();
-
-        // pans across the particles until it either sees the block or reaches 335 degrees
-        // 335 degrees should be past the far right particle
+        this.sleep(300);
+        if (aligned()){
+            _block = blockState.RIGHT;
+            telemetry.addData("FOUND IN MIDDLE" , "");
+            telemetry.update();
+        }
+        // pans across the particles until it either sees the block or reaches 348 degrees
+        // 348 degrees should be past the far right particle
         if (_block == blockState.UNCERTAIN){
-            for  (double i = 320; i < 360 - FAR_PARTICLE_ANGLE; i += TURN_INCREMENT){
+            for  (double i = 348; i < 360; i += TURN_INCREMENT){
+                telemetry.addData("Going to Middle!" , "");
+                telemetry.update();
                 _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED);
                 _base.drivetrain.turnTo.blockRunSequentially();
                 if (aligned()){
-                    _block = blockState.RIGHT;
+                    _block = blockState.MIDDLE;
                     break;
                 }
             }
@@ -115,13 +125,15 @@ public class JoelDoubleCrater extends LinearOpMode {
 
         //if the block is not on the right, the robot turns to the middle and then pans the middle
         if (_block == blockState.UNCERTAIN){
-            _base.drivetrain.turnTo.goTo(360 - MIDDLE_ANGLE,TURN_SPEED);
+            _base.drivetrain.turnTo.goTo(3, BLOCK_TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
-            for (double i = 360 - MIDDLE_ANGLE; i < 360 + MIDDLE_ANGLE; i += TURN_INCREMENT){
+            for (double i = 3; i < 18; i += TURN_INCREMENT){
+                telemetry.addData("GO to Left,", "");
+                telemetry.update();
                 _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED);
-                _base.drivetrain.turnTo.runSequentially();
+                _base.drivetrain.turnTo.blockRunSequentially();
                 if (aligned()){
-                    _block = blockState.MIDDLE;
+                    _block = blockState.LEFT;
                     break;
                 }
             }
@@ -131,9 +143,10 @@ public class JoelDoubleCrater extends LinearOpMode {
         if (_block == blockState.UNCERTAIN){
             _base.drivetrain.turnTo.goTo(FAR_PARTICLE_ANGLE, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
+            this.sleep(300);
             for (double i = FAR_PARTICLE_ANGLE; i < 35; i += TURN_INCREMENT){
                 _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED);
-                _base.drivetrain.turnTo.runSequentially();
+                _base.drivetrain.turnTo.blockRunSequentially();
                 if (aligned()){
                     _block = blockState.LEFT;
                     break;
@@ -153,12 +166,12 @@ public class JoelDoubleCrater extends LinearOpMode {
         // this works because at this point the robot is facing the block
         _base.drivetrain.driveTo.goTo(BLOCK_DISTANCE,DRIVING_SPEED_BLOCK);
         _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.driveTo.goTo(-(BLOCK_DISTANCE-5),DRIVING_SPEED_BLOCK);
+        _base.drivetrain.driveTo.goTo(-(BLOCK_DISTANCE-6),DRIVING_SPEED_BLOCK);
         _base.drivetrain.driveTo.runSequentially();
 
         // the robot is at a common spot, but a different angle based on where the block was
         // since the turnTo class uses a gyroscope, turning to 60 gives a common angle also
-        _base.drivetrain.turnTo.goTo(60,TURN_SPEED);
+        _base.drivetrain.turnTo.goTo(59,TURN_SPEED);
         _base.drivetrain.turnTo.runSequentially();
 
 
@@ -167,21 +180,21 @@ public class JoelDoubleCrater extends LinearOpMode {
         _base.drivetrain.driveTo.runSequentially();
 
         //turn to drive in between particle on teammate's side and wall
-        _base.drivetrain.turnTo.goTo(122, TURN_SPEED);
+        _base.drivetrain.turnTo.goTo(120.5, TURN_SPEED);
         _base.drivetrain.turnTo.runSequentially();
 
         //drives between the particle on teammate's side and wall
-        _base.drivetrain.driveTo.goTo(12, DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(11, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
 
 
         // turns in preparation for moving towards the deposit zone
-        _base.drivetrain.turnTo.goTo(129, TURN_SPEED);
+        _base.drivetrain.turnTo.goTo(127.5, TURN_SPEED);
         _base.drivetrain.turnTo.runSequentially();
 
         //drives to the deposit zone
-        _base.drivetrain.driveTo.goTo(36, DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(30, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
 
@@ -199,22 +212,32 @@ public class JoelDoubleCrater extends LinearOpMode {
 //        _base.drivetrain.turnTo.goTo(MARKER_ANGLE, TURN_SPEED * 1.3);
 //        _base.drivetrain.turnTo.runSequentially();
 
-        _base.drivetrain.turnTo.goTo(180, TURN_SPEED);
-        _base.drivetrain.turnTo.arcSequentially(1.8);
+        telemetry.addData("ARC TURNING" ," NOW");
+        telemetry.update();
+
+        _base.drivetrain.turnTo.goTo(174, TURN_SPEED);
+        _base.drivetrain.turnTo.arcSequentially(2.0);
 
 
         // deposits the marker
         _base.deliver.deliverMarker();
         // gives time for the marker to slide off
         try{
-            Thread.sleep(600);}
+            Thread.sleep(400);}
         catch(Exception ex){ex.printStackTrace();}
-
-        //raises the delivery system
         _base.deliver.raiseMarker();
+        try{
+            Thread.sleep(200);}
+        catch(Exception ex){ex.printStackTrace();}
+        //raises the delivery system
+        _base.deliver.stop();
 
+        _base.drivetrain.turnTo.goTo(176, TURN_SPEED);
+        _base.drivetrain.turnTo.arcSequentially(1.5);
+        _base.drivetrain.driveTo.goTo(3,DRIVING_SPEED - .2);
+        _base.drivetrain.driveTo.runSequentially();
         // turn to face the second group of particles
-        _base.drivetrain.turnTo.goTo(180, TURN_SPEED);
+        _base.drivetrain.turnTo.goTo(225, TURN_SPEED);
         _base.drivetrain.turnTo.runSequentially();
 
 

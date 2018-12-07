@@ -21,6 +21,7 @@ public class TurnTo extends RobotCommand
     private double minSpeed = .14;
     private double SPEED_MULT = 2;
     private double SPEED_MULT_BLOCK = 2.3;
+    private double ARC_SPEED_MULT = 1.5;
 
 
 
@@ -42,9 +43,6 @@ public class TurnTo extends RobotCommand
 
     public void goTo(double ANGLE, double MAXSPEED)
     {
-        if (ANGLE > 360){
-            ANGLE -= 360;
-        }
         targetAngle = ANGLE;
         maxSpeed = MAXSPEED;
     }
@@ -168,7 +166,7 @@ public class TurnTo extends RobotCommand
             _imu.setAngle();
             heading = _imu.zAngle();
             error = Util.angleError((int) _imu.zAngle(), (int) targetAngle);
-            currSpeed = (error / initError) * SPEED_MULT_BLOCK * distModfication;
+            currSpeed = (error / initError) * ARC_SPEED_MULT * distModfication;
 
             if (currSpeed < minSpeed) {
                 currSpeed = minSpeed;

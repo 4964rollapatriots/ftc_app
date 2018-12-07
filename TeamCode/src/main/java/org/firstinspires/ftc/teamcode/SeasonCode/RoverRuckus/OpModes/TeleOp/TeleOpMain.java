@@ -43,18 +43,6 @@ public class TeleOpMain extends LinearOpMode
         while(opModeIsActive())
         {
             run();
-
-            /*
-            TELEMETRY CONFIG
-             */
-           // _base.outTelemetry();
-
-
-
-            /*
-            ANGLE TESTING BELOW
-             */
-            _base.drivetrain.imu.setAngle();
         }
     }
     //The Actual Teleop commands
@@ -109,7 +97,6 @@ public class TeleOpMain extends LinearOpMode
             _base.latchSystem.lowerRobot();
         else
             _base.latchSystem.stop();
-        _base.outTelemetry();
 
         /* -------------- COLLECTING SYSTEM ---------------------*/
 
@@ -184,10 +171,6 @@ public class TeleOpMain extends LinearOpMode
         }
         else
             _base.tiltChannel.tiltByPower(0);
-
-
-
-
     }
 
 }
