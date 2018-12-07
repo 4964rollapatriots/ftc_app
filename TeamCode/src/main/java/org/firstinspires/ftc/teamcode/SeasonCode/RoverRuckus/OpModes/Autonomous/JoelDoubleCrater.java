@@ -105,13 +105,13 @@ public class JoelDoubleCrater extends LinearOpMode {
         this.sleep(300);
         if (aligned()){
             _block = blockState.RIGHT;
-            telemetry.addData("FOUND IN MIDDLE" , "");
+            telemetry.addData("FOUND IN RIGHT" , "");
             telemetry.update();
         }
         // pans across the particles until it either sees the block or reaches 348 degrees
         // 348 degrees should be past the far right particle
         if (_block == blockState.UNCERTAIN){
-            for  (double i = 348; i < 360; i += TURN_INCREMENT){
+            for  (double i = 348; i < 358; i += TURN_INCREMENT){
                 telemetry.addData("Going to Middle!" , "");
                 telemetry.update();
                 _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED);

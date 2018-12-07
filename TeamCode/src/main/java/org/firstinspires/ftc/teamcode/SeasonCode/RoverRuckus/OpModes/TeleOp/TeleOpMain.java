@@ -28,15 +28,9 @@ public class TeleOpMain extends LinearOpMode
     {
         _base.init(hardwareMap, this);
         waitForStart();
-        _base.drivetrain.encoderOn();
 
         //Set State of the Drivetrain
         _base.drivetrain.setCurrState(Drivetrain.State.FORWARD_FAST);
-
-        _base.drivetrain.encoderStopReset();
-        _base.drivetrain.encoderOn();
-        _base.drivetrain.encoderOff();
-        _base.drivetrain.imu.calibrateTo(0);
 
 
         //run teleop while opmode is active
@@ -83,8 +77,10 @@ public class TeleOpMain extends LinearOpMode
         //this is to be used just in case the marker delivery system needs to be used
         if(gamepad1.dpad_up)
             _base.deliver.raiseMarker();
-        if(gamepad1.dpad_down)
+        else if(gamepad1.dpad_down)
             _base.deliver.deliverMarker();
+        else
+            _base.deliver.stop();
 
         /*---------------------------- HOOK EXTENSION/LIFT ROBOT --------------------------------*/
         if(gamepad2.a)
@@ -141,7 +137,6 @@ public class TeleOpMain extends LinearOpMode
         {
             _base.collector.runCollector(0);
         }
-
         if (gamepad2.x)
         {
             _base.collector.releaseParticles();
