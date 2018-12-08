@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
@@ -22,62 +23,24 @@ public class DTTeleOpMainOnly extends LinearOpMode
     {
         _base.init(hardwareMap, this);
         waitForStart();
-        _base.drivetrain.encoderOn();
 
         //Set State of the Drivetrain
         _base.drivetrain.setCurrState(Drivetrain.State.FORWARD_FAST);
-
-        _base.drivetrain.encoderStopReset();
-        _base.drivetrain.encoderOn();
-        _base.drivetrain.encoderOff();
-        _base.drivetrain.imu.calibrateTo(0);
 
 
         //run teleop while opmode is active
         while(opModeIsActive())
         {
             run();
-
-            /*
-            TELEMETRY CONFIG
-             */
             _base.outTelemetry();
 
-
-
-            /*
-            ANGLE TESTING BELOW
-             */
-            _base.drivetrain.imu.setAngle();
-//
-            joelAngle = _base.drivetrain.imu.zAngle() + 360;
-            joelAngle %= 360;
-
-            telemetry.addData("z angle strd", _base.drivetrain.imu.zAngle());
-            telemetry.addData("z Joel Angle (what we used have)", joelAngle);
-
-            joelAngle += 360;
-            telemetry.addData("z angle + 360", joelAngle);
-
-            telemetry.addData(" Avg Inches Travelled: ", _base.drivetrain.getAverageEncoderCounts()/_base.drivetrain.driveTo.COUNTS_PER_INCH);
-            telemetry.update();
         }
 
     }
     //The Actual Teleop commands
     private void run()
     {
-        _base.drivetrain.run(-gamepad1.left_stick_y , gamepad1.right_stick_x, false, false, false);
-
-        /*------------------------------------ MARKER DELIVERY --------------------------------*/
-        //this is to be used just in case the marker delivery system needs to be used
-        if(gamepad2.dpad_left)
-            _base.deliver.raiseMarker();
-        if(gamepad2.dpad_right)
-            _base.deliver.deliverMarker();
-
-
-
+        _base.drivetrain.run(Range.clip(-gamepad1.left_stick_y, -1, 1), Range.clip(gamepad1.right_stick_y, -1, 1), false, false, false);
     }
 
 }

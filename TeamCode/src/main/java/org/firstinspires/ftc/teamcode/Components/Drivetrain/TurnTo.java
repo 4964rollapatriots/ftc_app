@@ -27,7 +27,7 @@ public class TurnTo extends RobotCommand
 
     private long TIMEOUT = 10000;
 
-    private int BUFFER = 5;
+    private int BUFFER = 4;
 
 
     //default constructor

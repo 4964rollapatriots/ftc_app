@@ -19,7 +19,7 @@ import static java.lang.Thread.sleep;
 
 
 
-//We will use this base to only test the drivetrain related classes. This will be convenient
+//We will use this base to only test the drive-train related classes. This will be convenient
 //as we won't need to always comment the rest of the robot out in Base.java when we aren't using it.
 public class DTBaseOnly extends RobotBase
 {
@@ -31,18 +31,7 @@ public class DTBaseOnly extends RobotBase
     public void init(final HardwareMap hwm, final LinearOpMode op)
     {
         super.init(hwm, op);
-        BNO055IMU.Parameters params = new BNO055IMU.Parameters();
-
-        // IMU parameters
-        params.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        params.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        params.loggingEnabled = true;
-        params.loggingTag = "IMU";
-
-
-        // Basic component initialization
-        imu.init(this, "imu", params);
-        drivetrain.init(this , imu);
+        drivetrain.init(this,imu);
         deliver.init(this);
         //Try catches to prevent crashes
         //imu.write8(BNO055IMU.Register.OPR_MODE ,BNO055IMU.SensorMode.CONFIG.bVal & 0x0F);

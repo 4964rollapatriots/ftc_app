@@ -5,8 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
+import org.opencv.core.Range;
 
-@TeleOp(name = "MainTeleOp", group = "TeleOp")
+    @TeleOp(name = "MainTeleOp", group = "TeleOp")
 public class TeleOpMain extends LinearOpMode
 {
     //create an instance of our base which contains all of the components of the robot
@@ -40,8 +41,7 @@ public class TeleOpMain extends LinearOpMode
         }
     }
     //The Actual Teleop commands
-    private void run()
-    {
+    private void run() {
         /*----------------------------------- STANDARD DRIVING ----------------------------------*/
         //drive the robot using gamepad1 joysticks, standard six wheel movement
         if (gamepad1.right_bumper) {
@@ -71,8 +71,12 @@ public class TeleOpMain extends LinearOpMode
         }
         else
             scaleModeControl = true;
-        _base.drivetrain.run(-gamepad1.left_stick_y , gamepad1.right_stick_x, inverted, slowMode,scaleMode);
 
+
+        _base.drivetrain.run(-com.qualcomm.robotcore.util.Range.clip(gamepad1.left_stick_y, -1, 1),
+                com.qualcomm.robotcore.util.Range.clip(gamepad1.right_stick_x, -1, 1), inverted, slowMode, scaleMode);
+        telemetry.addData("Gamepad Left Stick, ", -gamepad1.left_stick_y);
+        telemetry.addData("Gamepad Right Stick, ", gamepad1.right_stick_y);
         /*------------------------------------ MARKER DELIVERY --------------------------------*/
         //this is to be used just in case the marker delivery system needs to be used
         if(gamepad1.dpad_up)
@@ -166,6 +170,8 @@ public class TeleOpMain extends LinearOpMode
         }
         else
             _base.tiltChannel.tiltByPower(0);
+//    }
+        _base.outTelemetry();
     }
 
 }

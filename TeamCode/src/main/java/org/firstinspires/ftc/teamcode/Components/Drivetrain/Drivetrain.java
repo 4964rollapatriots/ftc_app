@@ -161,6 +161,37 @@ public class Drivetrain extends RobotComponent
         frontLeft.setPower(drivePower - rotatePower);
     }
 
+    public void runTeleOp(double drivePower, double rotatePower, boolean inverted, boolean slowMode, boolean scale)
+    {
+
+//        drivePower *= _powerMult;
+//        rotatePower *= -1 * _powerMult;
+//        if(inverted)
+//        {
+//            setCurrState(State.INVERTED_FAST);
+//            if (slowMode)
+//            {
+//                setCurrState(State.INVERTED_SLOW);
+//            }
+//        }
+//        else
+//        {
+//            setCurrState(State.FORWARD_FAST);
+//            if(slowMode)
+//            {
+//                setCurrState(State.FORWARD_SLOW);
+//            }
+//        }
+//        if(currState == State.INVERTED_FAST || currState == State.INVERTED_SLOW)
+//        {
+//            rotatePower *= -1;
+//        }
+
+        backRight.setPower(drivePower + rotatePower);
+        backLeft.setPower(drivePower - rotatePower);
+        frontRight.setPower(drivePower + rotatePower);
+        frontLeft.setPower(drivePower - rotatePower);
+    }
     public void encoderOn()
     {
         setEncoderState(DcMotor.RunMode.RUN_USING_ENCODER);
