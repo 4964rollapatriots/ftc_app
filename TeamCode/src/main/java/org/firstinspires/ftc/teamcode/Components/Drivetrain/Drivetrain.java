@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.MRRange;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVIMU;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.Util;
 
@@ -27,6 +28,7 @@ public class Drivetrain extends RobotComponent
     private DcMotor backRight;
 
     public REVIMU imu;
+    public MRRange range;
 
     //Instantiate Commands
     public TurnTo turnTo;
@@ -58,6 +60,15 @@ public class Drivetrain extends RobotComponent
         turnTo = new TurnTo(this, imu);
         driveTo = new DriveToDistance(this);
     }
+
+    public void setDependencies(final REVIMU IMU, final MRRange RANGE){
+
+        imu = IMU;
+        range = RANGE;
+        turnTo = new TurnTo(this, imu);
+        driveTo = new DriveToDistance(this);
+    }
+
     public long backLeftEncoderCount()
     {
         return backLeft.getCurrentPosition();

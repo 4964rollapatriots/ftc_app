@@ -106,7 +106,19 @@ public class JoelDoubleCrater extends LinearOpMode {
         sendTelemetry();
 
         // sees if the block is initially aligned in the middle, if so it does not need to turn
+        RUN_USING_TENSOR_FLOW = true;
 
+        aligned();
+        aligned();
+        this.sleep(100);
+
+        if (aligned()){
+            _block = blockState.MIDDLE;
+            telemetry.addData("FOUND IN middlE" , "");
+            telemetry.update();
+        }
+        // method that sends information about our angles and powers
+        sendTelemetry();
 
         //turns to the far right in preparation for panning across the particles from right to left
         if(_block == blockState.UNCERTAIN)
@@ -135,6 +147,7 @@ public class JoelDoubleCrater extends LinearOpMode {
                 }
             }
         }
+
         if (_block == blockState.UNCERTAIN) {
             _base.drivetrain.turnTo.goTo(4, BLOCK_TURN_SPEED - .15);
             _base.drivetrain.turnTo.runSequentially();
@@ -374,7 +387,6 @@ public class JoelDoubleCrater extends LinearOpMode {
                     }
                 }
             }
-
 
         }
         else{

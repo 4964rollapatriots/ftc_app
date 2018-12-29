@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.MRRange;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVIMU;
 import org.firstinspires.ftc.teamcode.Components.CollectorSystem.CollectorSystem;
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
@@ -25,6 +26,7 @@ public class Base extends RobotBase
     public HookLift latchSystem = new HookLift();
     public PulleyTilt tiltChannel = new PulleyTilt();
     public MarkerDelivery deliver = new MarkerDelivery();
+    public MRRange distanceSensor = new MRRange();
 
     @Override
     public void init(final HardwareMap hwm, final LinearOpMode op)
@@ -46,6 +48,7 @@ public class Base extends RobotBase
         latchSystem.init(this);//
         collector.init(this);//
         tiltChannel.init(this);//
+        distanceSensor.init(this, "range");
         //Try catches to prevent crashes
         //imu.write8(BNO055IMU.Register.OPR_MODE ,BNO055IMU.SensorMode.CONFIG.bVal & 0x0F);
         try

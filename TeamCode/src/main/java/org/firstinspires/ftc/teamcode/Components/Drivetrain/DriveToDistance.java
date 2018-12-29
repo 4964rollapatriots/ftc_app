@@ -5,6 +5,7 @@ import android.os.SystemClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotCommand;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 //This class will create the DriveTo command, which will be utilized all throughout the autonomous portion.
 public class DriveToDistance extends RobotCommand
@@ -15,6 +16,8 @@ public class DriveToDistance extends RobotCommand
     private double speed = 0;
 
     private int BUFFER = 7;
+
+    private final static double DESIRED_OFFSET = 2;
 
     private boolean _busy = false;
     private boolean endCommand = false;
@@ -111,6 +114,83 @@ public class DriveToDistance extends RobotCommand
 
 
     }
+
+    public void runKeepingDistance(){
+
+        double currentRange;
+        double error;
+        double correctionSpeed = 0.2;
+        double leftPowerMultiplier = 1;
+        double rightPowerMultiplier = 1;
+
+        currentRange =  _drivetrain.range.distance(DistanceUnit.INCH);
+
+        error = Math.abs(currentRange - DESIRED_OFFSET);
+
+        if(_drivetrain.getEncoderMode() != DcMotor.RunMode.RUN_TO_POSITION)
+        {
+            _drivetrain.encoderToPos();
+        }
+
+        if ( currentRange > DESIRED_OFFSET){
+            leftPowerMultiplier = 1 + (error * correctionSpeed);
+        }
+
+        else if (currentRange < DESIRED_OFFSET){
+            rightPowerMultiplier = 1 + (error * correctionSpeed);
+        }
+
+        _drivetrain.backLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.backLeft().getCurrentPosition());
+        _drivetrain.backRight().setTargetPosition((int)(distance * COUNTS_PER_INCH)+ _drivetrain.backRight().getCurrentPosition());
+        _drivetrain.frontLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.frontLeft().getCurrentPosition());
+        _drivetrain.frontRight().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.frontRight().getCurrentPosition());
+        _busy = true;
+
+        _drivetrain.backLeft().setPower(speed * leftPowerMultiplier);
+        _drivetrain.frontLeft().setPower(speed * leftPowerMultiplier);
+
+        _drivetrain.backRight().setPower(speed * rightPowerMultiplier);
+        _drivetrain.frontRight().setPower(speed * rightPowerMultiplier);
+
+
+        while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive()) //&& System.currentTimeMillis() - startTime < TIMEOUT)
+        {
+            leftPowerMultiplier = 1;
+            rightPowerMultiplier = 1;
+            
+            currentRange =  _drivetrain.range.distance(DistanceUnit.INCH);
+
+            error = Math.abs(currentRange - DESIRED_OFFSET);
+
+            if ( currentRange > DESIRED_OFFSET){
+                leftPowerMultiplier = 1 + (error * correctionSpeed);
+            }
+
+            else if (currentRange < DESIRED_OFFSET){
+                rightPowerMultiplier = 1 + (error * correctionSpeed);
+            }
+
+            _drivetrain.backLeft().setPower(speed * leftPowerMultiplier);
+            _drivetrain.frontLeft().setPower(speed * leftPowerMultiplier);
+
+            _drivetrain.backRight().setPower(speed * rightPowerMultiplier);
+            _drivetrain.frontRight().setPower(speed * rightPowerMultiplier);
+
+            try{
+            Thread.sleep(10);}
+            catch(Exception e){e.printStackTrace();}
+        }
+
+        _drivetrain.setAllMotorPower(0);
+
+        _drivetrain.encoderOn();
+
+        //Command is finished, for teleop now manually drive the robot, for autonomous supply more commands.
+        _busy = false;
+
+    }
+
+
 
     public Boolean isBusy()
     {

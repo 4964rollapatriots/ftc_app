@@ -63,6 +63,8 @@ public class TensorFlowTest extends LinearOpMode {
                     //telemetry.update();
                 }
             }
+
+
         }
         if(detector != null)
         {

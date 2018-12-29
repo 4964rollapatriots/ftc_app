@@ -18,19 +18,16 @@ public final class MRRange
     private ModernRoboticsI2cRangeSensor range = null; //the actual sensor
 
 
-    //constructor
-    MRRange(RobotBase MYROBOT)
-    {
-        robot = MYROBOT;
-    }
 
-    void mapRange(final String NAME)
-    {
+    public void init(final RobotBase robot, final String NAME){
+
         HardwareMapper mapHelper = new HardwareMapper(robot);
+
         range = mapHelper.mapMRRange(NAME);
     }
 
-    double distance (final DistanceUnit UNIT)
+
+    public double distance (final DistanceUnit UNIT)
     {
         //range reads zero when out of range, this isn't helpful for logic though, so changing that to 1_024;
 
