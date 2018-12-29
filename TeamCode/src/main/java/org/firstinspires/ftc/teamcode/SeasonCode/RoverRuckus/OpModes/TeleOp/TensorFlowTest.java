@@ -22,18 +22,20 @@ public class TensorFlowTest extends LinearOpMode {
     private double ACCEPTABLE_CONFIDENCE = 0.4;
     private boolean scaleModeControl= false;
 
+    private boolean align = false;
+    private boolean alignControl = false;
     public void runOpMode(){
 
-        eye = new UtilGoldDetector(hardwareMap);
+        //eye = new UtilGoldDetector(hardwareMap);
         detector = new CustomTensorFlow(hardwareMap);
-
         RUN_USING_TENSOR_FLOW = true;
 
 
         waitForStart();
 
+        detector.activate();
         while(opModeIsActive()){
-
+            detector.refresh();
             if(gamepad1.a) {
                 if (scaleModeControl) {
                     scaleModeControl = false;
@@ -43,24 +45,40 @@ public class TensorFlowTest extends LinearOpMode {
             else
                 scaleModeControl = true;
 
-            if (aligned()){
-                telemetry.addData("found block ", " now");
+            if(gamepad1.b)
+            {
+                if(alignControl) {
+                    alignControl = false;
+                    align = !align;
+                }
+            }
+            if(align) {
+                telemetry.addData("found block ", RUN_USING_TENSOR_FLOW);
+                telemetry.update();
+                if (aligned()) {
+                    telemetry.addData("found block ", RUN_USING_TENSOR_FLOW);
+                    //telemetry.update();
+                } else {
+                    telemetry.addData("DID NOT FIND ", RUN_USING_TENSOR_FLOW);
+                    //telemetry.update();
+                }
             }
         }
-
-
+        if(detector != null)
+        {
+            detector.deactivate();
+        }
     }
 
     private boolean aligned(){
         boolean aligned = false;
-        if (RUN_USING_TENSOR_FLOW){
-            detector.refresh();
+        if (true){
             if(detector.updatedRecognitions == null)
             {
                 aligned = false;
             }
             else{
-                for (int i = 0; i < detector.updatedRecognitions.size(); i ++){
+                for (int i = 0; i <= detector.updatedRecognitions.size(); i ++){
                     Recognition rec = detector.updatedRecognitions.get(i);
                     if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
                         aligned = true;
@@ -71,9 +89,9 @@ public class TensorFlowTest extends LinearOpMode {
 
         }
         else{
-            if (eye.isAligned()){
-                aligned = true;
-            }
+//            if (eye.isAligned()){
+//                aligned = true;
+//            }
         }
         return aligned;
 

@@ -44,6 +44,9 @@ public class HookLift extends RobotComponent
         {
             extendHookLift.setPower(1);
         }
+        public void extendHook(double power){
+            extendHookLift.setPower(power);
+        }
 
         public void stopCRServo()
         {

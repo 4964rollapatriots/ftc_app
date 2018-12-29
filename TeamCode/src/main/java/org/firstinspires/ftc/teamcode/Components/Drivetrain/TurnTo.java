@@ -132,7 +132,152 @@ public class TurnTo extends RobotCommand
         _busy = false;
     }
 
-    public void arcSequentially(double RATIO) {
+
+    public void runSequentially(double SECONDS_TIMEOUT)
+    {
+        TIMEOUT = (long)(SECONDS_TIMEOUT * 1000);
+        if(_drivetrain.getEncoderMode() != DcMotor.RunMode.RUN_USING_ENCODER)
+        {
+            _drivetrain.encoderOn();
+        }
+
+        _imu.setAngle();
+
+        //Init heading stored from imu to variable.
+        double initHeading = _imu.zAngle();
+
+        double heading = 0;
+
+        //Tracks the current speed of the robot.
+        double currSpeed = 0;
+
+        //Formula for calculating error.
+        double error = Util.angleError((int)initHeading, (int)targetAngle);
+
+        //Find's initial error will be used in calculations
+        double initError = error;
+
+        //Finding the distance modifier
+        double distModfication = Math.abs(error) / 180;
+
+        //Start time of angle movements, will be used for timeouts
+        long startTime = System.currentTimeMillis();
+
+        _busy = true;
+
+        _drivetrain.setCurrState(Drivetrain.State.FORWARD_FAST);
+
+        while(Math.abs(error) > BUFFER && System.currentTimeMillis() - startTime < TIMEOUT
+                && !endCommand && _drivetrain.base().opMode.opModeIsActive())
+        {
+            _imu.setAngle();
+            heading = _imu.zAngle();
+            error = Util.angleError((int)_imu.zAngle(), (int)targetAngle);
+            currSpeed = (error/initError) * SPEED_MULT * distModfication;
+
+            if(currSpeed < minSpeed)
+            {
+                currSpeed = minSpeed;
+            }
+
+            if(currSpeed > maxSpeed)
+            {
+                currSpeed = maxSpeed;
+            }
+
+            if(currSpeed < minSpeed)
+            {
+                currSpeed = minSpeed;
+            }
+
+            _drivetrain.base().outTelemetry.addData("INIT ERROR: ", initError);
+            _drivetrain.base().outTelemetry.addData("Init Heading :", initHeading);
+            _drivetrain.base().outTelemetry.addData("TARGET ANGLE: ", targetAngle);
+            _drivetrain.base().outTelemetry.addData("Current ANGLE: ", heading);
+            _drivetrain.base().outTelemetry.addData("distModification: ", distModfication);
+            _drivetrain.base().outTelemetry.addData("ERROR: ", error);
+            _drivetrain.base().outTelemetry.addData("CURRSPEED: ", currSpeed);
+            //_drivetrain.outTelemetry();
+            _drivetrain.base().outTelemetry.update();
+
+            _drivetrain.run(0.0, Math.abs(error) / -error * currSpeed, false, false,false);
+
+        }
+
+        _drivetrain.stop();
+
+        _busy = false;
+    }
+
+
+    public void arcSequentially(double RATIO, double SECONDS_TIMEOUT)
+    {
+        TIMEOUT = (long)(SECONDS_TIMEOUT * 1000);
+        if (_drivetrain.getEncoderMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+            _drivetrain.encoderOn();
+        }
+
+        _imu.setAngle();
+
+        //Init heading stored from imu to variable.
+        double initHeading = _imu.zAngle();
+
+        double heading = 0;
+
+        //Tracks the current speed of the robot.
+        double currSpeed = 0;
+
+        //Formula for calculating error.
+        double error = Util.angleError((int) initHeading, (int) targetAngle);
+
+        //Find's initial error will be used in calculations
+        double initError = error;
+
+        //Finding the distance modifier
+        double distModfication = Math.abs(error) / 180;
+
+        //Start time of angle movements, will be used for timeouts
+        long startTime = System.currentTimeMillis();
+
+        _busy = true;
+
+        _drivetrain.setCurrState(Drivetrain.State.FORWARD_FAST);
+
+        while (Math.abs(error) > BUFFER && System.currentTimeMillis() - startTime < TIMEOUT
+                && !endCommand && _drivetrain.base().opMode.opModeIsActive()) {
+            _imu.setAngle();
+            heading = _imu.zAngle();
+            error = Util.angleError((int) _imu.zAngle(), (int) targetAngle);
+            currSpeed = (error / initError) * ARC_SPEED_MULT * distModfication;
+
+            if (currSpeed < minSpeed) {
+                currSpeed = minSpeed;
+            }
+
+            if (currSpeed > maxSpeed) {
+                currSpeed = maxSpeed;
+            }
+
+            if (currSpeed < minSpeed) {
+                currSpeed = minSpeed;
+            }
+
+            _drivetrain.base().outTelemetry.addData("INIT ERROR: ", initError);
+            _drivetrain.base().outTelemetry.addData("Init Heading :", initHeading);
+            _drivetrain.base().outTelemetry.addData("TARGET ANGLE: ", targetAngle);
+            _drivetrain.base().outTelemetry.addData("Current ANGLE: ", heading);
+            _drivetrain.base().outTelemetry.addData("distModification: ", distModfication);
+            _drivetrain.base().outTelemetry.addData("ERROR: ", error);
+            _drivetrain.base().outTelemetry.addData("CURRSPEED: ", currSpeed);
+            //_drivetrain.outTelemetry();
+            _drivetrain.base().outTelemetry.update();
+
+            _drivetrain.arcRun(currSpeed,currSpeed*RATIO);
+        }
+    }
+
+    public void arcSequentially(double RATIO)
+    {
         if (_drivetrain.getEncoderMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
             _drivetrain.encoderOn();
         }

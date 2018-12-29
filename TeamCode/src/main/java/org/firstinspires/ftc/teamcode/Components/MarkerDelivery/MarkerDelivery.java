@@ -12,39 +12,39 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
 
 public class MarkerDelivery extends RobotComponent
 {
-    public CRServo markerDelivery;
+    public Servo markerDelivery;
 
 
-    public final double RAISE = -1;
-    public final double DELIVERY = 1;
+    public final double RAISE = 0;
+    public final double DELIVERY = .75;
 
     public void init(final RobotBase BASE)
     {
         super.init(BASE);
-        markerDelivery = mapper.mapCRServo("marker", CRServo.Direction.FORWARD);
+        markerDelivery = mapper.mapServo("marker", Servo.Direction.FORWARD);
     }
 
     public void deliverMarker()
     {
-        markerDelivery.setPower(DELIVERY);
+        markerDelivery.setPosition(DELIVERY);
     }
 
     public void raiseMarker()
     {
-        markerDelivery.setPower(RAISE);
+        markerDelivery.setPosition(RAISE);
     }
 
 
     public void outTelemetry()
     {
         base.outTelemetry.write("----------------MARKER DELIVERY---------------");
-        base.outTelemetry.addData("Delivery Power", markerDelivery.getPower());
+        base.outTelemetry.addData("Delivery Power", markerDelivery.getPosition());
         base.outTelemetry.write("-------------END MARKER DELIVERY--------------");
         base.outTelemetry.newLine();
     }
     @Override
     public void stop()
     {
-        markerDelivery.setPower(0);
+        raiseMarker();
     }
 }

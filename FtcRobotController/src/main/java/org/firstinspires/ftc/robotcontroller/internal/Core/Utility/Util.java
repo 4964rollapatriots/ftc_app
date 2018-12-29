@@ -12,7 +12,14 @@ public final class Util
             target += 360;
 
         error = (int) target - CURRENT;
-
+        if(CURRENT == 1)
+        {
+            if(error < -300)
+            {
+                error += 360;
+                return error;
+            }
+        }
         if(Math.abs(error) > 180)
         {
             error = Math.abs(360 - error);

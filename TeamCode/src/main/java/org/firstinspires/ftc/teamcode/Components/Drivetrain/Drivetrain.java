@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVIMU;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.Util;
 
 public class Drivetrain extends RobotComponent
 {
@@ -132,36 +133,23 @@ public class Drivetrain extends RobotComponent
     public void run(double drivePower, double rotatePower, boolean inverted, boolean slowMode, boolean scale)
     {
 
+        if(scale)
+        {
+            drivePower = Util.scaleValue(drivePower);
+            rotatePower = Util.scaleValue(rotatePower);
+        }
         drivePower *= _powerMult;
         rotatePower *= -1 * _powerMult;
-        if(inverted)
-        {
-            setCurrState(State.INVERTED_FAST);
-            if (slowMode)
-            {
-                setCurrState(State.INVERTED_SLOW);
-            }
-        }
-        else
-        {
-            setCurrState(State.FORWARD_FAST);
-            if(slowMode)
-            {
-                setCurrState(State.FORWARD_SLOW);
-            }
-        }
-        if(currState == State.INVERTED_FAST || currState == State.INVERTED_SLOW)
-        {
+        if(currState == State.INVERTED_FAST || currState == State.INVERTED_SLOW) {
             rotatePower *= -1;
         }
-
         backRight.setPower(drivePower + rotatePower);
         backLeft.setPower(drivePower - rotatePower);
         frontRight.setPower(drivePower + rotatePower);
         frontLeft.setPower(drivePower - rotatePower);
     }
 
-    public void runTeleOp(double drivePower, double rotatePower, boolean inverted, boolean slowMode, boolean scale)
+    public void runTeleOp(double drivePower, double rotatePower)
     {
 
 //        drivePower *= _powerMult;
@@ -187,10 +175,10 @@ public class Drivetrain extends RobotComponent
 //            rotatePower *= -1;
 //        }
 
-        backRight.setPower(drivePower + rotatePower);
-        backLeft.setPower(drivePower - rotatePower);
-        frontRight.setPower(drivePower + rotatePower);
-        frontLeft.setPower(drivePower - rotatePower);
+        backRight.setPower(drivePower - rotatePower);
+        backLeft.setPower(drivePower + rotatePower);
+        frontRight.setPower(drivePower - rotatePower);
+        frontLeft.setPower(drivePower + rotatePower);
     }
     public void encoderOn()
     {
@@ -218,26 +206,55 @@ public class Drivetrain extends RobotComponent
         {
             case FORWARD_FAST:
                 _powerMult = FORWARD * FAST;
-                encoderOff();
                 break;
             case FORWARD_SLOW:
                 _powerMult = FORWARD * SLOW;
-                encoderOff();
                 break;
             case INVERTED_FAST:
                 _powerMult = BACKWARD * FAST;
-                encoderOff();
                 break;
             case INVERTED_SLOW:
                 _powerMult = BACKWARD * SLOW;
-                encoderOff();
                 break;
             case STOP:
                 _powerMult = STOP;
-                encoderStopReset();
                 break;
         }
         currState = STATE;
+    }
+
+    public void slowMode() {
+        switch (currState) {
+            case FORWARD_FAST:
+                setCurrState(State.FORWARD_SLOW);
+                break;
+            case FORWARD_SLOW:
+                setCurrState(State.FORWARD_FAST);
+                break;
+            case INVERTED_FAST:
+                setCurrState(State.INVERTED_SLOW);
+                break;
+            case INVERTED_SLOW:
+                setCurrState(State.INVERTED_FAST);
+                break;
+        }
+    }
+
+    public void invert() {
+        switch (currState) {
+            case FORWARD_FAST:
+                setCurrState(State.INVERTED_FAST);
+                break;
+            case FORWARD_SLOW:
+                setCurrState(State.INVERTED_SLOW);
+                break;
+            case INVERTED_FAST:
+                setCurrState(State.FORWARD_FAST);
+                break;
+            case INVERTED_SLOW:
+                setCurrState(State.FORWARD_SLOW);
+                break;
+        }
     }
 
     public DcMotor.RunMode getEncoderMode()

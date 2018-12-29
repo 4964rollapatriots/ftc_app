@@ -48,10 +48,11 @@ public class CustomTensorFlow {
         }
     }
 
+    public void activate()
+    {
+        tfod.activate();
+    }
     public void refresh(){
-        if (tfod != null) {
-            tfod.activate();
-        }
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
