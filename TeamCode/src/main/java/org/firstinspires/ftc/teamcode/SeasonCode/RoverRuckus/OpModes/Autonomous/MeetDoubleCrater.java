@@ -242,7 +242,7 @@ public class MeetDoubleCrater extends LinearOpMode {
 
         //drives between the particle on teammate's side and wall
         _base.drivetrain.driveTo.goTo(11, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially(4.5);
+        _base.drivetrain.driveTo.runKeepingDistance();
 
 
         _base.deliver.raiseMarker();

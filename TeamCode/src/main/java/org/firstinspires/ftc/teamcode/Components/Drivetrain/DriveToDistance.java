@@ -157,7 +157,7 @@ public class DriveToDistance extends RobotCommand
         {
             leftPowerMultiplier = 1;
             rightPowerMultiplier = 1;
-            
+
             currentRange =  _drivetrain.range.distance(DistanceUnit.INCH);
 
             error = Math.abs(currentRange - DESIRED_OFFSET);
