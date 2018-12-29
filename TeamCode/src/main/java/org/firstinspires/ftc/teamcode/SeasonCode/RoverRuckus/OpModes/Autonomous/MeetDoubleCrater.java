@@ -66,12 +66,12 @@ public class MeetDoubleCrater extends LinearOpMode {
         _block = blockState.UNCERTAIN;
         _base.imu.calibrateTo(0);
         detector = new CustomTensorFlow(hardwareMap);
+        detector.activate();
         RUN_USING_TENSOR_FLOW = true;
         //This calibration is done before landing because the landing could "bump" the robot and change our angle
         _base.outTelemetry.write("All Systems Go");
         _base.outTelemetry.update();
 
-        detector.activate();
         waitForStart();
 
         //Gets the robot onto the field from the hanger
