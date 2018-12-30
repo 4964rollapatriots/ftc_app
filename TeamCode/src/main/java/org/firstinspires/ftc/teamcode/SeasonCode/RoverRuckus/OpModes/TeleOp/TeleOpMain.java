@@ -3,6 +3,7 @@
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 import org.opencv.core.Range;
@@ -50,7 +51,8 @@ public class TeleOpMain extends LinearOpMode
         drive(-com.qualcomm.robotcore.util.Range.clip(gamepad1.left_stick_y, -1, 1),
                 com.qualcomm.robotcore.util.Range.clip(gamepad1.right_stick_x, -1, 1));
 
-        telemetry.addData("Range: ", range)
+        telemetry.addData("Range: ",_base.distanceSensor.distance(DistanceUnit.INCH));
+        telemetry.update();
         /*------------------------------------ MARKER DELIVERY --------------------------------*/
         //this is to be used just in case the marker delivery system needs to be used
 
