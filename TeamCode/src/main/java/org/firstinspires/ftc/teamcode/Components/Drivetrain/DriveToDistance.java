@@ -100,7 +100,7 @@ public class DriveToDistance extends RobotCommand
         _drivetrain.setAllMotorPower(speed);
         long startTime = SystemClock.currentThreadTimeMillis();
 
-        while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive()) //&& System.currentTimeMillis() - startTime < TIMEOUT)
+        while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && System.currentTimeMillis() - startTime < TIMEOUT)
         {
             //Keep running! :D
         }

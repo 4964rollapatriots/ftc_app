@@ -35,15 +35,10 @@ public class TeleOpMain extends LinearOpMode
         //Set State of the Drivetrain
         _base.drivetrain.setCurrState(Drivetrain.State.FORWARD_FAST);
 
-
-        int counter = 0;
         //run teleop while opmode is active
         while(opModeIsActive())
         {
-            counter++;
             run();
-            telemetry.addData("counter", counter);
-            telemetry.update();
 
         }
     }
@@ -52,8 +47,10 @@ public class TeleOpMain extends LinearOpMode
         /*----------------------------------- STANDARD DRIVING ----------------------------------*/
         //drive the robot using gamepad1 joysticks, standard six wheel movement
 
-        _base.drivetrain.runTeleOp(-com.qualcomm.robotcore.util.Range.clip(gamepad1.left_stick_y, -1, 1),
+        drive(-com.qualcomm.robotcore.util.Range.clip(gamepad1.left_stick_y, -1, 1),
                 com.qualcomm.robotcore.util.Range.clip(gamepad1.right_stick_x, -1, 1));
+
+        telemetry.addData("Range: ", range)
         /*------------------------------------ MARKER DELIVERY --------------------------------*/
         //this is to be used just in case the marker delivery system needs to be used
 
@@ -142,5 +139,11 @@ public class TeleOpMain extends LinearOpMode
 //            _base.tiltChannel.tiltByPower(0);
 //    }
     }
-
+    public void drive(double drivePower, double rotatePower)
+    {
+        _base.drivetrain.frontRight().setPower(drivePower + rotatePower);
+        _base.drivetrain.frontLeft().setPower(drivePower - rotatePower);
+        _base.drivetrain.backLeft().setPower(drivePower - rotatePower);
+        _base.drivetrain.backRight().setPower(drivePower + rotatePower);
+    }
 }
