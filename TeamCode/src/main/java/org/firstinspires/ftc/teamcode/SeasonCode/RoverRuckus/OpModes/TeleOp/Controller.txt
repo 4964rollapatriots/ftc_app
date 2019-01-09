@@ -7,12 +7,14 @@ A: Toggle Scale Mode
 B:
 X: Lift Robot Up
 Y: Lower Robot
-Right Trigger:
-Left Trigger:
+Right Trigger: Hook
+Left Trigger: Hook
 Left Bumper: Slow Mode
 Right Bumper: Inverted Mode
-DPAD Up: Raise team marker (won't really need this, just in case)
-DPAD Down: Lower team marker(won't really need this, just in case)
+DPAD Up: Extend Hook Lift
+ Raise team marker (won't really need this, just in case)
+DPAD Down: Retract Hook Lift
+Lower team marker(won't really need this, just in case)
 
 
 
@@ -29,11 +31,11 @@ Right Joystick: (Up means Rotate C-Channel Holding Collector System Up,
 
 A: Extend Hook Using Servo
 B: Retract Hook Using Servo
-X: Release Particles
-Y: Contain Particles
+X: Tilt Down(set position)
+Y: Tilt Up(set position)
 
 
 Right Trigger: Collector Intaking
-Left Trigger: Collector Extracting
-Left Bumper: Lift Extension Retract
-Right Bumper: Lift Extension Intake
+Left Trigger: Block Extracting
+Left Bumper: Ball Extracting
+Right Bumper:

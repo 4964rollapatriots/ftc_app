@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.MRRange;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVIMU;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.Touch;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.Util;
 
 public class Drivetrain extends RobotComponent
@@ -15,8 +16,8 @@ public class Drivetrain extends RobotComponent
 
     private final double FORWARD = 1;
     private final double BACKWARD = -1;
-    private final double SLOW = .75;
-    private final double FAST = .95;
+    private final double SLOW = .50;
+    private final double FAST = 1;
     private final double STOP = 0;
 
     private double _powerMult = STOP;
@@ -29,6 +30,7 @@ public class Drivetrain extends RobotComponent
 
     public REVIMU imu;
     public MRRange range;
+    public Touch touch;
 
     //Instantiate Commands
     public TurnTo turnTo;
@@ -65,6 +67,15 @@ public class Drivetrain extends RobotComponent
 
         imu = IMU;
         range = RANGE;
+        turnTo = new TurnTo(this, imu);
+        driveTo = new DriveToDistance(this);
+    }
+
+    public void setDependencies(final REVIMU IMU, final MRRange RANGE, final Touch t){
+
+        imu = IMU;
+        range = RANGE;
+        touch = t;
         turnTo = new TurnTo(this, imu);
         driveTo = new DriveToDistance(this);
     }
@@ -141,7 +152,7 @@ public class Drivetrain extends RobotComponent
         backRight.setPower(rightPower);
         frontRight.setPower(rightPower);
     }
-    public void run(double drivePower, double rotatePower, boolean inverted, boolean slowMode, boolean scale)
+    public void run(double drivePower, double rotatePower, boolean scale)
     {
 
         if(scale)

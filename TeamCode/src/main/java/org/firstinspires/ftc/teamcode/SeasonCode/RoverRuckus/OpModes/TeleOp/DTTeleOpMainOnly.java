@@ -40,7 +40,7 @@ public class DTTeleOpMainOnly extends LinearOpMode
     //The Actual Teleop commands
     private void run()
     {
-        _base.drivetrain.run(Range.clip(-gamepad1.left_stick_y, -1, 1), Range.clip(gamepad1.right_stick_y, -1, 1), false, false, false);
+        _base.drivetrain.run(Range.clip(-gamepad1.left_stick_y, -1, 1), Range.clip(gamepad1.right_stick_y, -1, 1), false);
     }
 
 }

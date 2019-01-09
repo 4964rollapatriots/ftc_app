@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.MRRange;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVIMU;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.Touch;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Components.CollectorSystem.CollectorSystem;
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.Components.HookLift.HookLift;
@@ -27,6 +29,7 @@ public class Base extends RobotBase
     public PulleyTilt tiltChannel = new PulleyTilt();
     public MarkerDelivery deliver = new MarkerDelivery();
     public MRRange distanceSensor = new MRRange();
+    public Touch bump = new Touch();
 
     @Override
     public void init(final HardwareMap hwm, final LinearOpMode op)
@@ -48,7 +51,12 @@ public class Base extends RobotBase
         latchSystem.init(this);//
         collector.init(this);//
         tiltChannel.init(this);//
+        outTelemetry.write("ABOUT TO RANGE YOU");
+        outTelemetry.update();
         distanceSensor.init(this, "range");
+        bump.init(this, "touch");
+        outTelemetry.write("B. I. G. RANGE ");
+        outTelemetry.update();
         //Try catches to prevent crashes
         //imu.write8(BNO055IMU.Register.OPR_MODE ,BNO055IMU.SensorMode.CONFIG.bVal & 0x0F);
         try
@@ -63,17 +71,19 @@ public class Base extends RobotBase
 
 
         // Dependency setting
-        drivetrain.setDependencies(imu);
+        drivetrain.setDependencies(imu, distanceSensor,bump);
 
     }
 
     public void outTelemetry()
     {
-        drivetrain.outTelemetry();
-        tiltChannel.outTelemetry();
-        collector.outTelemetry();
+//        drivetrain.outTelemetry();
+//        tiltChannel.outTelemetry();
+//        collector.outTelemetry();
         latchSystem.outTelemetry();
-        deliver.outTelemetry();
+//        deliver.outTelemetry();
+        outTelemetry.addData("Range: ", distanceSensor.distance(DistanceUnit.INCH));
+        outTelemetry.telemetry.addData("Drivetrain State", drivetrain.state());
         outTelemetry.update();
     }
     @Override

@@ -12,7 +12,6 @@ public class CollectorSystem extends RobotComponent {
 
     private DcMotor collector;
     private DcMotor extendCollector;
-    private CRServo particleRelease;
 
     public void init(RobotBase BASE)
     {
@@ -21,7 +20,7 @@ public class CollectorSystem extends RobotComponent {
         collector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         extendCollector = mapper.mapMotor("extend", DcMotorSimple.Direction.REVERSE);
         extendCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        particleRelease = mapper.mapCRServo("release", CRServo.Direction.FORWARD);
+
     }
 
 
@@ -31,9 +30,15 @@ public class CollectorSystem extends RobotComponent {
         extendCollector.setPower(POWER);
     }
 
-    public void extendLiftByEnc()
+    public void extendLiftByEnc(int encoders)
     {
         extendCollector.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        extendCollector.setTargetPosition(encoders);
+        while(!(extendCollector.getCurrentPosition() < encoders + 15 && extendCollector.getCurrentPosition() >= encoders - 15))
+        {
+            extendCollector.setPower(1);
+        }
+        extendCollector.setPower(0);
     }
     public void retractLiftByEnc()
     {
@@ -46,19 +51,17 @@ public class CollectorSystem extends RobotComponent {
         collector.setPower(SPEED);
     }
 
-    public void releaseParticles()
+    public void releaseBlocks()
     {
-        particleRelease.setPower(.4);
+        collector.setPower(-1);
     }
 
-    public void stopCRServo()
+    public void releaseBalls()
     {
-        particleRelease.setPower(0);
+        collector.setPower(-.30);
     }
-    public void containParticles()
-    {
-        particleRelease.setPower(-.4);
-    }
+
+
     public void outTelemetry()
     {
         base.outTelemetry.write("----------COLLECTOR SYSTEM-----------");

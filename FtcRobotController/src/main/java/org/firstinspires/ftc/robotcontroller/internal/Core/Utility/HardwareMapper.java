@@ -2,7 +2,9 @@ package org.firstinspires.ftc.robotcontroller.internal.Core.Utility;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsTouchSensor;
 import com.qualcomm.hardware.motors.TetrixMotor;
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,6 +13,7 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.MRRange;
 
 /*
 All of our hardware will be mapped here.
@@ -121,7 +124,24 @@ public final class HardwareMapper
 
     public ModernRoboticsI2cRangeSensor mapMRRange(final String NAME)
     {
-        return mapMRRange(NAME);
+        ModernRoboticsI2cRangeSensor tempRange;
+
+        tempRange = robot.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, NAME);
+        tempRange.initialize();
+        //tempRange.setI2cAddress(I2cAddr.create8bit(1));
+        return tempRange;
+    }
+
+    public RevTouchSensor mapTouch(final String NAME){
+
+        RevTouchSensor tempTouch = null;
+        try {
+            tempTouch = robot.hardwareMap.get(RevTouchSensor.class, NAME);
+        }
+        catch(Exception e){
+            //robot.outTelemetry.write("Problem mapping the range sensor");
+        }
+        return tempTouch;
     }
 
 }

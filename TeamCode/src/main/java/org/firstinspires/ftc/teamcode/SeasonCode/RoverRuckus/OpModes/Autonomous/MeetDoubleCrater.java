@@ -11,9 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.CustomTensorFlow;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
-import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 
 @Autonomous(name = "Meet Double Crater")
 
@@ -44,7 +42,7 @@ public class MeetDoubleCrater extends LinearOpMode {
     private final static double DRIVING_SPEED_BLOCK = .53;
 
     // these are the only final values that are used multiple times
-    private double BLOCK_DISTANCE = 27;
+    private double block_distance = 27;
     private final static double SECOND_BLOCK_DISTANCE = 23.0;
 
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -60,6 +58,8 @@ public class MeetDoubleCrater extends LinearOpMode {
     @Override
     public void runOpMode()
     {
+        telemetry.addLine("TEST MESSSAGE");
+        telemetry.update();
         _base.init(hardwareMap, this);
         _base.outTelemetry.write("Initializing - DO NOT START UNTIL NEXT MESSAGE");
         _base.outTelemetry.update();
@@ -77,10 +77,7 @@ public class MeetDoubleCrater extends LinearOpMode {
         //Gets the robot onto the field from the hanger
 
 //
-//        _base.latchSystem.extendHook();
-//        _base.latchSystem.lowerRobot();
-//
-//        this.sleep(2000);
+
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
         _base.drivetrain.turnTo.goTo(0,BLOCK_TURN_SPEED);
         _base.drivetrain.turnTo.blockRunSequentially();
@@ -196,11 +193,11 @@ public class MeetDoubleCrater extends LinearOpMode {
         //drive forward to knock the block off and then go back the same distance
         // this works because at this point the robot is facing the block
         if (_block == blockState.MIDDLE){
-            BLOCK_DISTANCE -= 9.5;
+            block_distance -= 9.5;
         }
-        _base.drivetrain.driveTo.goTo(BLOCK_DISTANCE,DRIVING_SPEED_BLOCK);
+        _base.drivetrain.driveTo.goTo(block_distance,DRIVING_SPEED_BLOCK);
         _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.driveTo.goTo(-(BLOCK_DISTANCE-4),DRIVING_SPEED_BLOCK);
+        _base.drivetrain.driveTo.goTo(-(block_distance -4),DRIVING_SPEED_BLOCK);
         _base.drivetrain.driveTo.runSequentially();
         _base.deliver.raiseMarker();
 

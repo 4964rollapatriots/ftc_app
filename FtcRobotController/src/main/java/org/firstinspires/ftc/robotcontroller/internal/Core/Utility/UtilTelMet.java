@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public final class UtilTelMet
 {
-    Telemetry telemetry;
+    public Telemetry telemetry;
     public UtilTelMet(Telemetry TELMET)
     {
         telemetry = TELMET;

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 
 /**
@@ -12,7 +13,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 //This class will be used test the robot driving 12 inches, to see whether the encoder counts to inch constant needs to be changed
 public class DistanceTest extends LinearOpMode
 {
-    private DTBaseOnly _base = new DTBaseOnly();
+    private Base _base = new Base();
     @Override
     public void runOpMode()
     {
@@ -31,8 +32,8 @@ public class DistanceTest extends LinearOpMode
         _base.outTelemetry.write("Should travel 12 inches at .5");
         _base.outTelemetry.addData("Average Enc Counts before Moving", _base.drivetrain.getAverageEncoderCounts());
         _base.outTelemetry.update();
-        _base.drivetrain.driveTo.goTo(12, .5);
-        _base.drivetrain.driveTo.runSequentially();
+        _base.drivetrain.driveTo.goTo(28, .5);
+        _base.drivetrain.driveTo.runKeepingDistance();
         _base.outTelemetry.addData("Front Right Encoders: ", _base.drivetrain.frontRightEncoderCount());
         _base.outTelemetry.addData("Front Left Encoders: ", _base.drivetrain.frontLeftEncoderCount());
         _base.outTelemetry.addData("Back Right Encoders: ", _base.drivetrain.backRightEncoderCount());
