@@ -9,9 +9,9 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 /**
  * Created by Pranal Madria on 11/28/2018.
  */
-@Autonomous(name = "12Inch Distance Test NO RANGE SENSOR")
+@Autonomous(name = "RANGE SENSOR DISTANCE TEST")
 //This class will be used test the robot driving 12 inches, to see whether the encoder counts to inch constant needs to be changed
-public class DistanceTest extends LinearOpMode
+public class RangeSensDistTest extends LinearOpMode
 {
     private Base _base = new Base();
     @Override
@@ -33,7 +33,7 @@ public class DistanceTest extends LinearOpMode
         _base.outTelemetry.addData("Average Enc Counts before Moving", _base.drivetrain.getAverageEncoderCounts());
         _base.outTelemetry.update();
         _base.drivetrain.driveTo.goTo(12, .5);
-        _base.drivetrain.driveTo.runSequentially(10);
+        _base.drivetrain.driveTo.runKeepingDistance();
         _base.outTelemetry.addData("Front Right Encoders: ", _base.drivetrain.frontRightEncoderCount());
         _base.outTelemetry.addData("Front Left Encoders: ", _base.drivetrain.frontLeftEncoderCount());
         _base.outTelemetry.addData("Back Right Encoders: ", _base.drivetrain.backRightEncoderCount());
@@ -41,6 +41,6 @@ public class DistanceTest extends LinearOpMode
         _base.outTelemetry.addData("Average Encoders: ", _base.drivetrain.getAverageEncoderCounts());
         _base.outTelemetry.update();
         // method that sends information about our angles and powers
-        //_base.outTelemetry();
+        _base.outTelemetry();
     }
 }

@@ -51,7 +51,15 @@ public class HookLift extends RobotComponent
             winch.setPower(0);
         }
 
-        public void lowerRobotWithEncoders(double)
+        public void lowerRobotWithEncoders(int encoders){
+            winch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            winch.setTargetPosition(encoders);
+            while(Math.abs(winch.getCurrentPosition()-winch.getTargetPosition())>50){
+                winch.setPower(-1);
+            }
+            winch.setPower(0);
+            winch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
         //Run the actual collector motor
         public void liftRobot()
         {

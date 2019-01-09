@@ -230,7 +230,7 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
         // drives between the lander and the far left particle so the path is clear to our teammate's side
 
         _base.drivetrain.driveTo.goTo(41, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially(6);
+        _base.drivetrain.driveTo.runStopIfTouch(6);
         _base.deliver.raiseMarker();
 
         //turn to drive in between particle on teammate's side and wall

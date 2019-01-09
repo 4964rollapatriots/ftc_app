@@ -190,7 +190,9 @@ public class DriveToDistance extends RobotCommand
 
     }
 
-    public void runStopIfTouch(){
+    public boolean runStopIfTouch(){
+
+        boolean bumped = false;
 
         if(_drivetrain.getEncoderMode() != DcMotor.RunMode.RUN_TO_POSITION)
         {
@@ -210,6 +212,7 @@ public class DriveToDistance extends RobotCommand
         while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive()) //&& System.currentTimeMillis() - startTime < TIMEOUT)
         {
             if (_drivetrain.touch.isPressed()){
+                bumped = true;
                 break;
             }
         }
@@ -220,11 +223,15 @@ public class DriveToDistance extends RobotCommand
 
         //Command is finished, for teleop now manually drive the robot, for autonomous supply more commands.
         _busy = false;
+        return bumped;
 
     }
 
-    public void runStopIfTouch(double SECONDS_TIMEOUT)
+    public boolean runStopIfTouch(double SECONDS_TIMEOUT)
     {
+
+        boolean bumped = false;
+
         TIMEOUT = (long)(SECONDS_TIMEOUT * 1000);
         if(_drivetrain.getEncoderMode() != DcMotor.RunMode.RUN_TO_POSITION)
         {
@@ -244,6 +251,8 @@ public class DriveToDistance extends RobotCommand
         while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && System.currentTimeMillis() - startTime < TIMEOUT)
         {
             if (_drivetrain.touch.isPressed()){
+
+                bumped = true;
                 break;
             }
         }
@@ -255,7 +264,7 @@ public class DriveToDistance extends RobotCommand
         //Command is finished, for teleop now manually drive the robot, for autonomous supply more commands.
         _busy = false;
 
-
+        return bumped;
     }
 
 
