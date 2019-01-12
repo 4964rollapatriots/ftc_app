@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.robotcontroller.internal.Core.Utility;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.List;
@@ -37,7 +34,7 @@ public class CustomTensorFlow {
 
     private HardwareMap map;
 
-    public List<Recognition> updatedRecognitions;
+    public List<Recognition> recognitions;
 
     public CustomTensorFlow(HardwareMap m){
         map = m;
@@ -56,17 +53,17 @@ public class CustomTensorFlow {
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
-            updatedRecognitions = tfod.getUpdatedRecognitions();
+            recognitions = tfod.getRecognitions();
 
         }
     }
 
     public int getObjectNum(){
-        return updatedRecognitions.size();
+        return recognitions.size();
     }
 
     public boolean oneBall(){
-        if (updatedRecognitions.size() == 1 && updatedRecognitions.get(0).getLabel() == LABEL_GOLD_MINERAL){
+        if (recognitions.size() == 1 && recognitions.get(0).getLabel() == LABEL_GOLD_MINERAL){
             return true;
         }
         else{
@@ -75,7 +72,7 @@ public class CustomTensorFlow {
     }
 
     public boolean oneBlock(){
-        if (updatedRecognitions.size() == 1 && updatedRecognitions.get(0).getLabel() == LABEL_SILVER_MINERAL){
+        if (recognitions.size() == 1 && recognitions.get(0).getLabel() == LABEL_SILVER_MINERAL){
             return true;
         }
         else{
@@ -85,7 +82,7 @@ public class CustomTensorFlow {
 
     public boolean blockVisible(){
         boolean visible = false;
-        for (Recognition rec : updatedRecognitions){
+        for (Recognition rec : recognitions){
             if (rec.getLabel() == LABEL_GOLD_MINERAL){
                 visible = true;
             }

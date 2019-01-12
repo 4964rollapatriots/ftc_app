@@ -116,6 +116,14 @@ public class TeleOpMain extends LinearOpMode
         _base.outTelemetry();
         /*------------------------------------ MARKER DELIVERY --------------------------------*/
         //this is to be used just in case the marker delivery system needs to be used
+        if(gamepad2.dpad_right)
+        {
+            _base.deliver.raiseMarker();
+        }
+        else if(gamepad2.dpad_left)
+        {
+            _base.deliver.deliverMarker();
+        }
 
         /*---------------------------- HOOK EXTENSION/LIFT ROBOT --------------------------------*/
         if(gamepad2.a || gamepad1.dpad_up)
@@ -130,11 +138,11 @@ public class TeleOpMain extends LinearOpMode
             _base.latchSystem.stop();
         /* -------------- HOOK SYSTEM ------------------------*/
 
-        if (gamepad1.left_trigger > .1 && hookOpen){
-            _base.latchSystem.closeHook(2300);
+        if (gamepad1.left_trigger > .20 && hookOpen){
+            _base.latchSystem.closeHook(2200);
             hookOpen = false;
         }
-        else if (gamepad1.right_trigger > .1 && !hookOpen){
+        else if (gamepad1.right_trigger > .20 && !hookOpen){
             _base.latchSystem.openHook(2300);
             hookOpen = true;
         }
@@ -155,12 +163,9 @@ public class TeleOpMain extends LinearOpMode
 
         /* -------------- COLLECTING SYSTEM ---------------------*/
 
-        //Non-Precision Based Extension/Retraction
-        if(gamepad2.left_bumper)
-            _base.collector.releaseBalls();
 
         //Precision Based Extension/Retraction
-        else if(gamepad2.left_stick_y > .15 || gamepad2.left_stick_y < -.15)
+        if(gamepad2.left_stick_y > .15 || gamepad2.left_stick_y < -.15)
         {
             if(gamepad2.left_stick_y > .85)
             {
@@ -185,12 +190,16 @@ public class TeleOpMain extends LinearOpMode
                 _base.collector.runCollector(1);
             else
                 _base.collector.runCollector(gamepad2.right_trigger);
-        if(gamepad2.left_trigger > .2)
+        else if(gamepad2.left_trigger > .2)
             if(gamepad2.left_trigger > .65)
                 _base.collector.runCollector(-1);
             else
                 _base.collector.runCollector(-gamepad2.left_trigger);
-        if(gamepad2.right_trigger < .2 && gamepad2.left_trigger < .2)
+        else if(gamepad2.left_bumper)
+        {
+            _base.collector.releaseBalls();
+        }
+        else
         {
             _base.collector.runCollector(0);
         }
@@ -220,7 +229,7 @@ public class TeleOpMain extends LinearOpMode
         {
             _base.tiltChannel.tiltDownByEnc();
         }
-        else
+        else if(!_base.tiltChannel.pulleys.isBusy())
         {
             _base.tiltChannel.stop();
         }

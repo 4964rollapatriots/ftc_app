@@ -90,7 +90,7 @@ public class HookLift extends RobotComponent
             hook.setPower(1);
             try
             {
-                Thread.sleep(time);
+                Thread.sleep(2100);
             }
             catch(Exception ex)
             {
@@ -98,6 +98,20 @@ public class HookLift extends RobotComponent
             }
             stopHook();
         }
+    public void openHookandExtend(int time){
+        hook.setPower(1);
+        extendHook();
+        try
+        {
+            Thread.sleep(time);
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        stopHook();
+        extendHook(0);
+    }
         public void closeHook(){
             hook.setPower(-1);
         }
@@ -105,7 +119,7 @@ public class HookLift extends RobotComponent
             hook.setPower(-1);
             try
             {
-                Thread.sleep(time);
+                Thread.sleep(2100);
             }
             catch(Exception ex)
             {
@@ -127,6 +141,7 @@ public class HookLift extends RobotComponent
             base.outTelemetry.addData("winch Power: ", winch.getPower());
             base.outTelemetry.addData("Winch Encoders ", getWinchEncoders());
             base.outTelemetry.addData("Hook Extension Power: ", extendHookLift.getPower());
+            base.outTelemetry.addData("HOOK POWER", hook.getPower());
             base.outTelemetry.write("----------END LATCH SYSTEM---------");
             base.outTelemetry.newLine();
         }

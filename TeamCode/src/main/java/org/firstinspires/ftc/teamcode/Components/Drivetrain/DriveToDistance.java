@@ -17,7 +17,7 @@ public class DriveToDistance extends RobotCommand
 
     private int BUFFER = 7;
 
-    private final static double DESIRED_OFFSET = 2;
+    private final static double DESIRED_OFFSET = 3.1;
 
     private boolean _busy = false;
     private boolean endCommand = false;
@@ -65,7 +65,7 @@ public class DriveToDistance extends RobotCommand
         _busy = true;
 
         _drivetrain.setAllMotorPower(speed);
-        long startTime = SystemClock.currentThreadTimeMillis();
+        long startTime = System.currentTimeMillis();
 
         while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive()) //&& System.currentTimeMillis() - startTime < TIMEOUT)
         {
@@ -90,7 +90,6 @@ public class DriveToDistance extends RobotCommand
             _drivetrain.encoderToPos();
         }
 
-
         _drivetrain.backLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.backLeft().getCurrentPosition());
         _drivetrain.backRight().setTargetPosition((int)(distance * COUNTS_PER_INCH)+ _drivetrain.backRight().getCurrentPosition());
         _drivetrain.frontLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.frontLeft().getCurrentPosition());
@@ -98,10 +97,14 @@ public class DriveToDistance extends RobotCommand
         _busy = true;
 
         _drivetrain.setAllMotorPower(speed);
-        long startTime = SystemClock.currentThreadTimeMillis();
-
-        while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && System.currentTimeMillis() - startTime < TIMEOUT)
+        long startTime = System.currentTimeMillis();
+        while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT)
         {
+            _drivetrain.base().outTelemetry.addData("Start Time: ", startTime);
+            _drivetrain.base().outTelemetry.addData("Current System Time ", System.currentTimeMillis());
+            _drivetrain.base().outTelemetry.addData("Timeout ", TIMEOUT);
+            _drivetrain.base().outTelemetry.update();
+
             //Keep running! :D
         }
 
@@ -175,7 +178,8 @@ public class DriveToDistance extends RobotCommand
 
             _drivetrain.backRight().setPower(speed * rightPowerMultiplier);
             _drivetrain.frontRight().setPower(speed * rightPowerMultiplier);
-
+            _drivetrain.base().outTelemetry.addData("Range Sensor: ", currentRange);
+            _drivetrain.base().outTelemetry.update();
             try{
             Thread.sleep(10);}
             catch(Exception e){e.printStackTrace();}
@@ -207,7 +211,7 @@ public class DriveToDistance extends RobotCommand
 
         _drivetrain.setAllMotorPower(speed);
 
-        long startTime = SystemClock.currentThreadTimeMillis();
+        long startTime = System.currentTimeMillis();
 
         while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive()) //&& System.currentTimeMillis() - startTime < TIMEOUT)
         {
@@ -246,9 +250,9 @@ public class DriveToDistance extends RobotCommand
         _busy = true;
 
         _drivetrain.setAllMotorPower(speed);
-        long startTime = SystemClock.currentThreadTimeMillis();
+        long startTime = System.currentTimeMillis();
 
-        while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && System.currentTimeMillis() - startTime < TIMEOUT)
+        while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT)
         {
             if (_drivetrain.touch.isPressed()){
 

@@ -77,9 +77,9 @@ public class Base extends RobotBase
 
     public void outTelemetry()
     {
-//        drivetrain.outTelemetry();
-//        tiltChannel.outTelemetry();
-//        collector.outTelemetry();
+        drivetrain.outTelemetry();
+        tiltChannel.outTelemetry();
+        collector.outTelemetry();
         latchSystem.outTelemetry();
 //        deliver.outTelemetry();
         outTelemetry.addData("Range: ", distanceSensor.distance(DistanceUnit.INCH));

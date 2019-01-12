@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.CustomTensorFlow;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 
 @Autonomous(name = "Single Particle Corner")
@@ -209,12 +208,12 @@ public class StandardCorner extends LinearOpMode {
         boolean aligned = false;
         if (RUN_USING_TENSOR_FLOW){
             detector.refresh();
-            if(detector.updatedRecognitions == null)
+            if(detector.recognitions == null)
             {
                 return false;
             }
-            for (int i = 0; i < detector.updatedRecognitions.size(); i ++){
-                Recognition rec = detector.updatedRecognitions.get(i);
+            for (int i = 0; i < detector.recognitions.size(); i ++){
+                Recognition rec = detector.recognitions.get(i);
                 if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
                     aligned = true;
                     break;

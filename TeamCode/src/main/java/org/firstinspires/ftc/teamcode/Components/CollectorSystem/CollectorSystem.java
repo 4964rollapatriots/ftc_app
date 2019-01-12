@@ -58,7 +58,7 @@ public class CollectorSystem extends RobotComponent {
 
     public void releaseBalls()
     {
-        collector.setPower(-.30);
+        collector.setPower(-.92);
     }
 
 

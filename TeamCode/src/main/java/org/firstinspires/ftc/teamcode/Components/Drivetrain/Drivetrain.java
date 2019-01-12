@@ -228,56 +228,28 @@ public class Drivetrain extends RobotComponent
         {
             case FORWARD_FAST:
                 _powerMult = FORWARD * FAST;
+                encoderOff();
                 break;
             case FORWARD_SLOW:
                 _powerMult = FORWARD * SLOW;
+                encoderOff();
                 break;
             case INVERTED_FAST:
                 _powerMult = BACKWARD * FAST;
+                encoderOff();
                 break;
             case INVERTED_SLOW:
                 _powerMult = BACKWARD * SLOW;
+                encoderOff();
                 break;
             case STOP:
                 _powerMult = STOP;
+                encoderStopReset();
                 break;
         }
         currState = STATE;
     }
 
-    public void slowMode() {
-        switch (currState) {
-            case FORWARD_FAST:
-                setCurrState(State.FORWARD_SLOW);
-                break;
-            case FORWARD_SLOW:
-                setCurrState(State.FORWARD_FAST);
-                break;
-            case INVERTED_FAST:
-                setCurrState(State.INVERTED_SLOW);
-                break;
-            case INVERTED_SLOW:
-                setCurrState(State.INVERTED_FAST);
-                break;
-        }
-    }
-
-    public void invert() {
-        switch (currState) {
-            case FORWARD_FAST:
-                setCurrState(State.INVERTED_FAST);
-                break;
-            case FORWARD_SLOW:
-                setCurrState(State.INVERTED_SLOW);
-                break;
-            case INVERTED_FAST:
-                setCurrState(State.FORWARD_FAST);
-                break;
-            case INVERTED_SLOW:
-                setCurrState(State.FORWARD_SLOW);
-                break;
-        }
-    }
 
     public DcMotor.RunMode getEncoderMode()
     {

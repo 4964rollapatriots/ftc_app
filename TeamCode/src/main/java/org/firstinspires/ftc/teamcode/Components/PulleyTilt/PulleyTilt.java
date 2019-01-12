@@ -14,13 +14,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class PulleyTilt extends RobotComponent
 {
 
-    DcMotor pulleys;
+    public DcMotor pulleys;
 
-    private double TILT_UP_POW = 1;
-    private double TILT_DOWN_POW = -1;
+    private double TILT_UP_POW = -1;
+    private double TILT_DOWN_POW = 1;
 
-    private int TILT_UP_ENC = 2000; //test this
-    private int TILT_DOWN_ENC = 0;
+    private int TILT_UP_ENC = -1235; //test this
+    private int TILT_DOWN_ENC = 1550;
 
     public int BUFFER = 6;
 
@@ -41,10 +41,11 @@ public class PulleyTilt extends RobotComponent
         pulleys.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pulleys.setTargetPosition(TILT_UP_ENC);
         pulleys.setPower(TILT_UP_POW);
-        if (pulleys.getCurrentPosition() >= TILT_UP_ENC - BUFFER && pulleys.getCurrentPosition() <= TILT_UP_ENC + BUFFER)
+        while (!(pulleys.getCurrentPosition() >= TILT_UP_ENC - BUFFER && pulleys.getCurrentPosition() <= TILT_UP_ENC + BUFFER))
         {
-            stop();
+
         }
+        stop();
     }
 
     public void tiltDownByEnc()

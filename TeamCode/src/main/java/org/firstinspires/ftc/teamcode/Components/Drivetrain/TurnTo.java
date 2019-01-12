@@ -90,7 +90,7 @@ public class TurnTo extends RobotCommand
 
         _drivetrain.setCurrState(Drivetrain.State.FORWARD_FAST);
 
-        while(Math.abs(error) > BUFFER && System.currentTimeMillis() - startTime < TIMEOUT
+        while(Math.abs(error) > BUFFER && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT
                 && !endCommand && _drivetrain.base().opMode.opModeIsActive())
         {
             _imu.setAngle();
@@ -243,7 +243,7 @@ public class TurnTo extends RobotCommand
 
         _drivetrain.setCurrState(Drivetrain.State.FORWARD_FAST);
 
-        while (Math.abs(error) > BUFFER && System.currentTimeMillis() - startTime < TIMEOUT
+        while (Math.abs(error) > BUFFER && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT
                 && !endCommand && _drivetrain.base().opMode.opModeIsActive()) {
             _imu.setAngle();
             heading = _imu.zAngle();

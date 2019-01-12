@@ -32,7 +32,7 @@ public class RangeSensDistTest extends LinearOpMode
         _base.outTelemetry.write("Should travel 12 inches at .5");
         _base.outTelemetry.addData("Average Enc Counts before Moving", _base.drivetrain.getAverageEncoderCounts());
         _base.outTelemetry.update();
-        _base.drivetrain.driveTo.goTo(12, .5);
+        _base.drivetrain.driveTo.goTo(26, .5);
         _base.drivetrain.driveTo.runKeepingDistance();
         _base.outTelemetry.addData("Front Right Encoders: ", _base.drivetrain.frontRightEncoderCount());
         _base.outTelemetry.addData("Front Left Encoders: ", _base.drivetrain.frontLeftEncoderCount());

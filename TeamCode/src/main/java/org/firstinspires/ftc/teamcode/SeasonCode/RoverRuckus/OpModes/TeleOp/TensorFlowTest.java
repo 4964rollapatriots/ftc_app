@@ -72,13 +72,13 @@ public class TensorFlowTest extends LinearOpMode {
     private boolean aligned(){
         boolean aligned = false;
         if (true){
-            if(detector.updatedRecognitions == null)
+            if(detector.recognitions == null)
             {
                 aligned = false;
             }
             else{
-                for (int i = 0; i <= detector.updatedRecognitions.size(); i ++){
-                    Recognition rec = detector.updatedRecognitions.get(i);
+                for (int i = 0; i <= detector.recognitions.size(); i ++){
+                    Recognition rec = detector.recognitions.get(i);
                     if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
                         aligned = true;
                         break;

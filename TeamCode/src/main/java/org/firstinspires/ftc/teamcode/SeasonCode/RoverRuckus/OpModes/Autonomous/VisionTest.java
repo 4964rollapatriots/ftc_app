@@ -8,10 +8,11 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.UtilCV;
-import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
-import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.CustomTensorFlow;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
+
+import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.LABEL_GOLD_MINERAL;
 
 @Autonomous(name = "Vision Test")
 
@@ -20,7 +21,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 public class VisionTest extends LinearOpMode {
 
     private DTBaseOnly _base = new DTBaseOnly();
-    private UtilGoldDetector eye;
+    private CustomTensorFlow eye;
 
     private blockState _block;
     private boolean secondBlockFound;
@@ -48,88 +49,73 @@ public class VisionTest extends LinearOpMode {
     {
         _block = blockState.UNCERTAIN;
         secondBlockFound = false;
-        _base.init(hardwareMap, this);
-        _base.imu.calibrateTo(0);
-        eye = new UtilGoldDetector(hardwareMap);
+        eye = new CustomTensorFlow(hardwareMap);
         //This calibration is done before landing because the landing could "bump" the robot and change our angle
 
         waitForStart();
+        eye.activate();
 
         //Gets the robot onto the field from the hanger
         // code here
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
-        _base.drivetrain.turnTo.goTo(0,TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially();
         // method that sends information about our angles and powers
-        sendTelemetry();
 
         // sees if the block is initially aligned in the middle, if so it does not need to turn
-        if (eye.isAligned()){
-            _block = blockState.MIDDLE;
+
+        while(opModeIsActive()) {
+            if (aligned()) {
+                telemetry.addData("block FOUND! ", true);
+                telemetry.update();
+                _block = blockState.MIDDLE;
+            }
+            else{
+                telemetry.addData("nothing found", true);
+                telemetry.update();
+            }
         }
         // if it does not see it, it will turn by single degrees until it reaches the first angle
         // if the block is on the left, the robot will see it as it turns
-        else if (_block == blockState.UNCERTAIN){
-            for (int i = 0; i < FIRST_BLOCK_TURN_ANGLE; i += 4){
-                _base.drivetrain.turnTo.goTo(i,TURN_SPEED);
-                _base.drivetrain.turnTo.runSequentially();
-                if (eye.isAligned()){
-                    _block = blockState.LEFT;
-                    break;
-                }
-            }
-        }
-        //if the block is not on the left, then the robot turns to the initial zero degrees
-        // it then turns slightly to the right to make sure that the block is not in the middle
-        // this is necessary because of the offset of our camera on the left of our robot
-        else if (_block == blockState.UNCERTAIN){
-            _base.drivetrain.turnTo.goTo(0,TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
-            for (int i = 0; i < MIDDLE_ANGLE; i += 4){
-                _base.drivetrain.turnTo.goTo(360-i, TURN_SPEED);
-                _base.drivetrain.turnTo.runSequentially();
-                if (eye.isAligned()){
-                    _block = blockState.MIDDLE;
-                    break;
-                }
-            }
-        }
-        // if and only if the robot has not yet found the ball,
-        // it turns to the right by small increments until it reaches its target or sees the block
-        else if (_block == blockState.UNCERTAIN){
-            _base.drivetrain.turnTo.goTo(360 - MIDDLE_ANGLE,TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
-            for (int i = 0; i < FIRST_BLOCK_TURN_ANGLE - MIDDLE_ANGLE; i += 4){
-                _base.drivetrain.turnTo.goTo(360-MIDDLE_ANGLE-i,TURN_SPEED);
-                _base.drivetrain.turnTo.runSequentially();
-                if (eye.isAligned()){
-                    _block = blockState.RIGHT;
-                    break;
-                }
-            }
-        }
-
-
-        sendTelemetry();
         telemetry.addData("block state is", _block);
         telemetry.update();
 
         //drive forward to knock the block off and then go back the same distance
         // this works because at this point the robot is facing the block
-        _base.drivetrain.driveTo.goTo(BLOCK_DISTANCE,DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.driveTo.goTo(-BLOCK_DISTANCE/2,DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
+
     }
 
-    private void sendTelemetry(){
-        telemetry.addData("Angle Z: ", _base.imu.zAngle());
-        telemetry.addData("Angle X: ", _base.imu.xAngle());
-        telemetry.addData("Angle Y: ", _base.imu.yAngle());
-        telemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
-        telemetry.addData("robot is lined up", eye.isAligned());
-        telemetry.update();
+    private boolean aligned(){
+        boolean aligned = false;
+        if (true){
+            eye.refresh();
+            if(eye.recognitions == null)
+            {
+                telemetry.addData("Eye List Null ", true);
+                telemetry.update();
+                aligned = false;
+            }
+            else{
+                telemetry.addData("Pre For Loop in Eye ", true);
+                telemetry.update();
+
+                for (int i = 0; i < eye.recognitions.size(); i ++){
+                    Recognition rec = eye.recognitions.get(i);
+                    telemetry.addData("Left side ", rec.getLeft());
+                    telemetry.addData("UpdatedRecognition Size ", eye.recognitions.size());
+                    telemetry.addData("Rec Label", rec.getLabel());
+                    telemetry.addData("Rec Confidence", rec.getConfidence());
+                    telemetry.update();
+                    if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > .40){
+                        aligned = true;
+                        break;
+                    }
+                }
+            }
+
+        }
+        return aligned;
+
+
     }
 
 }
