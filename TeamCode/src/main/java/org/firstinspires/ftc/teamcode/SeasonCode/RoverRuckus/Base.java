@@ -28,9 +28,9 @@ public class Base extends RobotBase
     public HookLift latchSystem = new HookLift();
     public PulleyTilt tiltChannel = new PulleyTilt();
     public MarkerDelivery deliver = new MarkerDelivery();
-    public MRRange distanceSensor = new MRRange();
+    public MRRange rightDistSensor = new MRRange();
     public Touch bump = new Touch();
-
+    public MRRange frontDistSensor = new MRRange();
     @Override
     public void init(final HardwareMap hwm, final LinearOpMode op)
     {
@@ -53,8 +53,9 @@ public class Base extends RobotBase
         tiltChannel.init(this);//
         outTelemetry.write("ABOUT TO RANGE YOU");
         outTelemetry.update();
-        distanceSensor.init(this, "range");
+        rightDistSensor.init(this, "rightRange");
         bump.init(this, "touch");
+        frontDistSensor.init(this, "frontRange");
         outTelemetry.write("B. I. G. RANGE ");
         outTelemetry.update();
         //Try catches to prevent crashes
@@ -71,7 +72,7 @@ public class Base extends RobotBase
 
 
         // Dependency setting
-        drivetrain.setDependencies(imu, distanceSensor,bump);
+        drivetrain.setDependencies(imu, rightDistSensor,bump, frontDistSensor);
 
     }
 
@@ -81,8 +82,9 @@ public class Base extends RobotBase
         tiltChannel.outTelemetry();
         collector.outTelemetry();
         latchSystem.outTelemetry();
-//        deliver.outTelemetry();
-        outTelemetry.addData("Range: ", distanceSensor.distance(DistanceUnit.INCH));
+        //deliver.outTelemetry();
+        outTelemetry.addData("Right Range: ", rightDistSensor.distance(DistanceUnit.INCH));
+        outTelemetry.addData("Front Range: ", frontDistSensor.distance(DistanceUnit.INCH));
         outTelemetry.telemetry.addData("Drivetrain State", drivetrain.state());
         outTelemetry.update();
     }

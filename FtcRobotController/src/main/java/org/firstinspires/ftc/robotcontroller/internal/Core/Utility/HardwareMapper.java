@@ -128,7 +128,12 @@ public final class HardwareMapper
 
         tempRange = robot.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, NAME);
         tempRange.initialize();
-        //tempRange.setI2cAddress(I2cAddr.create8bit(1));
+
+        try {
+            tempRange = robot.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, NAME);
+        }
+        catch(Exception e){
+        }
         return tempRange;
     }
 
@@ -139,7 +144,6 @@ public final class HardwareMapper
             tempTouch = robot.hardwareMap.get(RevTouchSensor.class, NAME);
         }
         catch(Exception e){
-            //robot.outTelemetry.write("Problem mapping the range sensor");
         }
         return tempTouch;
     }

@@ -29,7 +29,8 @@ public class Drivetrain extends RobotComponent
     private DcMotor backRight;
 
     public REVIMU imu;
-    public MRRange range;
+    public MRRange right_range;
+    public MRRange front_range;
     public Touch touch;
 
     //Instantiate Commands
@@ -66,15 +67,16 @@ public class Drivetrain extends RobotComponent
     public void setDependencies(final REVIMU IMU, final MRRange RANGE){
 
         imu = IMU;
-        range = RANGE;
+        right_range = RANGE;
         turnTo = new TurnTo(this, imu);
         driveTo = new DriveToDistance(this);
     }
 
-    public void setDependencies(final REVIMU IMU, final MRRange RANGE, final Touch t){
+    public void setDependencies(final REVIMU IMU, final MRRange RIGHT_RANGE, final Touch t, final MRRange FRONT_RANGE){
 
         imu = IMU;
-        range = RANGE;
+        right_range = RIGHT_RANGE;
+        front_range = FRONT_RANGE;
         touch = t;
         turnTo = new TurnTo(this, imu);
         driveTo = new DriveToDistance(this);
@@ -171,37 +173,6 @@ public class Drivetrain extends RobotComponent
         frontLeft.setPower(drivePower - rotatePower);
     }
 
-    public void runTeleOp(double drivePower, double rotatePower)
-    {
-
-//        drivePower *= _powerMult;
-//        rotatePower *= -1 * _powerMult;
-//        if(inverted)
-//        {
-//            setCurrState(State.INVERTED_FAST);
-//            if (slowMode)
-//            {
-//                setCurrState(State.INVERTED_SLOW);
-//            }
-//        }
-//        else
-//        {
-//            setCurrState(State.FORWARD_FAST);
-//            if(slowMode)
-//            {
-//                setCurrState(State.FORWARD_SLOW);
-//            }
-//        }
-//        if(currState == State.INVERTED_FAST || currState == State.INVERTED_SLOW)
-//        {
-//            rotatePower *= -1;
-//        }
-
-        backRight.setPower(drivePower - rotatePower);
-        backLeft.setPower(drivePower + rotatePower);
-        frontRight.setPower(drivePower - rotatePower);
-        frontLeft.setPower(drivePower + rotatePower);
-    }
     public void encoderOn()
     {
         setEncoderState(DcMotor.RunMode.RUN_USING_ENCODER);

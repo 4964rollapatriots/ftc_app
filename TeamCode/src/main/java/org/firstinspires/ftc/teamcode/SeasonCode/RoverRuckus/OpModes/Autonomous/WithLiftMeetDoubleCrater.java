@@ -269,10 +269,7 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
                 break;
             }
         }
-
-        // since the phone is on the left of our robot, we turn a small amount so the robot's center is aligned with the block
-        //turnToAlign(15);
-
+        
 
         // knock the second block off and comes back
         _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE,DRIVING_SPEED);
