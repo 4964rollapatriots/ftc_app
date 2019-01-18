@@ -230,7 +230,8 @@ public class MeetDoubleCrater extends LinearOpMode {
 
         //drives between the particle on teammate's side and wall
         _base.drivetrain.driveTo.goTo(11, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runKeepingDistance();
+        //_base.drivetrain.driveTo.runKeepingDistance();
+        _base.drivetrain.driveTo.runSequentially();
 
 
         _base.deliver.raiseMarker();
@@ -244,7 +245,7 @@ public class MeetDoubleCrater extends LinearOpMode {
 
         //drives to the deposit zone
         _base.drivetrain.driveTo.goTo(21.5, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially(4);
+        _base.drivetrain.driveTo.runStopIfDist(4);
 
         telemetry.addData("ARC TURNING" ," NOW");
         telemetry.update();

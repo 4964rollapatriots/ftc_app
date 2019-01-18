@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.Components.PulleyTilt;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,13 +17,13 @@ public class PulleyTilt extends RobotComponent
 
     public DcMotor pulleys;
 
-    private double TILT_UP_POW = -1;
-    private double TILT_DOWN_POW = 1;
+    private double TILT_UP_POW = -.80;
+    private double TILT_DOWN_POW = .80;
 
-    private int TILT_UP_ENC = -1235; //test this
+    private int TILT_UP_ENC = -500; //test this
     private int TILT_DOWN_ENC = 1550;
 
-    public int BUFFER = 6;
+    public int BUFFER = 75;
 
     public void init(final RobotBase BASE)
     {
@@ -36,27 +37,58 @@ public class PulleyTilt extends RobotComponent
         pulleys.setPower(POWER);
     }
 
-    public void tiltUpByEnc()
+    public boolean tiltUpByEnc()
     {
-        pulleys.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        pulleys.setTargetPosition(TILT_UP_ENC);
-        pulleys.setPower(TILT_UP_POW);
-        while (!(pulleys.getCurrentPosition() >= TILT_UP_ENC - BUFFER && pulleys.getCurrentPosition() <= TILT_UP_ENC + BUFFER))
+        pulleys.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        base.outTelemetry.addData("Position: ", pulleys.getCurrentPosition());
+        base.outTelemetry.update();
+        if (pulleys.getCurrentPosition() <= TILT_UP_ENC )
         {
-
+            base.outTelemetry.addData("Got Inside the IF Statemnt for TILT UP", true);
+            base.outTelemetry.update();
+            stop();
+            return true;
         }
-        stop();
+        else if(Math.abs(pulleys.getCurrentPosition() - TILT_UP_ENC) < 300)
+        {
+            //TILT_UP_POW *= .95;
+            pulleys.setPower(TILT_UP_POW * .40);
+        }
+        else if(Math.abs(pulleys.getCurrentPosition() - TILT_UP_ENC) < 500)
+        {
+            pulleys.setPower(TILT_UP_POW * .70);
+        }
+        else {
+            pulleys.setPower(TILT_UP_POW);
+        }
+        return false;
     }
 
-    public void tiltDownByEnc()
+    public boolean tiltDownByEnc()
     {
-        pulleys.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        pulleys.setTargetPosition(TILT_DOWN_ENC);
-        pulleys.setPower(TILT_DOWN_POW);
-        if (pulleys.getCurrentPosition() >= TILT_DOWN_ENC - BUFFER && pulleys.getCurrentPosition() <= TILT_DOWN_ENC + BUFFER)
+        pulleys.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        base.outTelemetry.addData("Position: ", pulleys.getCurrentPosition());
+        base.outTelemetry.update();
+        if (pulleys.getCurrentPosition() >= TILT_DOWN_ENC )
         {
+            base.outTelemetry.addData("Got Inside the IF Statemnt for TILT UP", true);
+            base.outTelemetry.update();
             stop();
+            return true;
         }
+        else if(Math.abs(pulleys.getCurrentPosition() - TILT_DOWN_ENC) < 900)
+        {
+            //TILT_UP_POW *= .95;
+            pulleys.setPower(TILT_DOWN_POW * .70);
+        }
+        else if(Math.abs(pulleys.getCurrentPosition() - TILT_DOWN_ENC) < 300)
+        {
+            pulleys.setPower(TILT_DOWN_POW * .40);
+        }
+        else {
+            pulleys.setPower(TILT_DOWN_POW);
+        }
+        return false;
 
     }
 

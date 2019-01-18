@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.MRRange;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.ODS;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVColorSensor;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVIMU;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.Touch;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.Util;
@@ -16,7 +18,8 @@ public class Drivetrain extends RobotComponent
 
     private final double FORWARD = 1;
     private final double BACKWARD = -1;
-    private final double SLOW = .50;
+    private final double SLOW = .60;
+    private final double SLOWER = .30;
     private final double FAST = 1;
     private final double STOP = 0;
 
@@ -29,7 +32,7 @@ public class Drivetrain extends RobotComponent
     private DcMotor backRight;
 
     public REVIMU imu;
-    public MRRange right_range;
+    public REVColorSensor right_range;
     public MRRange front_range;
     public Touch touch;
 
@@ -64,7 +67,7 @@ public class Drivetrain extends RobotComponent
         driveTo = new DriveToDistance(this);
     }
 
-    public void setDependencies(final REVIMU IMU, final MRRange RANGE){
+    public void setDependencies(final REVIMU IMU, final REVColorSensor RANGE){
 
         imu = IMU;
         right_range = RANGE;
@@ -72,7 +75,16 @@ public class Drivetrain extends RobotComponent
         driveTo = new DriveToDistance(this);
     }
 
-    public void setDependencies(final REVIMU IMU, final MRRange RIGHT_RANGE, final Touch t, final MRRange FRONT_RANGE){
+    public void setDependencies(final REVIMU IMU, final Touch t, final MRRange FRONT_RANGE){
+
+        imu = IMU;
+        front_range = FRONT_RANGE;
+        touch = t;
+        turnTo = new TurnTo(this, imu);
+        driveTo = new DriveToDistance(this);
+    }
+
+    public void setDependencies(final REVIMU IMU, final REVColorSensor RIGHT_RANGE, final Touch t, final MRRange FRONT_RANGE){
 
         imu = IMU;
         right_range = RIGHT_RANGE;
@@ -154,7 +166,7 @@ public class Drivetrain extends RobotComponent
         backRight.setPower(rightPower);
         frontRight.setPower(rightPower);
     }
-    public void run(double drivePower, double rotatePower, boolean scale)
+    public void run(double drivePower, double rotatePower, boolean scale, double hardScale)
     {
 
         if(scale)
@@ -167,10 +179,10 @@ public class Drivetrain extends RobotComponent
         if(currState == State.INVERTED_FAST || currState == State.INVERTED_SLOW) {
             rotatePower *= -1;
         }
-        backRight.setPower(drivePower + rotatePower);
-        backLeft.setPower(drivePower - rotatePower);
-        frontRight.setPower(drivePower + rotatePower);
-        frontLeft.setPower(drivePower - rotatePower);
+        backRight.setPower((drivePower + rotatePower)*hardScale);
+        backLeft.setPower((drivePower - rotatePower)*hardScale);
+        frontRight.setPower((drivePower + rotatePower)*hardScale);
+        frontLeft.setPower((drivePower - rotatePower)*hardScale);
     }
 
     public void encoderOn()

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.robotcontroller.internal.Core.Utility;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsTouchSensor;
 import com.qualcomm.hardware.motors.TetrixMotor;
@@ -9,11 +10,14 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.MRRange;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVColorSensor;
 
 /*
 All of our hardware will be mapped here.
@@ -88,12 +92,11 @@ public final class HardwareMapper
     Maps a colorsensor with the name and address that are passed in as parameters.
     The servo that will be mapped is returned.
      */
-    public ColorSensor mapColorSensor(final String NAME, final int ADDRESS)
+    public DistanceSensor mapDistanceSensor(final String NAME)
     {
-        ColorSensor tempColor;
+        DistanceSensor tempColor;
 
-        tempColor = robot.hardwareMap.colorSensor.get(NAME);
-        tempColor.setI2cAddress(I2cAddr.create8bit(ADDRESS));
+        tempColor = robot.hardwareMap.get(DistanceSensor.class, NAME);
 
         return tempColor;
     }
@@ -135,6 +138,19 @@ public final class HardwareMapper
         catch(Exception e){
         }
         return tempRange;
+    }
+
+    public OpticalDistanceSensor mapODS(final String NAME){
+
+        OpticalDistanceSensor tempODS = null;
+
+        try {
+            tempODS = robot.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, NAME);
+        }
+        catch(Exception e){
+        }
+
+        return tempODS;
     }
 
     public RevTouchSensor mapTouch(final String NAME){

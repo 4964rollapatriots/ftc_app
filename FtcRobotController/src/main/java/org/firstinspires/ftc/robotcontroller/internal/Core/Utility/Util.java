@@ -14,7 +14,7 @@ public final class Util
         error = (int) target - CURRENT;
 
 
-        if(CURRENT == 356 && error < -300)
+        if(CURRENT == 0 && error < -300)
         {
                 error += 360;
                 return error;

@@ -15,8 +15,8 @@ public class DriveToDistance extends RobotCommand
 
     private int BUFFER = 7;
 
-    private final static double DESIRED_OFFSET = 3.1;
-    private final static double FRONT_DESIRED_OFFSET = 5.0;
+    private final static double DESIRED_OFFSET = 3.9;
+    private final static double FRONT_DESIRED_OFFSET = 34.4;
 
     private boolean _busy = false;
     private boolean endCommand = false;
@@ -116,6 +116,43 @@ public class DriveToDistance extends RobotCommand
 
     }
 
+    public boolean runSequentiallyBlockDetection(double SECONDS_TIMEOUT){
+        boolean found = false;
+        TIMEOUT = (long)(SECONDS_TIMEOUT * 1000);
+        if(_drivetrain.getEncoderMode() != DcMotor.RunMode.RUN_TO_POSITION)
+        {
+            _drivetrain.encoderToPos();
+        }
+
+        _drivetrain.backLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.backLeft().getCurrentPosition());
+        _drivetrain.backRight().setTargetPosition((int)(distance * COUNTS_PER_INCH)+ _drivetrain.backRight().getCurrentPosition());
+        _drivetrain.frontLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.frontLeft().getCurrentPosition());
+        _drivetrain.frontRight().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.frontRight().getCurrentPosition());
+        _busy = true;
+
+        _drivetrain.setAllMotorPower(speed);
+        long startTime = System.currentTimeMillis();
+        while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT)
+        {
+            _drivetrain.base().outTelemetry.addData("Start Time: ", startTime);
+            _drivetrain.base().outTelemetry.addData("Current System Time ", System.currentTimeMillis());
+            _drivetrain.base().outTelemetry.addData("Timeout ", TIMEOUT);
+            _drivetrain.base().outTelemetry.update();
+
+
+
+            //Keep running! :D
+        }
+
+        _drivetrain.setAllMotorPower(0);
+
+        _drivetrain.encoderOn();
+
+        //Command is finished, for teleop now manually drive the robot, for autonomous supply more commands.
+        _busy = false;
+        return found;
+    }
+
     public void runKeepingDistance(){
 
         double currentRange;
@@ -124,7 +161,7 @@ public class DriveToDistance extends RobotCommand
         double leftPowerMultiplier = 1;
         double rightPowerMultiplier = 1;
 
-        currentRange =  _drivetrain.right_range.distance(DistanceUnit.INCH);
+        currentRange =  _drivetrain.right_range.distance();
 
         error = Math.abs(currentRange - DESIRED_OFFSET);
 
@@ -159,28 +196,33 @@ public class DriveToDistance extends RobotCommand
             leftPowerMultiplier = 1;
             rightPowerMultiplier = 1;
 
-            currentRange =  _drivetrain.right_range.distance(DistanceUnit.INCH);
+            currentRange =  _drivetrain.right_range.distance();
 
-            error = Math.abs(currentRange - DESIRED_OFFSET);
+            if (currentRange < 10){
 
-            if ( currentRange > DESIRED_OFFSET){
-                leftPowerMultiplier = 1 + (error * correctionSpeed);
+                error = Math.abs(currentRange - DESIRED_OFFSET);
+
+                if ( currentRange > DESIRED_OFFSET){
+                    leftPowerMultiplier = 1 + (error * correctionSpeed);
+                }
+
+                else if (currentRange < DESIRED_OFFSET){
+                    rightPowerMultiplier = 1 + (error * correctionSpeed);
+                }
+
+                _drivetrain.backLeft().setPower(speed * leftPowerMultiplier);
+                _drivetrain.frontLeft().setPower(speed * leftPowerMultiplier);
+
+                _drivetrain.backRight().setPower(speed * rightPowerMultiplier);
+                _drivetrain.frontRight().setPower(speed * rightPowerMultiplier);
+                _drivetrain.base().outTelemetry.addData("Range Sensor: ", currentRange);
+                _drivetrain.base().outTelemetry.update();
+                try{
+                    Thread.sleep(10);}
+                catch(Exception e){e.printStackTrace();}
             }
 
-            else if (currentRange < DESIRED_OFFSET){
-                rightPowerMultiplier = 1 + (error * correctionSpeed);
-            }
 
-            _drivetrain.backLeft().setPower(speed * leftPowerMultiplier);
-            _drivetrain.frontLeft().setPower(speed * leftPowerMultiplier);
-
-            _drivetrain.backRight().setPower(speed * rightPowerMultiplier);
-            _drivetrain.frontRight().setPower(speed * rightPowerMultiplier);
-            _drivetrain.base().outTelemetry.addData("Range Sensor: ", currentRange);
-            _drivetrain.base().outTelemetry.update();
-            try{
-            Thread.sleep(10);}
-            catch(Exception e){e.printStackTrace();}
         }
 
         _drivetrain.setAllMotorPower(0);
@@ -295,9 +337,9 @@ public class DriveToDistance extends RobotCommand
         while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive())
         {
 
-            currentRange =  _drivetrain.right_range.distance(DistanceUnit.INCH);
+            currentRange =  _drivetrain.front_range.distance(DistanceUnit.INCH);
 
-            if ( currentRange > FRONT_DESIRED_OFFSET)
+            if ( currentRange > FRONT_DESIRED_OFFSET ) //+ 8 && currentRange < FRONT_DESIRED_OFFSET )
             {
                 leftPowerMultiplier *= .75;
                 rightPowerMultiplier *= .75;
@@ -337,8 +379,7 @@ public class DriveToDistance extends RobotCommand
         double currentRange = 0;
         double distFrom = 0;
         double correctionSpeed = 0.2;
-        double leftPowerMultiplier = 1;
-        double rightPowerMultiplier = 1;
+        double powerMultiplier = 1;
 
 
         TIMEOUT = (long)(SECONDS_TIMEOUT * 1000);
@@ -359,25 +400,34 @@ public class DriveToDistance extends RobotCommand
         while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT)
         {
 
-            currentRange =  _drivetrain.right_range.distance(DistanceUnit.INCH);
+            currentRange =  _drivetrain.front_range.distance(DistanceUnit.INCH);
 
-            if ( currentRange > FRONT_DESIRED_OFFSET)
+            if ( currentRange > FRONT_DESIRED_OFFSET && currentRange < FRONT_DESIRED_OFFSET + 20)
             {
-                leftPowerMultiplier *= .75;
-                rightPowerMultiplier *= .75;
+                powerMultiplier = Math.abs(currentRange - FRONT_DESIRED_OFFSET) * .05;
                 withinDist = false;
             }
-            else
+            else if(currentRange < FRONT_DESIRED_OFFSET && currentRange > 15)
             {
                 withinDist = true;
                 break;
             }
+            double minimumPower = 0.07;
+            if(powerMultiplier * speed <= minimumPower)
+            {
+                _drivetrain.backLeft().setPower(minimumPower);
+                _drivetrain.frontLeft().setPower(minimumPower);
 
-            _drivetrain.backLeft().setPower(speed * leftPowerMultiplier);
-            _drivetrain.frontLeft().setPower(speed * leftPowerMultiplier);
+                _drivetrain.backRight().setPower(minimumPower);
+                _drivetrain.frontRight().setPower(minimumPower);
+            }
+            else {
+                _drivetrain.backLeft().setPower(speed * powerMultiplier);
+                _drivetrain.frontLeft().setPower(speed * powerMultiplier);
 
-            _drivetrain.backRight().setPower(speed * rightPowerMultiplier);
-            _drivetrain.frontRight().setPower(speed * rightPowerMultiplier);
+                _drivetrain.backRight().setPower(speed * powerMultiplier);
+                _drivetrain.frontRight().setPower(speed * powerMultiplier);
+            }
             _drivetrain.base().outTelemetry.addData("Front Range Sensor: ", currentRange);
             _drivetrain.base().outTelemetry.update();
             try{

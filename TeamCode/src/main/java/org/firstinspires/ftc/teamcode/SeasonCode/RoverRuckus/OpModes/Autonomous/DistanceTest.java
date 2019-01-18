@@ -32,8 +32,8 @@ public class DistanceTest extends LinearOpMode
         _base.outTelemetry.write("Should travel 12 inches at .5");
         _base.outTelemetry.addData("Average Enc Counts before Moving", _base.drivetrain.getAverageEncoderCounts());
         _base.outTelemetry.update();
-        _base.drivetrain.driveTo.goTo(40, .5);
-        _base.drivetrain.driveTo.runStopIfTouch(5);
+        _base.drivetrain.turnTo.goTo(170, .1);
+        _base.drivetrain.turnTo.arcSequentially(10, 3.5);
         _base.outTelemetry.addData("Front Right Encoders: ", _base.drivetrain.frontRightEncoderCount());
         _base.outTelemetry.addData("Front Left Encoders: ", _base.drivetrain.frontLeftEncoderCount());
         _base.outTelemetry.addData("Back Right Encoders: ", _base.drivetrain.backRightEncoderCount());

@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.MRRange;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.ODS;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVColorSensor;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVIMU;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.Touch;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -28,7 +30,7 @@ public class Base extends RobotBase
     public HookLift latchSystem = new HookLift();
     public PulleyTilt tiltChannel = new PulleyTilt();
     public MarkerDelivery deliver = new MarkerDelivery();
-    public MRRange rightDistSensor = new MRRange();
+    //public REVColorSensor rightDistSensor = new REVColorSensor(this);
     public Touch bump = new Touch();
     public MRRange frontDistSensor = new MRRange();
     @Override
@@ -53,7 +55,7 @@ public class Base extends RobotBase
         tiltChannel.init(this);//
         outTelemetry.write("ABOUT TO RANGE YOU");
         outTelemetry.update();
-        rightDistSensor.init(this, "rightRange");
+        //rightDistSensor.mapREVDistanceSensor("rightRange");
         bump.init(this, "touch");
         frontDistSensor.init(this, "frontRange");
         outTelemetry.write("B. I. G. RANGE ");
@@ -72,20 +74,22 @@ public class Base extends RobotBase
 
 
         // Dependency setting
-        drivetrain.setDependencies(imu, rightDistSensor,bump, frontDistSensor);
+        //drivetrain.setDependencies(imu, rightDistSensor,bump, frontDistSensor);
+        drivetrain.setDependencies(imu, bump, frontDistSensor);
 
     }
 
     public void outTelemetry()
     {
-        drivetrain.outTelemetry();
-        tiltChannel.outTelemetry();
-        collector.outTelemetry();
-        latchSystem.outTelemetry();
+        //drivetrain.outTelemetry();
+        //tiltChannel.outTelemetry();
+        //collector.outTelemetry();
+        //latchSystem.outTelemetry();
         //deliver.outTelemetry();
-        outTelemetry.addData("Right Range: ", rightDistSensor.distance(DistanceUnit.INCH));
-        outTelemetry.addData("Front Range: ", frontDistSensor.distance(DistanceUnit.INCH));
+        //outTelemetry.addData("Right Range: ", rightDistSensor.distance());
+        //outTelemetry.addData("Front Range: ", frontDistSensor.distance(DistanceUnit.INCH));
         outTelemetry.telemetry.addData("Drivetrain State", drivetrain.state());
+        outTelemetry.telemetry.addData("Marker Delivery Pos: ", deliver.markerDelivery.getPosition());
         outTelemetry.update();
     }
     @Override

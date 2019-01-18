@@ -2,6 +2,7 @@
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Components.CollectorSystem.ScoreIntoCenter;
@@ -30,6 +31,12 @@ public class TeleOpMain extends LinearOpMode
     private boolean slowModeControl = false;
     private boolean tiltControl = false;
     private boolean hookOpen = true;
+    private boolean up = false;
+    private boolean down = false;
+    private boolean automateLift = false;
+    private boolean finalLift = false;
+    private boolean releaseRightTrigger = true;
+    private double drivetrainScale = 1;
 
     public void runOpMode() throws InterruptedException
     {
@@ -50,15 +57,15 @@ public class TeleOpMain extends LinearOpMode
         /*----------------------------------- STANDARD DRIVING ----------------------------------*/
         //drive the robot using gamepad1 joysticks, standard six wheel movement
 
-        if (gamepad1.right_bumper) {
-            if (invertedControl) {
-                invertedControl = false;
-                inverted = !inverted;
-            }
-        } else
-        {
-            invertedControl = true;
-        }
+//        if (gamepad1.right_bumper) {
+//            if (invertedControl) {
+//                invertedControl = false;
+//                inverted = !inverted;
+//            }
+//        } else
+//        {
+//            invertedControl = true;
+//        }
 
         if(gamepad1.left_bumper) {
             if (slowModeControl) {
@@ -110,19 +117,32 @@ public class TeleOpMain extends LinearOpMode
                 _base.drivetrain.setCurrState(Drivetrain.State.FORWARD_FAST);
             }
         }
+        if (gamepad1.right_bumper && releaseRightTrigger){
+            finalLift = !finalLift;
+            releaseRightTrigger = false;
+        }
+        if (! gamepad1.right_bumper){
+            releaseRightTrigger = true;
+        }
+        if (finalLift){
+            drivetrainScale = 0.3;
+        }
+        else{
+            drivetrainScale = 1;
+        }
 
         _base.drivetrain.run(-com.qualcomm.robotcore.util.Range.clip(gamepad1.left_stick_y, -1, 1),
-                com.qualcomm.robotcore.util.Range.clip(gamepad1.right_stick_x, -1, 1), scaleMode);
+                com.qualcomm.robotcore.util.Range.clip(gamepad1.right_stick_x, -1, 1), scaleMode,drivetrainScale);
         _base.outTelemetry();
         /*------------------------------------ MARKER DELIVERY --------------------------------*/
         //this is to be used just in case the marker delivery system needs to be used
         if(gamepad2.dpad_right)
         {
-            _base.deliver.raiseMarker();
+            _base.deliver.markerDelivery.setPosition(_base.deliver.markerDelivery.getPosition() + .08);
         }
         else if(gamepad2.dpad_left)
         {
-            _base.deliver.deliverMarker();
+            _base.deliver.markerDelivery.setPosition(_base.deliver.markerDelivery.getPosition() - .08);
         }
 
         /*---------------------------- HOOK EXTENSION/LIFT ROBOT --------------------------------*/
@@ -139,11 +159,11 @@ public class TeleOpMain extends LinearOpMode
         /* -------------- HOOK SYSTEM ------------------------*/
 
         if (gamepad1.left_trigger > .20 && hookOpen){
-            _base.latchSystem.closeHook(2200);
+            _base.latchSystem.closeHook(2100);
             hookOpen = false;
         }
         else if (gamepad1.right_trigger > .20 && !hookOpen){
-            _base.latchSystem.openHook(2300);
+            _base.latchSystem.openHook(2100);
             hookOpen = true;
         }
         else if (gamepad1.dpad_right)
@@ -199,6 +219,10 @@ public class TeleOpMain extends LinearOpMode
         {
             _base.collector.releaseBalls();
         }
+        else if(gamepad2.right_bumper)
+        {
+            _base.collector.runCollector(-.43);
+        }
         else
         {
             _base.collector.runCollector(0);
@@ -207,12 +231,14 @@ public class TeleOpMain extends LinearOpMode
 
 
         /*----------------Tilt C-Channel Holding Lifts---------------*/
+
         if(gamepad2.right_stick_y > .2)
         {
             if(gamepad2.right_stick_y > .85)
                 _base.tiltChannel.tiltByPower(1);
             else
                 _base.tiltChannel.tiltByPower(gamepad2.right_stick_y);
+            automateLift = false;
         }
         else if(gamepad2.right_stick_y < -.2)
         {
@@ -220,19 +246,48 @@ public class TeleOpMain extends LinearOpMode
                 _base.tiltChannel.tiltByPower(-1);
             else
                 _base.tiltChannel.tiltByPower(gamepad2.right_stick_y);
+            automateLift = false;
         }
-        else if(gamepad2.y)
+        else if (up && automateLift)
         {
-            _base.tiltChannel.tiltUpByEnc();
+
+            if(_base.tiltChannel.tiltUpByEnc()) {
+                telemetry.addData("GOT IN HERE!!!", true);
+                telemetry.update();
+
+                automateLift = false;
+                up = false;
+                down = false;
+            }
+        }
+        else if (down && automateLift)
+        {
+            if(_base.tiltChannel.tiltDownByEnc())
+            {
+                automateLift = false;
+                up = false;
+                down = false;
+            }
+        }
+        else if (!_base.tiltChannel.pulleys.isBusy()) {
+            _base.tiltChannel.stop();
+        }
+
+        if(gamepad2.y)
+        {
+            up=true;
+            down=false;
+            automateLift = true;
         }
         else if(gamepad2.x)
         {
-            _base.tiltChannel.tiltDownByEnc();
+            up=false;
+            down=true;
+            automateLift = true;
         }
-        else if(!_base.tiltChannel.pulleys.isBusy())
-        {
-            _base.tiltChannel.stop();
-        }
+
+
+
     }
     public void drive(double drivePower, double rotatePower)
     {

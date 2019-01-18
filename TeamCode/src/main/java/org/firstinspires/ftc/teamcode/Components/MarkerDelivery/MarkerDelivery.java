@@ -15,8 +15,8 @@ public class MarkerDelivery extends RobotComponent
     public Servo markerDelivery;
 
 
-    public final double RAISE = .75;
-    public final double DELIVERY = 0;
+    public final double RAISE = .94;
+    public final double DELIVERY = .09;
 
     public void init(final RobotBase BASE)
     {
