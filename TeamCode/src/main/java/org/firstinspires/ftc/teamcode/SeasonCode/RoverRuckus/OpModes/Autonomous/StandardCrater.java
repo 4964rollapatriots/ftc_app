@@ -269,7 +269,7 @@ public class StandardCrater extends LinearOpMode {
         _base.deliver.raiseMarker();
 
         // turn back to face the crater
-        _base.drivetrain.turnTo.goTo(142, TURN_SPEED-.05);
+        _base.drivetrain.turnTo.goTo(144, TURN_SPEED-.05);
         _base.drivetrain.turnTo.runSequentially(2,5);
 
         // drive to the crater
@@ -281,7 +281,7 @@ public class StandardCrater extends LinearOpMode {
         _base.drivetrain.turnTo.runSequentially(2,5);
 
         // drive to the crater
-        _base.drivetrain.driveTo.goTo(-30,DRIVING_SPEED_CRATER);
+        _base.drivetrain.driveTo.goTo(-30,DRIVING_SPEED_CRATER- .05);
         _base.drivetrain.driveTo.runSequentially();
 
         //we are done, so stop the robot
@@ -348,7 +348,7 @@ public class StandardCrater extends LinearOpMode {
                         telemetry.update();
                         aligned = true;
                         break;
-                    }x
+                    }
                 }
             }
 

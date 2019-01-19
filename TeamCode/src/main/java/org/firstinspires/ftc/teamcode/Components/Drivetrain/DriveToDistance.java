@@ -395,13 +395,16 @@ public class DriveToDistance extends RobotCommand
         _busy = true;
 
         _drivetrain.setAllMotorPower(speed);
+        //Begin timing for timeout function
         long startTime = System.currentTimeMillis();
 
         while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT)
         {
 
+            //Read in range from sensor
             currentRange =  _drivetrain.front_range.distance(DistanceUnit.INCH);
 
+            //Begin Decelerating
             if ( currentRange > FRONT_DESIRED_OFFSET && currentRange < FRONT_DESIRED_OFFSET + 20)
             {
                 powerMultiplier = Math.abs(currentRange - FRONT_DESIRED_OFFSET) * .05;
@@ -421,6 +424,7 @@ public class DriveToDistance extends RobotCommand
                 _drivetrain.backRight().setPower(minimumPower);
                 _drivetrain.frontRight().setPower(minimumPower);
             }
+            //Accelerate or decelerate depending on range
             else {
                 _drivetrain.backLeft().setPower(speed * powerMultiplier);
                 _drivetrain.frontLeft().setPower(speed * powerMultiplier);
