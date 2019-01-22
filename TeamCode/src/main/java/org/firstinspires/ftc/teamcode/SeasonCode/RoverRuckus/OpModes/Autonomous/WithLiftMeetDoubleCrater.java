@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.CustomTensorFlow;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
@@ -90,10 +91,11 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
         //drives forward to avoid hitting the lander while turning
         _base.drivetrain.driveTo.goTo(7,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
+
 //        if(_block == blockState.UNCERTAIN)
 //        {
 //            this.sleep(800);
-//            if (aligned()) {
+//            if (relativeAligned()) {
 //                _block = blockState.MIDDLE;
 //                telemetry.addData("FOUND IN MIDDLE", "");
 //                telemetry.update();
@@ -132,7 +134,7 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
                 telemetry.update();
                 _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED-.2);
                 _base.drivetrain.turnTo.blockRunSequentially();
-                if (aligned()){
+                    if (aligned()){
                     _block = blockState.RIGHT;
                     break;
                 }
@@ -313,7 +315,7 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
         // knock the second block off and comes back
         _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE+5,DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.driveTo.goTo(-12,DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(-6,DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
         _base.deliver.raiseMarker();
 
@@ -327,8 +329,6 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
         //telemetry.addData("Angle X: ", _base.imu.xAngle());
         //telemetry.addData("Angle Y: ", _base.imu.yAngle());
         //telemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
-        telemetry.addData("robot is lined up", aligned());
-        telemetry.update();
     }
 
     private void turnToAlign(){
@@ -372,17 +372,69 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
                     Recognition rec = detector.recognitions.get(i);
                     if (rec.getLabel().equals(LABEL_SILVER_MINERAL) && rec.getConfidence() > 0.85){
                         telemetry.addData("Silver detecting with confidence ", rec.getConfidence());
+                        telemetry.log().add("Silver detecting with confidence ", rec.getConfidence());
                         telemetry.update();
                         aligned = false;
                         break;
                     }
                     if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
                         telemetry.addData("Gold detecting with confidence ", rec.getConfidence());
+                        telemetry.log().add("Gold detecting with confidence ", rec.getConfidence());
                         telemetry.update();
                         aligned = true;
                         break;
                     }
                 }
+            }
+
+        }
+        else{
+            aligned = eye.isAligned();
+        }
+        telemetry.log().add("END RESULT - ", aligned);
+        return aligned;
+
+    }
+    public boolean relativeAligned(){
+        boolean aligned = false;
+        if (runUsingTensorFlow){
+            detector.refresh();
+            if(detector.recognitions == null)
+            {
+                aligned = false;
+            }
+            else{
+                double silverMax=0;
+                double goldMax=0;
+                for (int i = 0; i < detector.recognitions.size(); i ++){
+                    Recognition rec = detector.recognitions.get(i);
+                    if (rec.getLabel().equals(LABEL_SILVER_MINERAL)){
+                        if (rec.getConfidence() > silverMax) {
+                            silverMax=rec.getConfidence();
+                        }
+                        telemetry.addData("Silver detecting with confidence ", rec.getConfidence());
+                        telemetry.log().add("Silver detecting with confidence ", rec.getConfidence());
+                    }
+                    if (rec.getLabel().equals(LABEL_GOLD_MINERAL)){
+                        if (rec.getConfidence() > goldMax) {
+                            goldMax=rec.getConfidence();
+                        }
+                        telemetry.addData("Gold detecting with confidence ", rec.getConfidence());
+                        telemetry.log().add("Gold detecting with confidence ", rec.getConfidence());
+                    }
+
+                    telemetry.update();
+                }
+                if (goldMax > silverMax && goldMax > ACCEPTABLE_CONFIDENCE) {
+                    telemetry.addData("FOUND Confidence Value: ", goldMax);
+                    telemetry.log();
+                    telemetry.update();
+                    aligned=true;
+                }
+                else{
+                    aligned=false;
+                }
+                telemetry.log().add("END OF FUNCTION");
             }
 
         }

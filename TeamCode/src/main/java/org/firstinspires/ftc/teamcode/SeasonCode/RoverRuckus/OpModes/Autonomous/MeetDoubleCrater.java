@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.CustomTensorFlow;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
@@ -24,11 +26,11 @@ public class MeetDoubleCrater extends LinearOpMode {
     private CustomTensorFlow detector;
 
 
-    private boolean RUN_USING_TENSOR_FLOW = true; // if not, then running with open cv is assumed
+    private boolean runUsingTensorFlow = true; // if not, then running with open cv is assumed
 
     private blockState _block;
 
-    private final static double FAR_PARTICLE_ANGLE = 16;
+    private final static double FAR_PARTICLE_ANGLE = 31;
     private final static double MIDDLE_ANGLE = 10;
     private final static double SECOND_BLOCK_ABORT_ANGLE = 315;
     private final static double MARKER_ANGLE = 184;
@@ -38,16 +40,16 @@ public class MeetDoubleCrater extends LinearOpMode {
     private final static double TURN_SPEED = 0.33;
     private final static double BLOCK_TURN_SPEED = 0.55;
     private final static double DRIVING_SPEED = 0.63;
-    private final static double DRIVING_SPEED_CRATER = .88;
+    private final static double DRIVING_SPEED_CRATER = .95;
     private final static double DRIVING_SPEED_BLOCK = .53;
 
     // these are the only final values that are used multiple times
     private double block_distance = 27;
-    private final static double SECOND_BLOCK_DISTANCE = 21.0;
+    private final static double SECOND_BLOCK_DISTANCE = 23.0;
 
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
-    private static final double ACCEPTABLE_CONFIDENCE = 0.40;
+    private static final double ACCEPTABLE_CONFIDENCE = 0.45;
 
     //Hold state of where gold block is sitting
     private enum blockState
@@ -62,32 +64,46 @@ public class MeetDoubleCrater extends LinearOpMode {
         _base.outTelemetry.write("Initializing - DO NOT START UNTIL NEXT MESSAGE");
         _base.outTelemetry.update();
         _block = blockState.UNCERTAIN;
-        _base.imu.calibrateTo(0);
         detector = new CustomTensorFlow(hardwareMap);
         detector.activate();
-        RUN_USING_TENSOR_FLOW = true;
+        runUsingTensorFlow = true;
         //This calibration is done before landing because the landing could "bump" the robot and change our angle
         _base.outTelemetry.write("All Systems Go");
         _base.outTelemetry.update();
 
+        _base.deliver.raiseMarker();
         waitForStart();
 
         //Gets the robot onto the field from the hanger
+//        _base.latchSystem.lowerRobot(3250);
+//
+//        _base.drivetrain.driveTo.goTo(0.25,0.1);
+//        _base.drivetrain.driveTo.runSequentially();
+//        _base.imu.calibrateTo(0);
+//        _base.latchSystem.extendHook(0);
+//        _base.latchSystem.openHook(2300);
 
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
-        _base.drivetrain.turnTo.goTo(0,BLOCK_TURN_SPEED);
-        _base.drivetrain.turnTo.blockRunSequentially();
+        _base.drivetrain.turnTo.goTo(1,BLOCK_TURN_SPEED-.2);
+        _base.drivetrain.turnTo.blockRunSequentially(2, 2);
 
         //drives forward to avoid hitting the lander while turning
         _base.drivetrain.driveTo.goTo(7,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
 
-        _base.deliver.raiseMarker();
-        //to use one run of aligned to make sure stuff works
-        RUN_USING_TENSOR_FLOW = true;
-        _base.drivetrain.turnTo.goTo(333,BLOCK_TURN_SPEED);
-        _base.drivetrain.turnTo.blockRunSequentially();
+//        if(_block == blockState.UNCERTAIN)
+//        {
+//            this.sleep(800);
+//            if (relativeAligned()) {
+//                _block = blockState.MIDDLE;
+//                telemetry.addData("FOUND IN MIDDLE", "");
+//                telemetry.update();
+//            }
+//            // pans across the particles until it either sees the block or reaches 348 degrees
+//            // 348 degrees should be past the far right particle
+//        }
+
 
         _base.deliver.raiseMarker();
 
@@ -97,8 +113,13 @@ public class MeetDoubleCrater extends LinearOpMode {
         //turns to the far right in preparation for panning across the particles from right to left
         if(_block == blockState.UNCERTAIN)
         {
+            _base.deliver.raiseMarker();
+            //to use one run of aligned to make sure stuff works
+            _base.drivetrain.turnTo.goTo(337.5,BLOCK_TURN_SPEED-.2);
+            _base.drivetrain.turnTo.blockRunSequentially(3,5);
+
             this.sleep(800);
-            if (aligned()) {
+            if (relativeAligned()) {
                 _block = blockState.RIGHT;
                 telemetry.addData("FOUND IN RIGHT", "");
                 telemetry.update();
@@ -108,12 +129,12 @@ public class MeetDoubleCrater extends LinearOpMode {
         }
         _base.deliver.raiseMarker();
         if (_block == blockState.UNCERTAIN){
-            for  (double i = 335; i < 339; i += TURN_INCREMENT - 1){
+            for  (double i = 336; i < 339; i += TURN_INCREMENT - 1){
                 telemetry.addData("Searching for right block!" , "");
                 telemetry.update();
-                _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED);
+                _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED-.2);
                 _base.drivetrain.turnTo.blockRunSequentially();
-                if (aligned()){
+                if (relativeAligned()){
                     _block = blockState.RIGHT;
                     break;
                 }
@@ -123,11 +144,11 @@ public class MeetDoubleCrater extends LinearOpMode {
         // if it is not in the middle, the robot turns until it sees the left block or reaches 18 degrees
 
         if(_block == blockState.UNCERTAIN) {
-            _base.drivetrain.turnTo.goTo(356, BLOCK_TURN_SPEED - .2);
+            _base.drivetrain.turnTo.goTo(0, BLOCK_TURN_SPEED - .2);
             _base.drivetrain.turnTo.blockRunSequentially();
 
             this.sleep(800);
-            if (aligned()) {
+            if (relativeAligned()) {
                 _block = blockState.MIDDLE;
                 telemetry.addData("FOUND IN MIDDLE", "");
                 telemetry.update();
@@ -138,40 +159,13 @@ public class MeetDoubleCrater extends LinearOpMode {
 
         if(_block == blockState.UNCERTAIN)
         {
-            _base.drivetrain.turnTo.goTo( 20, BLOCK_TURN_SPEED);
+            _base.drivetrain.turnTo.goTo( 37, BLOCK_TURN_SPEED);
             _base.drivetrain.turnTo.blockRunSequentially();
-            this.sleep(800);
-            if (aligned()){
-                _block = blockState.LEFT;
-                telemetry.addData("LEFT I SEE", "");
-                telemetry.update();
-            }
+            _block = blockState.LEFT;
         }
 
-
-        if (_block == blockState.UNCERTAIN){
-            _base.drivetrain.turnTo.goTo( FAR_PARTICLE_ANGLE, BLOCK_TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
-            telemetry.addData("GO to Left,", "");
-            telemetry.update();
-            for (double i = FAR_PARTICLE_ANGLE; i < 28; i += TURN_INCREMENT){
-                _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED);
-                _base.drivetrain.turnTo.blockRunSequentially();
-                if (aligned()){
-                    _block = blockState.LEFT;
-                    telemetry.addData("LEFT I SEE", "");
-                    telemetry.update();
-                    break;
-                }
-            }
-        }
         _base.deliver.raiseMarker();
 
-        if (_block == blockState.UNCERTAIN){
-            _block = blockState.MIDDLE;
-            _base.drivetrain.turnTo.goTo(355.5, BLOCK_TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
-        }
 
         //this turns a small amount to account for the offset of our phone on the left side of our robot
         //turnToAlign();
@@ -184,9 +178,13 @@ public class MeetDoubleCrater extends LinearOpMode {
         //drive forward to knock the block off and then go back the same distance
         // this works because at this point the robot is facing the block
         if (_block == blockState.MIDDLE){
-            block_distance -= 9.5;
+            block_distance -= 7.5;
         }
-        _base.drivetrain.driveTo.goTo(block_distance,DRIVING_SPEED_BLOCK);
+        else if(_block == blockState.RIGHT)
+        {
+            block_distance -= 2.0;
+        }
+        _base.drivetrain.driveTo.goTo(block_distance - 1,DRIVING_SPEED_BLOCK);
         _base.drivetrain.driveTo.runSequentially();
         _base.drivetrain.driveTo.goTo(-(block_distance -4),DRIVING_SPEED_BLOCK);
         _base.drivetrain.driveTo.runSequentially();
@@ -197,72 +195,78 @@ public class MeetDoubleCrater extends LinearOpMode {
         if(_block == blockState.LEFT)
         {
             _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(61, TURN_SPEED-0.1);
-            _base.drivetrain.turnTo.runSequentially();
+            _base.drivetrain.turnTo.goTo(64, TURN_SPEED-.05);
+            _base.drivetrain.turnTo.runSequentially(2,5);
             _base.deliver.raiseMarker();
         }
         else if(_block == blockState.RIGHT)
         {
             _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(54, TURN_SPEED-0.1);
-            _base.drivetrain.turnTo.runSequentially();
+            _base.drivetrain.turnTo.goTo(68, TURN_SPEED-.05);
+            _base.drivetrain.turnTo.runSequentially(2,5);
             _base.deliver.raiseMarker();
         }
         else
         {
             _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(59, TURN_SPEED-0.1);
-            _base.drivetrain.turnTo.runSequentially();
+            _base.drivetrain.turnTo.goTo(73, TURN_SPEED-0.1);
+            _base.drivetrain.turnTo.runSequentially(2,5);
             _base.deliver.raiseMarker();
         }
 
         // drives between the lander and the far left particle so the path is clear to our teammate's side
 
-        _base.drivetrain.driveTo.goTo(55, DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(53, DRIVING_SPEED);
         _base.drivetrain.driveTo.runStopIfTouch(8);
         _base.deliver.raiseMarker();
 
         //turn to drive in between particle on teammate's side and wall
-        _base.drivetrain.turnTo.goTo(122.5, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially(5);
+        _base.drivetrain.turnTo.goTo(125, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially(3);
 
         _base.deliver.raiseMarker();
 
         //drives between the particle on teammate's side and wall
-        _base.drivetrain.driveTo.goTo(11, DRIVING_SPEED);
-        //_base.drivetrain.driveTo.runKeepingDistance();
-        _base.drivetrain.driveTo.runSequentially();
+        _base.drivetrain.driveTo.goTo(11, DRIVING_SPEED );
+        _base.drivetrain.driveTo.runSequentially(10);
 
 
         _base.deliver.raiseMarker();
 
 
         // turns in preparation for moving towards the deposit zone
-        _base.drivetrain.turnTo.goTo(129, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially(4);
+        _base.drivetrain.turnTo.goTo(131, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially(3);
 
         _base.deliver.raiseMarker();
 
         //drives to the deposit zone
-        _base.drivetrain.driveTo.goTo(21.5, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runStopIfDist(4);
+        _base.drivetrain.driveTo.goTo(45, DRIVING_SPEED);
+        _base.drivetrain.driveTo.runStopIfDist(7);
 
+        telemetry.addData("Range Value: ", _base.frontDistSensor.distance(DistanceUnit.INCH));
         telemetry.addData("ARC TURNING" ," NOW");
         telemetry.update();
 
-        _base.drivetrain.turnTo.goTo(172, TURN_SPEED);
-        _base.drivetrain.turnTo.arcSequentially(1.8, 3.5);
+        _base.drivetrain.turnTo.goTo(158, TURN_SPEED - 0.1);
+        _base.drivetrain.turnTo.arcSequentially(3, 2.5);
 
 
         // deposits the marker
         _base.deliver.deliverMarker();
+
+
         // gives time for the marker to slide off
         try{
-            Thread.sleep(750);}
+            Thread.sleep(400);}
         catch(Exception ex){ex.printStackTrace();}
 
-        //raises the delivery system
-        _base.deliver.stop();
+
+
+
+
+
+        //raises the delivery syste
 
 
         _base.drivetrain.driveTo.goTo(-2, DRIVING_SPEED);
@@ -270,58 +274,61 @@ public class MeetDoubleCrater extends LinearOpMode {
 
         _base.deliver.deliverMarker();
 
-        _base.deliver.raiseMarker();
 
-
+        double secondAngle = 226;
+        if (_block == blockState.RIGHT){
+            secondAngle = 290;
+        }
+        else if (_block == blockState.LEFT){
+            secondAngle = 235;
+        }
+        else if (_block == blockState.MIDDLE){
+            secondAngle = 264;
+        }
         // turn to face the second group of particles
-        _base.drivetrain.turnTo.goTo(212, BLOCK_TURN_SPEED);
+        _base.drivetrain.turnTo.goTo(secondAngle, BLOCK_TURN_SPEED-.1);
         _base.drivetrain.turnTo.runSequentially();
         _base.deliver.raiseMarker();
         _base.drivetrain.driveTo.goTo(3, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
-        // turns by degrees clockwise until the robot sees the second block or it is passes a certain angle
-        for (double i = 212; i < SECOND_BLOCK_ABORT_ANGLE; i += TURN_INCREMENT-1){
-            _base.drivetrain.turnTo.goTo(i, BLOCK_TURN_SPEED-.25);
-            _base.drivetrain.turnTo.blockRunSequentially();
-            if (aligned()){
-                telemetry.addData("ANGLE FOUND:", _base.drivetrain.imu.zAngle());
-                telemetry.update();
-                break;
+        if (relativeAligned()){
+            telemetry.addData("ANGLE FOUND:", _base.drivetrain.imu.zAngle());
+            telemetry.update();
+
+        }
+        else{
+            // turns by degrees clockwise until the robot sees the second block or it is passes a certain angle
+            for (double i = secondAngle; i < SECOND_BLOCK_ABORT_ANGLE; i += TURN_INCREMENT-1){
+                _base.drivetrain.turnTo.goTo(i, BLOCK_TURN_SPEED-.20);
+                _base.drivetrain.turnTo.blockRunSequentially();
+                if (relativeAligned()){
+                    telemetry.addData("ANGLE FOUND:", _base.drivetrain.imu.zAngle());
+                    telemetry.update();
+                    break;
+                }
             }
         }
 
-        // since the phone is on the left of our robot, we turn a small amount so the robot's center is aligned with the block
-        //turnToAlign(15);
 
 
         // knock the second block off and comes back
-        _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE,DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE+5,DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.driveTo.goTo(-(SECOND_BLOCK_DISTANCE + 8),DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(-6,DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
+        _base.deliver.raiseMarker();
 
-        // turn back to face the crater
-        _base.drivetrain.turnTo.goTo(360-45, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially();
 
-        // drive to the crater
-        _base.drivetrain.driveTo.goTo(90,DRIVING_SPEED_CRATER);
-        _base.drivetrain.driveTo.runSequentially();
-        //we are done, so stop the robot
         _base.drivetrain.stop();
         detector.deactivate();
-
-
     }
 
     private void sendTelemetry(){
-        telemetry.addData("Angle Z: ", _base.imu.zAngle());
-        telemetry.addData("Angle X: ", _base.imu.xAngle());
-        telemetry.addData("Angle Y: ", _base.imu.yAngle());
-        telemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
-        telemetry.addData("robot is lined up", aligned());
-        telemetry.update();
+        //telemetry.addData("Angle Z: ", _base.imu.zAngle());
+        //telemetry.addData("Angle X: ", _base.imu.xAngle());
+        //telemetry.addData("Angle Y: ", _base.imu.yAngle());
+        //telemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
     }
 
     private void turnToAlign(){
@@ -352,9 +359,9 @@ public class MeetDoubleCrater extends LinearOpMode {
         _base.drivetrain.turnTo.blockRunSequentially();
     }
 
-    private boolean aligned(){
+    public boolean aligned(){
         boolean aligned = false;
-        if (RUN_USING_TENSOR_FLOW){
+        if (runUsingTensorFlow){
             detector.refresh();
             if(detector.recognitions == null)
             {
@@ -363,7 +370,15 @@ public class MeetDoubleCrater extends LinearOpMode {
             else{
                 for (int i = 0; i < detector.recognitions.size(); i ++){
                     Recognition rec = detector.recognitions.get(i);
+                    if (rec.getLabel().equals(LABEL_SILVER_MINERAL) && rec.getConfidence() > 0.85){
+                        telemetry.addData("Silver detecting with confidence ", rec.getConfidence());
+                        telemetry.update();
+                        aligned = false;
+                        break;
+                    }
                     if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
+                        telemetry.addData("Gold detecting with confidence ", rec.getConfidence());
+                        telemetry.update();
                         aligned = true;
                         break;
                     }
@@ -371,11 +386,96 @@ public class MeetDoubleCrater extends LinearOpMode {
             }
 
         }
+        else{
+            aligned = eye.isAligned();
+        }
         return aligned;
 
+    }
+    public boolean relativeAligned(){
+        boolean aligned = false;
+        if (runUsingTensorFlow){
+            detector.refresh();
+            if(detector.recognitions == null)
+            {
+                aligned = false;
+            }
+            else{
+                double silverMax=0;
+                double goldMax=0;
+                for (int i = 0; i < detector.recognitions.size(); i ++){
+                    Recognition rec = detector.recognitions.get(i);
+                    if (rec.getLabel().equals(LABEL_SILVER_MINERAL)){
+                        if (rec.getConfidence() > silverMax) {
+                            silverMax=rec.getConfidence();
+                        }
+                        telemetry.addData("Silver detecting with confidence ", rec.getConfidence());
+
+                    }
+                    if (rec.getLabel().equals(LABEL_GOLD_MINERAL)){
+                        if (rec.getConfidence() > goldMax) {
+                            goldMax=rec.getConfidence();
+                        }
+                        telemetry.addData("Gold detecting with confidence ", rec.getConfidence());
+                    }
+                    telemetry.log().add("confidence", rec.getConfidence());
+                    telemetry.update();
+                }
+                if (goldMax > silverMax && goldMax > ACCEPTABLE_CONFIDENCE) {
+                    telemetry.addData("Found Confidence Value: ", goldMax);
+                    telemetry.log();
+                    telemetry.update();
+                    aligned=true;
+                }
+                else{
+                    aligned=false;
+                }
+            }
+
+        }
+        else{
+            aligned = eye.isAligned();
+        }
+        return aligned;
 
     }
 
+    // returns true if a gold particle is aligned with the camera
+    private boolean isAligned(){
+
+        if (runUsingTensorFlow){
+            // this updates the particles the phone is aware of
+            detector.refresh();
+
+            // if the detector cannot find any particles, it is not aligned with a gold particle
+            if(detector.recognitions == null)
+            {
+                return false;
+            }
+
+            else{
+                // this iterates through all the particles the camera can see, and returns true if the particle is a block and above the confidence level
+                for (int i = 0; i < detector.recognitions.size(); i ++){
+                    Recognition rec = detector.recognitions.get(i);
+                    if (rec.getLabel().equals(LABEL_SILVER_MINERAL) && rec.getConfidence() > 0.75){
+                        _base.outTelemetry.write("Facing Silver");
+                        _base.outTelemetry.update();
+                    }
+                    if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
+                        return true;
+                    }
+                }
+                // if none of the particles are gold, then the camera is not aligned
+                return false;
+            }
+
+        }
+
+        // if we are not using TensorFlow, we return the result of the OpenCV software
+        else{
+            return eye.isAligned();
+        }
+    }
 }
 
 

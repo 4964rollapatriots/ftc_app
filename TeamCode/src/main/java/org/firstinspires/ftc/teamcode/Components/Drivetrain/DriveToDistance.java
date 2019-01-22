@@ -98,9 +98,9 @@ public class DriveToDistance extends RobotCommand
         long startTime = System.currentTimeMillis();
         while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT)
         {
-            _drivetrain.base().outTelemetry.addData("Start Time: ", startTime);
-            _drivetrain.base().outTelemetry.addData("Current System Time ", System.currentTimeMillis());
-            _drivetrain.base().outTelemetry.addData("Timeout ", TIMEOUT);
+//            _drivetrain.base().outTelemetry.addData("Start Time: ", startTime);
+//            _drivetrain.base().outTelemetry.addData("Current System Time ", System.currentTimeMillis());
+//            _drivetrain.base().outTelemetry.addData("Timeout ", TIMEOUT);
             _drivetrain.base().outTelemetry.update();
 
             //Keep running! :D

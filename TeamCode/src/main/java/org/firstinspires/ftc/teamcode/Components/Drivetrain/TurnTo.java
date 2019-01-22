@@ -473,13 +473,13 @@ public class TurnTo extends RobotCommand
                 currSpeed = minSpeed;
             }
 
-            _drivetrain.base().outTelemetry.addData("INIT ERROR: ", initError);
-            _drivetrain.base().outTelemetry.addData("Init Heading :", initHeading);
-            _drivetrain.base().outTelemetry.addData("TARGET ANGLE: ", targetAngle);
-            _drivetrain.base().outTelemetry.addData("Current ANGLE: ", heading);
-            _drivetrain.base().outTelemetry.addData("distModification: ", distModfication);
-            _drivetrain.base().outTelemetry.addData("ERROR: ", error);
-            _drivetrain.base().outTelemetry.addData("CURRSPEED: ", currSpeed);
+//            _drivetrain.base().outTelemetry.addData("INIT ERROR: ", initError);
+//            _drivetrain.base().outTelemetry.addData("Init Heading :", initHeading);
+//            _drivetrain.base().outTelemetry.addData("TARGET ANGLE: ", targetAngle);
+//            _drivetrain.base().outTelemetry.addData("Current ANGLE: ", heading);
+//            _drivetrain.base().outTelemetry.addData("distModification: ", distModfication);
+//            _drivetrain.base().outTelemetry.addData("ERROR: ", error);
+//            _drivetrain.base().outTelemetry.addData("CURRSPEED: ", currSpeed);
             //_drivetrain.outTelemetry();
             _drivetrain.base().outTelemetry.update();
 
