@@ -15,6 +15,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
+import java.util.ArrayList;
+
 @Autonomous(name = "WITH LIFT Meet Double Crater")
 
 // the name of the class is misleading, refer to the Autonomous name
@@ -444,42 +446,118 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
         return aligned;
 
     }
-
-    // returns true if a gold particle is aligned with the camera
-    private boolean isAligned(){
+    public boolean relativelyAligned(){
 
         if (runUsingTensorFlow){
-            // this updates the particles the phone is aware of
+            double silverConfidence = 0;
+            double goldConfidence = 0;
             detector.refresh();
-
-            // if the detector cannot find any particles, it is not aligned with a gold particle
             if(detector.recognitions == null)
             {
                 return false;
             }
-
             else{
-                // this iterates through all the particles the camera can see, and returns true if the particle is a block and above the confidence level
                 for (int i = 0; i < detector.recognitions.size(); i ++){
                     Recognition rec = detector.recognitions.get(i);
-                    if (rec.getLabel().equals(LABEL_SILVER_MINERAL) && rec.getConfidence() > 0.75){
-                        _base.outTelemetry.write("Facing Silver");
-                        _base.outTelemetry.update();
+
+                    if (rec.getLabel().equals(LABEL_SILVER_MINERAL)){
+                        telemetry.addData("Silver detecting with confidence ", rec.getConfidence());
+                        telemetry.update();
+                        if (rec.getConfidence() > silverConfidence){
+                            silverConfidence = rec.getConfidence();
+                        }
                     }
                     if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
-                        return true;
+                        telemetry.addData("Gold detecting with confidence ", rec.getConfidence());
+                        telemetry.update();
+                        if (rec.getConfidence() > goldConfidence){
+                            goldConfidence = rec.getConfidence();
+                        }
                     }
                 }
-                // if none of the particles are gold, then the camera is not aligned
+            }
+            if (goldConfidence > silverConfidence && goldConfidence > ACCEPTABLE_CONFIDENCE){
+                return true;
+            }
+            else{
                 return false;
             }
 
         }
-
-        // if we are not using TensorFlow, we return the result of the OpenCV software
         else{
             return eye.isAligned();
         }
+    }
+
+    private boolean isAligned() {
+        detector.refresh();
+
+        if (detector.recognitions == null) {
+            return false;
+        }
+        else if (detector.recognitions.size() == 1 && detector.recognitions.get(0).getLabel() == LABEL_GOLD_MINERAL) {
+            if (detector.recognitions.get(0).getConfidence() > 0.35) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        else {
+            double minHeight;
+            double maxHeight;
+            double heightDifference = 90;
+
+            maxHeight = detector.recognitions.get(0).getLeft();
+            minHeight = detector.recognitions.get(0).getLeft();
+            for (Recognition r : detector.recognitions) {
+                if (r.getLeft() > maxHeight) {
+                    maxHeight = r.getLeft();
+                }
+                if (r.getLeft() < minHeight) {
+                    minHeight = r.getLeft();
+                }
+            }
+            if ((maxHeight - minHeight) > heightDifference) {
+                for (Recognition r : detector.recognitions) {
+                    if (r.getLeft() > (minHeight + heightDifference)) {
+                        detector.recognitions.remove(r);
+                    }
+                }
+            }
+
+
+            if (detector.recognitions.size() > 1) {
+
+                double center = detector.recognitions.get(0).getImageHeight() / 2;
+
+                double minOffset = 2000;
+
+                for (Recognition r : detector.recognitions) {
+                    double offset = Math.abs((r.getTop() - r.getBottom()) - center);
+                    if (offset < minOffset) {
+                        minOffset = offset;
+                    }
+                }
+
+                for (Recognition r : detector.recognitions) {
+                    if (Math.abs((r.getTop() - r.getBottom()) - center) > minOffset) {
+                        detector.recognitions.remove(r);
+                    }
+                }
+
+            }
+
+        }
+        if (detector.recognitions.size() > 1){
+            return false;
+        }
+        else if (detector.recognitions.get(0).getLabel() == LABEL_GOLD_MINERAL && detector.recognitions.get(0).getConfidence() > 0.35) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
     }
 }
 
