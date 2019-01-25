@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.CustomTensorFlow;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 
@@ -22,6 +23,8 @@ public class VisionTest extends LinearOpMode {
 
     private DTBaseOnly _base = new DTBaseOnly();
     private CustomTensorFlow eye;
+
+    private UtilGoldDetector detector;
 
     private blockState _block;
     private boolean secondBlockFound;
@@ -50,6 +53,8 @@ public class VisionTest extends LinearOpMode {
         _block = blockState.UNCERTAIN;
         secondBlockFound = false;
         eye = new CustomTensorFlow(hardwareMap);
+
+        detector = new UtilGoldDetector(hardwareMap);
         //This calibration is done before landing because the landing could "bump" the robot and change our angle
 
         waitForStart();
@@ -64,15 +69,22 @@ public class VisionTest extends LinearOpMode {
         // sees if the block is initially aligned in the middle, if so it does not need to turn
 
         while(opModeIsActive()) {
-            if (aligned()) {
-                telemetry.addData("block FOUND! ", true);
-                telemetry.update();
-                _block = blockState.MIDDLE;
+            eye.refresh();
+            for (int i = 0; i < eye.recognitions.size(); i ++){
+                telemetry.addData("Recognition Number ", i);
+                telemetry.addData("Left :" , eye.recognitions.get(i).getLeft());
+                telemetry.addData("Right :" , eye.recognitions.get(i).getRight());
+                telemetry.addData("Top :" , eye.recognitions.get(i).getTop());
+                telemetry.addData("Bottom :" , eye.recognitions.get(i).getBottom());
+                telemetry.addData("Image height ", eye.recognitions.get(i).getImageHeight());
+                telemetry.addData("Image width ", eye.recognitions.get(i).getImageWidth());
             }
-            else{
-                telemetry.addData("nothing found", true);
-                telemetry.update();
-            }
+            telemetry.addData("OpenCV Gold Y pos ", detector.detector.goldYPos);
+            telemetry.addData("OpenCV Gold x pos ", detector.detector.getXPosition());
+            telemetry.addData("OpenCV returns ", detector.isAligned());
+            telemetry.update();
+
+
         }
         // if it does not see it, it will turn by single degrees until it reaches the first angle
         // if the block is on the left, the robot will see it as it turns

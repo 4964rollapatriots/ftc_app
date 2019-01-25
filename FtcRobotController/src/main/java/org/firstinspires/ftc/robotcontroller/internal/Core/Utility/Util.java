@@ -18,7 +18,7 @@ public final class Util
 
 
         //Really weird edge case need to contain
-        if(CURRENT == 0 && error < -300)
+        if(CURRENT == 2 || CURRENT == 1 && error < -300)
         {
                 error += 360;
                 return error;

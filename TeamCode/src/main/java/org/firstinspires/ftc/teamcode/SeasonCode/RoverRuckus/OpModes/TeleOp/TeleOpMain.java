@@ -2,29 +2,15 @@
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.CustomTensorFlow;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.teamcode.Components.CollectorSystem.ScoreIntoCenter;
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
-import org.opencv.core.Range;
-
-import static java.util.logging.Logger.global;
-import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.LABEL_GOLD_MINERAL;
-import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.LABEL_SILVER_MINERAL;
 
     @TeleOp(name = "MainTeleOp", group = "TeleOp")
 public class TeleOpMain extends LinearOpMode
 {
     //create an instance of our base which contains all of the components of the robot
     private Base _base = new Base();
-
-    private CustomTensorFlow detector;
-    private double ACCEPTABLE_CONFIDENCE = .45;
-    //private ScoreIntoCenter _center = new ScoreIntoCenter();
     //Constants for manipulating the collector's lift power
     private double EXTEND_LIFT_POW = 1;
     private double RETRACT_LIFT_POW = -1;
@@ -43,13 +29,17 @@ public class TeleOpMain extends LinearOpMode
     private boolean finalLift = false;
     private boolean releaseRightTrigger = true;
     private double drivetrainScale = 1;
+    private boolean autoTurntoLander = false;
+    private boolean autoTurntoCrater = false;
+
+    private boolean bHeld = false;
+    private boolean aHeld = false;
 
     public void runOpMode() throws InterruptedException
     {
         _base.init(hardwareMap, this);
 
-        detector = new CustomTensorFlow(hardwareMap);
-        detector.activate();
+        _base.deliver.markerDelivery.setPosition(0);
         waitForStart();
 
         //Set State of the Drivetrain
@@ -142,9 +132,63 @@ public class TeleOpMain extends LinearOpMode
 
         _base.drivetrain.run(-com.qualcomm.robotcore.util.Range.clip(gamepad1.left_stick_y, -1, 1),
                 com.qualcomm.robotcore.util.Range.clip(gamepad1.right_stick_x, -1, 1), scaleMode,drivetrainScale);
-        //_base.outTelemetry();
-        telemetry.addData("Aligned: ", relativeAligned());
-        telemetry.update();
+
+
+
+        if (gamepad1.b || gamepad1.right_stick_button&& !bHeld){
+            autoTurntoLander = true;
+            bHeld = true;
+        }
+        if (!gamepad1.b && !gamepad1.right_stick_button){
+            bHeld = false;
+        }
+        if (gamepad1.left_stick_y > 0.1 && gamepad1.right_stick_x > 0.1){
+            autoTurntoLander = false;
+        }
+        if (autoTurntoLander){
+            autoTurntoLander = false;
+            double turningPower = 0.9;
+            _base.drivetrain.backRight().setPower(-turningPower);
+            _base.drivetrain.frontRight().setPower(-turningPower);
+            _base.drivetrain.backLeft().setPower(turningPower);
+            _base.drivetrain.frontLeft().setPower(turningPower);
+            for (int i = 0; i < 100; i ++){
+                if (gamepad1.left_stick_y > 0.1 && gamepad1.right_stick_x > 0.1){
+                    break;
+                }
+                sleep(5);
+            }
+            _base.drivetrain.stop();
+
+        }
+
+        if (gamepad1.a || gamepad1.left_stick_button&& !aHeld){
+            autoTurntoCrater = true;
+            aHeld = true;
+        }
+        if (!gamepad1.a && !gamepad1.left_stick_button){
+            aHeld = false;
+        }
+        if (gamepad1.left_stick_y > 0.1 && gamepad1.right_stick_x > 0.1){
+            autoTurntoCrater = false;
+        }
+        if (autoTurntoCrater){
+            autoTurntoCrater = false;
+            double turningPower = 0.9;
+            _base.drivetrain.backRight().setPower(turningPower);
+            _base.drivetrain.frontRight().setPower(turningPower);
+            _base.drivetrain.backLeft().setPower(-turningPower);
+            _base.drivetrain.frontLeft().setPower(-turningPower);
+            for (int i = 0; i < 100; i ++){
+                if (gamepad1.left_stick_y > 0.1 && gamepad1.right_stick_x > 0.1){
+                    break;
+                }
+                sleep(5);
+            }
+            _base.drivetrain.stop();
+
+        }
+        //_base.outTelemetry();f
         /*------------------------------------ MARKER DELIVERY --------------------------------*/
         //this is to be used just in case the marker delivery system needs to be used
         if(gamepad2.dpad_right)
@@ -300,92 +344,6 @@ public class TeleOpMain extends LinearOpMode
 
 
     }
-    public void drive(double drivePower, double rotatePower)
-    {
-        _base.drivetrain.frontRight().setPower(drivePower + rotatePower);
-        _base.drivetrain.frontLeft().setPower(drivePower - rotatePower);
-        _base.drivetrain.backLeft().setPower(drivePower - rotatePower);
-        _base.drivetrain.backRight().setPower(drivePower + rotatePower);
-    }
 
-    private void deposit(){
-        _base.tiltChannel.tiltUpByEnc();
-        _base.collector.extendLiftByEnc(2000);
-    }
-
-    public boolean aligned(){
-        boolean aligned = false;
-        if (true){
-            detector.refresh();
-            if(detector.recognitions == null)
-            {
-                aligned = false;
-            }
-            else{
-                for (int i = 0; i < detector.recognitions.size(); i ++){
-                    Recognition rec = detector.recognitions.get(i);
-                    if (rec.getLabel().equals(LABEL_SILVER_MINERAL) && rec.getConfidence() > 0.85){
-                        telemetry.addData("Silver detecting with confidence ", rec.getConfidence());
-                        telemetry.update();
-                        aligned = false;
-                        break;
-                    }
-                    if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
-                        telemetry.addData("Gold detecting with confidence ", rec.getConfidence());
-                        telemetry.update();
-                        aligned = true;
-                        break;
-                    }
-                }
-            }
-
-        }
-        return aligned;
-
-    }
-
-    public boolean relativeAligned(){
-        boolean aligned = false;
-        if (true){
-            detector.refresh();
-            if(detector.recognitions == null)
-            {
-                aligned = false;
-            }
-            else{
-                double silverMax=0;
-                double goldMax=0;
-                for (int i = 0; i < detector.recognitions.size(); i ++){
-                    Recognition rec = detector.recognitions.get(i);
-                    if (rec.getLabel().equals(LABEL_SILVER_MINERAL)){
-                        if (rec.getConfidence() > silverMax) {
-                            silverMax=rec.getConfidence();
-                        }
-                        telemetry.addData("Silver detecting with confidence ", rec.getConfidence());
-                        telemetry.update();
-
-                    }
-                    if (rec.getLabel().equals(LABEL_GOLD_MINERAL)){
-                        if (rec.getConfidence() > goldMax) {
-                            goldMax=rec.getConfidence();
-                        }
-                        telemetry.addData("Gold detecting with confidence ", rec.getConfidence());
-                        telemetry.update();
-                    }
-                }
-                if (goldMax > silverMax && goldMax > ACCEPTABLE_CONFIDENCE) {
-                    aligned=true;
-                }
-
-                else{
-                    aligned=false;
-                }
-            }
-
-        }
-
-        return aligned;
-
-    }
 
 }

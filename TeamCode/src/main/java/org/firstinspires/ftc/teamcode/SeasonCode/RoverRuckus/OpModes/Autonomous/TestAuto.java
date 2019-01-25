@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-@Autonomous (name = "Test Auto")
+//@Autonomous (name = "Test Auto")
 
 public class TestAuto extends LinearOpMode {
 

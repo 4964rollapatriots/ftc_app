@@ -493,7 +493,7 @@ public class TurnTo extends RobotCommand
     }
 
 
-    public void blockRunSequentially(int BUFFER_PARAM, int SECONDS_TIMEOUT)
+    public void blockRunSequentially(int BUFFER_PARAM, double SECONDS_TIMEOUT)
     {
         TIMEOUT = (long)(SECONDS_TIMEOUT * 1000);
         if(_drivetrain.getEncoderMode() != DcMotor.RunMode.RUN_USING_ENCODER)

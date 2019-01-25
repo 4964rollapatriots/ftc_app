@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetec
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 
-@Autonomous(name = "Single Particle Corner")
+//@Autonomous(name = "Single Particle Corner")
 
 public class StandardCorner extends LinearOpMode {
 

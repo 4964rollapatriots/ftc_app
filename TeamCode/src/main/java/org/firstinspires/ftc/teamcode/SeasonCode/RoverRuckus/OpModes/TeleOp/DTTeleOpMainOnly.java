@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
  */
 //We will use this teleop to only test the drivetrain related components. This will be convenient
 //as we won't need to always comment the rest of the robot out in Base.java when we aren't using it.
-@TeleOp(name = "DTMainTeleOp", group = "TeleOp")
+//@TeleOp(name = "DTMainTeleOp", group = "TeleOp")
 public class DTTeleOpMainOnly extends LinearOpMode
 {
     private DTBaseOnly _base = new DTBaseOnly() ;

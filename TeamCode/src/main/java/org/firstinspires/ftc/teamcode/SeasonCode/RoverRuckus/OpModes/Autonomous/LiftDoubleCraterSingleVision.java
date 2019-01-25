@@ -15,11 +15,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-@Autonomous(name = "NO LIFT Meet Double Crater")
+import java.util.ArrayList;
+
+//@Autonomous(name = "SINGLE VISION WITH LIFT Meet Double Crater")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
-public class MeetDoubleCrater extends LinearOpMode {
+public class LiftDoubleCraterSingleVision extends LinearOpMode {
 
     private Base _base = new Base();
     private UtilGoldDetector eye;
@@ -67,6 +69,8 @@ public class MeetDoubleCrater extends LinearOpMode {
         detector = new CustomTensorFlow(hardwareMap);
         detector.activate();
         runUsingTensorFlow = true;
+
+        //eye = new UtilGoldDetector(hardwareMap);
         //This calibration is done before landing because the landing could "bump" the robot and change our angle
         _base.outTelemetry.write("All Systems Go");
         _base.outTelemetry.update();
@@ -75,13 +79,13 @@ public class MeetDoubleCrater extends LinearOpMode {
         waitForStart();
 
         //Gets the robot onto the field from the hanger
-//        _base.latchSystem.lowerRobot(3250);
-//
-//        _base.drivetrain.driveTo.goTo(0.25,0.1);
-//        _base.drivetrain.driveTo.runSequentially();
-//        _base.imu.calibrateTo(0);
-//        _base.latchSystem.extendHook(0);
-//        _base.latchSystem.openHook(2300);
+        _base.latchSystem.lowerRobot(3250);
+
+        _base.drivetrain.driveTo.goTo(0.25,0.1);
+        _base.drivetrain.driveTo.runSequentially();
+        _base.imu.calibrateTo(0);
+        _base.latchSystem.extendHook(0);
+        _base.latchSystem.openHook(2300);
 
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
@@ -119,7 +123,7 @@ public class MeetDoubleCrater extends LinearOpMode {
             _base.drivetrain.turnTo.blockRunSequentially(3,5);
 
             this.sleep(800);
-            if (relativeAligned()) {
+            if (aligned()) {
                 _block = blockState.RIGHT;
                 telemetry.addData("FOUND IN RIGHT", "");
                 telemetry.update();
@@ -134,7 +138,7 @@ public class MeetDoubleCrater extends LinearOpMode {
                 telemetry.update();
                 _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED-.2);
                 _base.drivetrain.turnTo.blockRunSequentially();
-                if (relativeAligned()){
+                if (aligned()){
                     _block = blockState.RIGHT;
                     break;
                 }
@@ -148,7 +152,7 @@ public class MeetDoubleCrater extends LinearOpMode {
             _base.drivetrain.turnTo.blockRunSequentially();
 
             this.sleep(800);
-            if (relativeAligned()) {
+            if (aligned()) {
                 _block = blockState.MIDDLE;
                 telemetry.addData("FOUND IN MIDDLE", "");
                 telemetry.update();
@@ -292,7 +296,7 @@ public class MeetDoubleCrater extends LinearOpMode {
         _base.drivetrain.driveTo.goTo(3, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
-        if (relativeAligned()){
+        if (aligned()){
             telemetry.addData("ANGLE FOUND:", _base.drivetrain.imu.zAngle());
             telemetry.update();
 
@@ -302,7 +306,7 @@ public class MeetDoubleCrater extends LinearOpMode {
             for (double i = secondAngle; i < SECOND_BLOCK_ABORT_ANGLE; i += TURN_INCREMENT-1){
                 _base.drivetrain.turnTo.goTo(i, BLOCK_TURN_SPEED-.20);
                 _base.drivetrain.turnTo.blockRunSequentially();
-                if (relativeAligned()){
+                if (aligned()){
                     telemetry.addData("ANGLE FOUND:", _base.drivetrain.imu.zAngle());
                     telemetry.update();
                     break;
@@ -359,7 +363,7 @@ public class MeetDoubleCrater extends LinearOpMode {
         _base.drivetrain.turnTo.blockRunSequentially();
     }
 
-    public boolean aligned(){
+    public boolean isAligned(){
         boolean aligned = false;
         if (runUsingTensorFlow){
             detector.refresh();
@@ -372,12 +376,14 @@ public class MeetDoubleCrater extends LinearOpMode {
                     Recognition rec = detector.recognitions.get(i);
                     if (rec.getLabel().equals(LABEL_SILVER_MINERAL) && rec.getConfidence() > 0.85){
                         telemetry.addData("Silver detecting with confidence ", rec.getConfidence());
+                        telemetry.log().add("Silver detecting with confidence ", rec.getConfidence());
                         telemetry.update();
                         aligned = false;
                         break;
                     }
                     if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
                         telemetry.addData("Gold detecting with confidence ", rec.getConfidence());
+                        telemetry.log().add("Gold detecting with confidence ", rec.getConfidence());
                         telemetry.update();
                         aligned = true;
                         break;
@@ -389,6 +395,7 @@ public class MeetDoubleCrater extends LinearOpMode {
         else{
             aligned = eye.isAligned();
         }
+        telemetry.log().add("END RESULT - ", aligned);
         return aligned;
 
     }
@@ -410,19 +417,20 @@ public class MeetDoubleCrater extends LinearOpMode {
                             silverMax=rec.getConfidence();
                         }
                         telemetry.addData("Silver detecting with confidence ", rec.getConfidence());
-
+                        telemetry.log().add("Silver detecting with confidence ", rec.getConfidence());
                     }
                     if (rec.getLabel().equals(LABEL_GOLD_MINERAL)){
                         if (rec.getConfidence() > goldMax) {
                             goldMax=rec.getConfidence();
                         }
                         telemetry.addData("Gold detecting with confidence ", rec.getConfidence());
+                        telemetry.log().add("Gold detecting with confidence ", rec.getConfidence());
                     }
-                    telemetry.log().add("confidence", rec.getConfidence());
+
                     telemetry.update();
                 }
                 if (goldMax > silverMax && goldMax > ACCEPTABLE_CONFIDENCE) {
-                    telemetry.addData("Found Confidence Value: ", goldMax);
+                    telemetry.addData("FOUND Confidence Value: ", goldMax);
                     telemetry.log();
                     telemetry.update();
                     aligned=true;
@@ -430,6 +438,7 @@ public class MeetDoubleCrater extends LinearOpMode {
                 else{
                     aligned=false;
                 }
+                telemetry.log().add("END OF FUNCTION");
             }
 
         }
@@ -439,42 +448,118 @@ public class MeetDoubleCrater extends LinearOpMode {
         return aligned;
 
     }
-
-    // returns true if a gold particle is aligned with the camera
-    private boolean isAligned(){
+    public boolean relativelyAligned(){
 
         if (runUsingTensorFlow){
-            // this updates the particles the phone is aware of
+            double silverConfidence = 0;
+            double goldConfidence = 0;
             detector.refresh();
-
-            // if the detector cannot find any particles, it is not aligned with a gold particle
             if(detector.recognitions == null)
             {
                 return false;
             }
-
             else{
-                // this iterates through all the particles the camera can see, and returns true if the particle is a block and above the confidence level
                 for (int i = 0; i < detector.recognitions.size(); i ++){
                     Recognition rec = detector.recognitions.get(i);
-                    if (rec.getLabel().equals(LABEL_SILVER_MINERAL) && rec.getConfidence() > 0.75){
-                        _base.outTelemetry.write("Facing Silver");
-                        _base.outTelemetry.update();
+
+                    if (rec.getLabel().equals(LABEL_SILVER_MINERAL)){
+                        telemetry.addData("Silver detecting with confidence ", rec.getConfidence());
+                        telemetry.update();
+                        if (rec.getConfidence() > silverConfidence){
+                            silverConfidence = rec.getConfidence();
+                        }
                     }
                     if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
-                        return true;
+                        telemetry.addData("Gold detecting with confidence ", rec.getConfidence());
+                        telemetry.update();
+                        if (rec.getConfidence() > goldConfidence){
+                            goldConfidence = rec.getConfidence();
+                        }
                     }
                 }
-                // if none of the particles are gold, then the camera is not aligned
+            }
+            if (goldConfidence > silverConfidence && goldConfidence > ACCEPTABLE_CONFIDENCE){
+                return true;
+            }
+            else{
                 return false;
             }
 
         }
-
-        // if we are not using TensorFlow, we return the result of the OpenCV software
         else{
             return eye.isAligned();
         }
+    }
+
+    private boolean aligned() {
+        detector.refresh();
+
+        if (detector.recognitions == null || detector.recognitions.size() == 0) {
+            return false;
+        }
+        else if (detector.recognitions.size() == 1 && detector.recognitions.get(0).getLabel() == LABEL_GOLD_MINERAL) {
+            if (detector.recognitions.get(0).getConfidence() > 0.35) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        else {
+            double minHeight;
+            double maxHeight;
+            double heightDifference = 90;
+
+            maxHeight = detector.recognitions.get(0).getLeft();
+            minHeight = detector.recognitions.get(0).getLeft();
+            for (Recognition r : detector.recognitions) {
+                if (r.getLeft() > maxHeight) {
+                    maxHeight = r.getLeft();
+                }
+                if (r.getLeft() < minHeight) {
+                    minHeight = r.getLeft();
+                }
+            }
+            if ((maxHeight - minHeight) > heightDifference) {
+                for (Recognition r : detector.recognitions) {
+                    if (r.getLeft() < (maxHeight - heightDifference)) {
+                        detector.recognitions.remove(r);
+                    }
+                }
+            }
+
+
+            if (detector.recognitions.size() > 1) {
+
+                double center = detector.recognitions.get(0).getImageHeight() / 2;
+
+                double minOffset = 2000;
+
+                for (Recognition r : detector.recognitions) {
+                    double offset = Math.abs((r.getTop() - r.getBottom()) - center);
+                    if (offset < minOffset) {
+                        minOffset = offset;
+                    }
+                }
+
+                for (Recognition r : detector.recognitions) {
+                    if (Math.abs((r.getTop() - r.getBottom()) - center) > minOffset) {
+                        detector.recognitions.remove(r);
+                    }
+                }
+
+            }
+
+        }
+        if (detector.recognitions.size() > 1){
+            return false;
+        }
+        else if (detector.recognitions.get(0).getLabel() == LABEL_GOLD_MINERAL && detector.recognitions.get(0).getConfidence() > 0.35) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
     }
 }
 

@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetec
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 
-@TeleOp (name = "Vision Test Teleop")
+//@TeleOp (name = "Vision Test Teleop")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
