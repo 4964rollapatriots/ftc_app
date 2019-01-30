@@ -152,7 +152,7 @@ public class TeleOpMain extends LinearOpMode
         }
         if (autoTurntoLander){
 
-            _base.drivetrain.turnTo.goTo(180,0.9);
+            _base.drivetrain.turnTo.goTo(0,0.9);
             if (_base.drivetrain.turnTo.teleopRunSequentially(4, 5)){
                 autoTurntoLander = false;
                 _base.drivetrain.stop();
@@ -176,7 +176,7 @@ public class TeleOpMain extends LinearOpMode
         }
         if (autoTurntoCrater){
 
-            _base.drivetrain.turnTo.goTo(0,0.9);
+            _base.drivetrain.turnTo.goTo(180,0.9);
             if (_base.drivetrain.turnTo.teleopRunSequentially(4, 5)){
                 autoTurntoCrater = false;
                 _base.drivetrain.stop();
