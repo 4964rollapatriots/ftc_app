@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 
 import static org.firstinspires.ftc.robotcore.external.tfod.TfodRoverRuckus.LABEL_GOLD_MINERAL;
 
-@Autonomous(name = "Vision Test")
+//@Autonomous(name = "Vision Test")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto

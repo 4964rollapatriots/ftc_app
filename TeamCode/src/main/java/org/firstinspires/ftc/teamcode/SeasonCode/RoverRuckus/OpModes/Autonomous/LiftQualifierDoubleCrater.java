@@ -17,14 +17,14 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
 import java.util.ArrayList;
 
-//@Autonomous(name = "SINGLE VISION WITH LIFT Meet Double Crater")
+@Autonomous(name = "WITH LIFT Qualifier Double Crater")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
-public class LiftDoubleCraterSingleVision extends LinearOpMode {
+public class LiftQualifierDoubleCrater extends LinearOpMode {
 
     private Base _base = new Base();
-    private UtilGoldDetector eye;
+    //private UtilGoldDetector eye;
     private CustomTensorFlow detector;
 
 
@@ -44,6 +44,8 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
     private final static double DRIVING_SPEED = 0.63;
     private final static double DRIVING_SPEED_CRATER = .95;
     private final static double DRIVING_SPEED_BLOCK = .53;
+    public double FINAL_CONFIDENCE = 0;
+    public double silverConfidence = 0;
 
     // these are the only final values that are used multiple times
     private double block_distance = 27;
@@ -67,9 +69,7 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
         _base.outTelemetry.update();
         _block = blockState.UNCERTAIN;
         detector = new CustomTensorFlow(hardwareMap);
-        detector.activate();
         runUsingTensorFlow = true;
-
         //eye = new UtilGoldDetector(hardwareMap);
         //This calibration is done before landing because the landing could "bump" the robot and change our angle
         _base.outTelemetry.write("All Systems Go");
@@ -90,23 +90,27 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
         _base.drivetrain.turnTo.goTo(1,BLOCK_TURN_SPEED-.2);
-        _base.drivetrain.turnTo.blockRunSequentially(2, 2);
+        _base.drivetrain.turnTo.blockRunSequentially(2, 1.2);
 
         //drives forward to avoid hitting the lander while turning
-        _base.drivetrain.driveTo.goTo(7,DRIVING_SPEED/2);
+        _base.drivetrain.driveTo.goTo(4,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
-
-//        if(_block == blockState.UNCERTAIN)
-//        {
-//            this.sleep(800);
-//            if (relativeAligned()) {
-//                _block = blockState.MIDDLE;
-//                telemetry.addData("FOUND IN MIDDLE", "");
-//                telemetry.update();
-//            }
-//            // pans across the particles until it either sees the block or reaches 348 degrees
-//            // 348 degrees should be past the far right particle
-//        }
+        _base.drivetrain.turnTo.goTo(1, .35);
+        _base.drivetrain.turnTo.runSequentially();
+        detector.activate();
+        _base.drivetrain.driveTo.goTo(3,DRIVING_SPEED/2);
+        _base.drivetrain.driveTo.runSequentially();
+        this.sleep(800);
+        if(_block == blockState.UNCERTAIN)
+        {
+            if (relativelyAligned()) {
+                _block = blockState.MIDDLE;
+                telemetry.addData("FIRST MIDDLE CHECK FOUND", "");
+                telemetry.update();
+            }
+            // pans across the particles until it either sees the block or reaches 348 degrees
+            // 348 degrees should be past the far right particle
+        }
 
 
         _base.deliver.raiseMarker();
@@ -119,7 +123,7 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
         {
             _base.deliver.raiseMarker();
             //to use one run of aligned to make sure stuff works
-            _base.drivetrain.turnTo.goTo(337.5,BLOCK_TURN_SPEED-.2);
+            _base.drivetrain.turnTo.goTo(334,BLOCK_TURN_SPEED-.2);
             _base.drivetrain.turnTo.blockRunSequentially(3,5);
 
             this.sleep(800);
@@ -147,24 +151,24 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
         _base.deliver.raiseMarker();
         // if it is not in the middle, the robot turns until it sees the left block or reaches 18 degrees
 
-        if(_block == blockState.UNCERTAIN) {
-            _base.drivetrain.turnTo.goTo(0, BLOCK_TURN_SPEED - .2);
-            _base.drivetrain.turnTo.blockRunSequentially();
-
-            this.sleep(800);
-            if (aligned()) {
-                _block = blockState.MIDDLE;
-                telemetry.addData("FOUND IN MIDDLE", "");
-                telemetry.update();
-            }
-        }
+//        if(_block == blockState.UNCERTAIN) {
+//            _base.drivetrain.turnTo.goTo(2, BLOCK_TURN_SPEED - .2);
+//            _base.drivetrain.turnTo.blockRunSequentially();
+//
+//            this.sleep(1000);
+//            if (aligned()) {
+//                _block = blockState.MIDDLE;
+//                telemetry.addData("FOUND IN MIDDLE", "");
+//                telemetry.update();
+//            }
+//        }
         //if the block is still not found, the block is on the left
         // the robot turns until it reaches 17 degrees and then pans until it sees the block
 
         if(_block == blockState.UNCERTAIN)
         {
-            _base.drivetrain.turnTo.goTo( 37, BLOCK_TURN_SPEED);
-            _base.drivetrain.turnTo.blockRunSequentially();
+            _base.drivetrain.turnTo.goTo( 39, TURN_SPEED+.1);
+            _base.drivetrain.turnTo.blockRunSequentially(2,5);
             _block = blockState.LEFT;
         }
 
@@ -177,6 +181,8 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
 
         sendTelemetry();
         telemetry.addData("block state is", _block);
+        telemetry.addData("Silver Confidence = ", silverConfidence);
+        telemetry.addData("Gold Confidence = ", FINAL_CONFIDENCE);
         telemetry.update();
 
         //drive forward to knock the block off and then go back the same distance
@@ -187,6 +193,10 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
         else if(_block == blockState.RIGHT)
         {
             block_distance -= 2.0;
+        }
+        else
+        {
+            block_distance -= 1;
         }
         _base.drivetrain.driveTo.goTo(block_distance - 1,DRIVING_SPEED_BLOCK);
         _base.drivetrain.driveTo.runSequentially();
@@ -206,7 +216,7 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
         else if(_block == blockState.RIGHT)
         {
             _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(68, TURN_SPEED-.05);
+            _base.drivetrain.turnTo.goTo(67, TURN_SPEED-.05);
             _base.drivetrain.turnTo.runSequentially(2,5);
             _base.deliver.raiseMarker();
         }
@@ -239,7 +249,7 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
 
 
         // turns in preparation for moving towards the deposit zone
-        _base.drivetrain.turnTo.goTo(131, TURN_SPEED);
+        _base.drivetrain.turnTo.goTo(132, TURN_SPEED);
         _base.drivetrain.turnTo.runSequentially(3);
 
         _base.deliver.raiseMarker();
@@ -252,8 +262,14 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
         telemetry.addData("ARC TURNING" ," NOW");
         telemetry.update();
 
-        _base.drivetrain.turnTo.goTo(158, TURN_SPEED - 0.1);
-        _base.drivetrain.turnTo.arcSequentially(3, 2.5);
+        _base.drivetrain.turnTo.goTo(140, TURN_SPEED);
+        _base.drivetrain.turnTo.rightArcSequentially();
+
+        _base.drivetrain.turnTo.goTo(150, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially();
+        
+        _base.drivetrain.driveTo.goTo(30, 0.7);
+        _base.drivetrain.driveTo.runSequentially();
 
 
         // deposits the marker
@@ -272,22 +288,24 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
 
         //raises the delivery syste
 
+        if (_block != blockState.LEFT){
+            _base.drivetrain.driveTo.goTo(-2, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+        }
 
-        _base.drivetrain.driveTo.goTo(-2, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
 
         _base.deliver.deliverMarker();
 
 
         double secondAngle = 226;
         if (_block == blockState.RIGHT){
-            secondAngle = 290;
+            secondAngle = 287;
         }
         else if (_block == blockState.LEFT){
-            secondAngle = 235;
+            secondAngle = 225;
         }
         else if (_block == blockState.MIDDLE){
-            secondAngle = 264;
+            secondAngle = 244;
         }
         // turn to face the second group of particles
         _base.drivetrain.turnTo.goTo(secondAngle, BLOCK_TURN_SPEED-.1);
@@ -301,18 +319,18 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
             telemetry.update();
 
         }
-        else{
-            // turns by degrees clockwise until the robot sees the second block or it is passes a certain angle
-            for (double i = secondAngle; i < SECOND_BLOCK_ABORT_ANGLE; i += TURN_INCREMENT-1){
-                _base.drivetrain.turnTo.goTo(i, BLOCK_TURN_SPEED-.20);
-                _base.drivetrain.turnTo.blockRunSequentially();
-                if (aligned()){
-                    telemetry.addData("ANGLE FOUND:", _base.drivetrain.imu.zAngle());
-                    telemetry.update();
-                    break;
-                }
-            }
-        }
+//        else{
+//            // turns by degrees clockwise until the robot sees the second block or it is passes a certain angle
+//            for (double i = secondAngle; i < SECOND_BLOCK_ABORT_ANGLE; i += TURN_INCREMENT-1){
+//                _base.drivetrain.turnTo.goTo(i, BLOCK_TURN_SPEED-.20);
+//                _base.drivetrain.turnTo.blockRunSequentially();
+//                if (aligned()){
+//                    telemetry.addData("ANGLE FOUND:", _base.drivetrain.imu.zAngle());
+//                    telemetry.update();
+//                    break;
+//                }
+//            }
+//        }
 
 
 
@@ -363,8 +381,10 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
         _base.drivetrain.turnTo.blockRunSequentially();
     }
 
-    public boolean isAligned(){
+    public boolean aligned(){
         boolean aligned = false;
+        double maxSilver = 0;
+        double maxGold = 0;
         if (runUsingTensorFlow){
             detector.refresh();
             if(detector.recognitions == null)
@@ -374,80 +394,34 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
             else{
                 for (int i = 0; i < detector.recognitions.size(); i ++){
                     Recognition rec = detector.recognitions.get(i);
-                    if (rec.getLabel().equals(LABEL_SILVER_MINERAL) && rec.getConfidence() > 0.85){
+                    if (rec.getLabel().equals(LABEL_SILVER_MINERAL)){
                         telemetry.addData("Silver detecting with confidence ", rec.getConfidence());
-                        telemetry.log().add("Silver detecting with confidence ", rec.getConfidence());
-                        telemetry.update();
-                        aligned = false;
+                        silverConfidence = rec.getConfidence();
+                        if(rec.getConfidence() > 0.85) {
+                            silverConfidence = rec.getConfidence();
+                            return false;
+                        }
                         break;
                     }
                     if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
                         telemetry.addData("Gold detecting with confidence ", rec.getConfidence());
-                        telemetry.log().add("Gold detecting with confidence ", rec.getConfidence());
-                        telemetry.update();
-                        aligned = true;
-                        break;
+                        FINAL_CONFIDENCE = rec.getConfidence();
+                        return true;
                     }
                 }
             }
 
         }
         else{
-            aligned = eye.isAligned();
+            //aligned = eye.isAligned();
         }
-        telemetry.log().add("END RESULT - ", aligned);
+        telemetry.addData("END RESULT - ", aligned);
+        telemetry.update();
+        sleep(500);
         return aligned;
 
     }
-    public boolean relativeAligned(){
-        boolean aligned = false;
-        if (runUsingTensorFlow){
-            detector.refresh();
-            if(detector.recognitions == null)
-            {
-                aligned = false;
-            }
-            else{
-                double silverMax=0;
-                double goldMax=0;
-                for (int i = 0; i < detector.recognitions.size(); i ++){
-                    Recognition rec = detector.recognitions.get(i);
-                    if (rec.getLabel().equals(LABEL_SILVER_MINERAL)){
-                        if (rec.getConfidence() > silverMax) {
-                            silverMax=rec.getConfidence();
-                        }
-                        telemetry.addData("Silver detecting with confidence ", rec.getConfidence());
-                        telemetry.log().add("Silver detecting with confidence ", rec.getConfidence());
-                    }
-                    if (rec.getLabel().equals(LABEL_GOLD_MINERAL)){
-                        if (rec.getConfidence() > goldMax) {
-                            goldMax=rec.getConfidence();
-                        }
-                        telemetry.addData("Gold detecting with confidence ", rec.getConfidence());
-                        telemetry.log().add("Gold detecting with confidence ", rec.getConfidence());
-                    }
 
-                    telemetry.update();
-                }
-                if (goldMax > silverMax && goldMax > ACCEPTABLE_CONFIDENCE) {
-                    telemetry.addData("FOUND Confidence Value: ", goldMax);
-                    telemetry.log();
-                    telemetry.update();
-                    aligned=true;
-                }
-                else{
-                    aligned=false;
-                }
-                telemetry.log().add("END OF FUNCTION");
-            }
-
-        }
-        else{
-            aligned = eye.isAligned();
-        }
-        return aligned;
-
-    }
     public boolean relativelyAligned(){
 
         if (runUsingTensorFlow){
@@ -487,11 +461,11 @@ public class LiftDoubleCraterSingleVision extends LinearOpMode {
 
         }
         else{
-            return eye.isAligned();
+            return false;
         }
     }
 
-    private boolean aligned() {
+    private boolean isAligned() {
         detector.refresh();
 
         if (detector.recognitions == null || detector.recognitions.size() == 0) {

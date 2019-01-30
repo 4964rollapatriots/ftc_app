@@ -17,11 +17,11 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "NOLIFTMeetDoubleCrater")
+@Autonomous(name = "No Park LIFT SINGLE CRATER")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
-public class NOLIFTMeetDoubleCrater extends LinearOpMode {
+public class LiftSingleCraterNoPark extends LinearOpMode {
 
     private Base _base = new Base();
     //private UtilGoldDetector eye;
@@ -167,7 +167,7 @@ public class NOLIFTMeetDoubleCrater extends LinearOpMode {
 
         if(_block == blockState.UNCERTAIN)
         {
-            _base.drivetrain.turnTo.goTo( 40, TURN_SPEED+.1);
+            _base.drivetrain.turnTo.goTo( 39, TURN_SPEED+.1);
             _base.drivetrain.turnTo.blockRunSequentially(2,5);
             _block = blockState.LEFT;
         }
@@ -216,7 +216,7 @@ public class NOLIFTMeetDoubleCrater extends LinearOpMode {
         else if(_block == blockState.RIGHT)
         {
             _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(68, TURN_SPEED-.05);
+            _base.drivetrain.turnTo.goTo(67, TURN_SPEED-.05);
             _base.drivetrain.turnTo.runSequentially(2,5);
             _base.deliver.raiseMarker();
         }
@@ -287,22 +287,6 @@ public class NOLIFTMeetDoubleCrater extends LinearOpMode {
 
 
         _base.deliver.raiseMarker();
-
-        // turn back to face the crater
-        _base.drivetrain.turnTo.goTo(144, TURN_SPEED-.05);
-        _base.drivetrain.turnTo.runSequentially(2,5);
-
-        // drive to the crater
-        _base.drivetrain.driveTo.goTo(-30,DRIVING_SPEED_CRATER);
-        _base.drivetrain.driveTo.runSequentially();
-
-        // turn back to face the crater
-        _base.drivetrain.turnTo.goTo(147, TURN_SPEED-.05);
-        _base.drivetrain.turnTo.runSequentially(2,5);
-
-        // drive to the crater
-        _base.drivetrain.driveTo.goTo(-30,DRIVING_SPEED_CRATER- .05);
-        _base.drivetrain.driveTo.runSequentially();
 
         //we are done, so stop the robot
         _base.drivetrain.stop();

@@ -285,6 +285,77 @@ public class TurnTo extends RobotCommand
 
         _busy = false;
     }
+    public boolean teleopRunSequentially(int BUFFER_PARAM, double SECONDS_TIMEOUT)
+    {
+        TIMEOUT = (long)(SECONDS_TIMEOUT * 1000);
+        if(_drivetrain.getEncoderMode() != DcMotor.RunMode.RUN_USING_ENCODER)
+        {
+            _drivetrain.encoderOn();
+        }
+
+        _imu.setAngle();
+
+        //Init heading stored from imu to variable.
+        double initHeading = _imu.zAngle();
+
+        double heading = 0;
+
+        //Tracks the current speed of the robot.
+        double currSpeed = 0;
+
+        //Formula for calculating error.
+        double error = Util.angleError((int)initHeading, (int)targetAngle);
+
+        //Find's initial error will be used in calculations
+        double initError = error;
+
+        //Finding the distance modifier
+        double distModfication = Math.abs(error) / 180;
+
+        //Start time of angle movements, will be used for timeouts
+        long startTime = System.currentTimeMillis();
+
+        _busy = true;
+
+        _drivetrain.setCurrState(Drivetrain.State.FORWARD_FAST);
+
+        _imu.setAngle();
+        heading = _imu.zAngle();
+        error = Util.angleError((int)_imu.zAngle(), (int)targetAngle);
+        currSpeed = (error/initError) * SPEED_MULT * distModfication;
+
+        if(currSpeed < minSpeed)
+        {
+            currSpeed = minSpeed;
+        }
+
+        if(currSpeed > maxSpeed)
+        {
+            currSpeed = maxSpeed;
+        }
+
+        if(currSpeed < minSpeed)
+        {
+            currSpeed = minSpeed;
+        }
+
+        //_drivetrain.outTelemetry();
+        _drivetrain.base().outTelemetry.update();
+
+        _drivetrain.run(0.0, Math.abs(error) / -error * currSpeed, false,1);
+
+        if(Math.abs(error) > BUFFER_PARAM && System.currentTimeMillis() - startTime < TIMEOUT
+                && !endCommand && _drivetrain.base().opMode.opModeIsActive())
+        {
+            return false;
+        }
+        else{
+            _busy = false;
+            return true;
+        }
+
+
+    }
 
     public void arcSequentially(double RATIO, double SECONDS_TIMEOUT)
     {
@@ -348,11 +419,11 @@ public class TurnTo extends RobotCommand
             //_drivetrain.outTelemetry();
             _drivetrain.base().outTelemetry.update();
 
-            _drivetrain.arcRun(currSpeed ,currSpeed*RATIO);
+            _drivetrain.arcRun(currSpeed+.03 ,currSpeed*RATIO);
         }
     }
 
-    public void arcSequentially(double RATIO)
+    public void rightArcSequentially()
     {
         if (_drivetrain.getEncoderMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
             _drivetrain.encoderOn();
@@ -399,21 +470,7 @@ public class TurnTo extends RobotCommand
                 currSpeed = maxSpeed;
             }
 
-            if (currSpeed < minSpeed) {
-                currSpeed = minSpeed;
-            }
-
-            _drivetrain.base().outTelemetry.addData("INIT ERROR: ", initError);
-            _drivetrain.base().outTelemetry.addData("Init Heading :", initHeading);
-            _drivetrain.base().outTelemetry.addData("TARGET ANGLE: ", targetAngle);
-            _drivetrain.base().outTelemetry.addData("Current ANGLE: ", heading);
-            _drivetrain.base().outTelemetry.addData("distModification: ", distModfication);
-            _drivetrain.base().outTelemetry.addData("ERROR: ", error);
-            _drivetrain.base().outTelemetry.addData("CURRSPEED: ", currSpeed);
-            //_drivetrain.outTelemetry();
-            _drivetrain.base().outTelemetry.update();
-
-            _drivetrain.arcRun(currSpeed,currSpeed*RATIO);
+            _drivetrain.arcRun(0,currSpeed*2);
         }
     }
 

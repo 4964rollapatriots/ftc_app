@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.DTBaseOnly;
 /**
  * Created by Pranal Madria on 11/28/2018.
  */
-@Autonomous(name = "12Inch Distance Test NO RANGE SENSOR")
+//@Autonomous(name = "12Inch Distance Test NO RANGE SENSOR")
 //This class will be used test the robot driving 12 inches, to see whether the encoder counts to inch constant needs to be changed
 public class DistanceTest extends LinearOpMode
 {

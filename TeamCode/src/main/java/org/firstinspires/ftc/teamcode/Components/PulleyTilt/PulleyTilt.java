@@ -20,7 +20,7 @@ public class PulleyTilt extends RobotComponent
     private double TILT_UP_POW = -.80;
     private double TILT_DOWN_POW = .80;
 
-    private int TILT_UP_ENC = -500; //test this
+    private int TILT_UP_ENC = -550; //test this
     private int TILT_DOWN_ENC = 1550;
 
     public int BUFFER = 75;

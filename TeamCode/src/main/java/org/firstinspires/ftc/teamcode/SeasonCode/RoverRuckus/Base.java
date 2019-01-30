@@ -89,7 +89,9 @@ public class Base extends RobotBase
         //outTelemetry.addData("Right Range: ", rightDistSensor.distance());
         //outTelemetry.addData("Front Range: ", frontDistSensor.distance(DistanceUnit.INCH));
         outTelemetry.telemetry.addData("Drivetrain State", drivetrain.state());
-        outTelemetry.telemetry.addData("Marker Delivery Pos: ", deliver.markerDelivery.getPosition());
+        outTelemetry.telemetry.addData("Drivetrain State", drivetrain.state());
+        outTelemetry.telemetry.addData("Drivetrain State", drivetrain.state());
+        outTelemetry.telemetry.addData("Drivetrain State", drivetrain.state());
         outTelemetry.update();
     }
     @Override

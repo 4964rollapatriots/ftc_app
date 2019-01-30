@@ -17,11 +17,11 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "WITH LIFT Meet Double Crater")
+@Autonomous(name = "LIFTSINGLECRATER")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
-public class WithLiftMeetDoubleCrater extends LinearOpMode {
+public class LiftMeetSingleCrater extends LinearOpMode {
 
     private Base _base = new Base();
     //private UtilGoldDetector eye;
@@ -42,7 +42,7 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
     private final static double TURN_SPEED = 0.33;
     private final static double BLOCK_TURN_SPEED = 0.55;
     private final static double DRIVING_SPEED = 0.63;
-    private final static double DRIVING_SPEED_CRATER = .95;
+    private final static double DRIVING_SPEED_CRATER = .75;
     private final static double DRIVING_SPEED_BLOCK = .53;
     public double FINAL_CONFIDENCE = 0;
     public double silverConfidence = 0;
@@ -142,7 +142,7 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
                 telemetry.update();
                 _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED-.2);
                 _base.drivetrain.turnTo.blockRunSequentially();
-                    if (aligned()){
+                if (aligned()){
                     _block = blockState.RIGHT;
                     break;
                 }
@@ -262,7 +262,7 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
         telemetry.addData("ARC TURNING" ," NOW");
         telemetry.update();
 
-        _base.drivetrain.turnTo.goTo(158, TURN_SPEED );
+        _base.drivetrain.turnTo.goTo(158, TURN_SPEED - 0.1);
         _base.drivetrain.turnTo.arcSequentially(3, 2.5);
 
 
@@ -276,66 +276,35 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
         catch(Exception ex){ex.printStackTrace();}
 
 
+        //raises the delivery system
 
 
-
-
-        //raises the delivery syste
-
-        if (_block != blockState.LEFT){
-            _base.drivetrain.driveTo.goTo(-2, DRIVING_SPEED);
-            _base.drivetrain.driveTo.runSequentially();
-        }
-
+        _base.drivetrain.driveTo.goTo(-8, DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
 
         _base.deliver.deliverMarker();
 
 
-        double secondAngle = 226;
-        if (_block == blockState.RIGHT){
-            secondAngle = 287;
-        }
-        else if (_block == blockState.LEFT){
-            secondAngle = 225;
-        }
-        else if (_block == blockState.MIDDLE){
-            secondAngle = 244;
-        }
-        // turn to face the second group of particles
-        _base.drivetrain.turnTo.goTo(secondAngle, BLOCK_TURN_SPEED-.1);
-        _base.drivetrain.turnTo.runSequentially();
-        _base.deliver.raiseMarker();
-        _base.drivetrain.driveTo.goTo(3, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
 
-        if (aligned()){
-            telemetry.addData("ANGLE FOUND:", _base.drivetrain.imu.zAngle());
-            telemetry.update();
-
-        }
-//        else{
-//            // turns by degrees clockwise until the robot sees the second block or it is passes a certain angle
-//            for (double i = secondAngle; i < SECOND_BLOCK_ABORT_ANGLE; i += TURN_INCREMENT-1){
-//                _base.drivetrain.turnTo.goTo(i, BLOCK_TURN_SPEED-.20);
-//                _base.drivetrain.turnTo.blockRunSequentially();
-//                if (aligned()){
-//                    telemetry.addData("ANGLE FOUND:", _base.drivetrain.imu.zAngle());
-//                    telemetry.update();
-//                    break;
-//                }
-//            }
-//        }
-
-
-
-        // knock the second block off and comes back
-        _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE+5,DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.driveTo.goTo(-6,DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
         _base.deliver.raiseMarker();
 
+        // turn back to face the crater
+        _base.drivetrain.turnTo.goTo(147, TURN_SPEED-.05);
+        _base.drivetrain.turnTo.runSequentially(2,5);
 
+        // drive to the crater
+        _base.drivetrain.driveTo.goTo(-20,DRIVING_SPEED_CRATER);
+        _base.drivetrain.driveTo.runSequentially();
+
+        // turn back to face the crater
+        _base.drivetrain.turnTo.goTo(152.5, TURN_SPEED-.05);
+        _base.drivetrain.turnTo.runSequentially(2,5);
+
+        // drive to the crater
+        _base.drivetrain.driveTo.goTo(-40,DRIVING_SPEED_CRATER- .1);
+        _base.drivetrain.driveTo.runSequentially();
+
+        //we are done, so stop the robot
         _base.drivetrain.stop();
         detector.deactivate();
     }
@@ -530,5 +499,4 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
 
     }
 }
-
 

@@ -18,7 +18,7 @@ public class Drivetrain extends RobotComponent
 
     private final double FORWARD = 1;
     private final double BACKWARD = -1;
-    private final double SLOW = .60;
+    private final double SLOW = .70;
     private final double SLOWER = .30;
     private final double FAST = 1;
     private final double STOP = 0;
