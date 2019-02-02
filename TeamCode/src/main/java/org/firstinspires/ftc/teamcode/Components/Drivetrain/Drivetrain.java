@@ -32,7 +32,7 @@ public class Drivetrain extends RobotComponent
     private DcMotor backRight;
 
     public REVIMU imu;
-    public REVColorSensor right_range;
+    //public REVColorSensor right_range;
     public MRRange front_range;
     public Touch touch;
 
@@ -67,13 +67,13 @@ public class Drivetrain extends RobotComponent
         driveTo = new DriveToDistance(this);
     }
 
-    public void setDependencies(final REVIMU IMU, final REVColorSensor RANGE){
-
-        imu = IMU;
-        right_range = RANGE;
-        turnTo = new TurnTo(this, imu);
-        driveTo = new DriveToDistance(this);
-    }
+//    public void setDependencies(final REVIMU IMU, final REVColorSensor RANGE){
+//
+//        imu = IMU;
+//        right_range = RANGE;
+//        turnTo = new TurnTo(this, imu);
+//        driveTo = new DriveToDistance(this);
+//    }
 
     public void setDependencies(final REVIMU IMU, final Touch t, final MRRange FRONT_RANGE){
 
@@ -84,15 +84,15 @@ public class Drivetrain extends RobotComponent
         driveTo = new DriveToDistance(this);
     }
 
-    public void setDependencies(final REVIMU IMU, final REVColorSensor RIGHT_RANGE, final Touch t, final MRRange FRONT_RANGE){
-
-        imu = IMU;
-        right_range = RIGHT_RANGE;
-        front_range = FRONT_RANGE;
-        touch = t;
-        turnTo = new TurnTo(this, imu);
-        driveTo = new DriveToDistance(this);
-    }
+//    public void setDependencies(final REVIMU IMU, final REVColorSensor RIGHT_RANGE, final Touch t, final MRRange FRONT_RANGE){
+//
+//        imu = IMU;
+//        right_range = RIGHT_RANGE;
+//        front_range = FRONT_RANGE;
+//        touch = t;
+//        turnTo = new TurnTo(this, imu);
+//        driveTo = new DriveToDistance(this);
+//    }
 
     public long backLeftEncoderCount()
     {

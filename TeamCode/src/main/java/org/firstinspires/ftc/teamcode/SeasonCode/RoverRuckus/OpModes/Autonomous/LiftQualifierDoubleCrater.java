@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "WITH LIFT Qualifier Double Crater")
+@Autonomous(name = "Test Qualifier Double Crater")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto

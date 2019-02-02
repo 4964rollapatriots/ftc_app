@@ -167,7 +167,7 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
 
         if(_block == blockState.UNCERTAIN)
         {
-            _base.drivetrain.turnTo.goTo( 39, TURN_SPEED+.1);
+            _base.drivetrain.turnTo.goTo( 37, TURN_SPEED+.1);
             _base.drivetrain.turnTo.blockRunSequentially(2,5);
             _block = blockState.LEFT;
         }
@@ -293,10 +293,10 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
 
         double secondAngle = 226;
         if (_block == blockState.RIGHT){
-            secondAngle = 287;
+            secondAngle = 288;
         }
         else if (_block == blockState.LEFT){
-            secondAngle = 225;
+            secondAngle = 227;
         }
         else if (_block == blockState.MIDDLE){
             secondAngle = 244;
