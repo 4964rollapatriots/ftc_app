@@ -344,6 +344,17 @@ public class TurnTo extends RobotCommand
 
         _drivetrain.run(0.0, Math.abs(error) / -error * currSpeed, false,1);
 
+        if(targetAngle == 170 && _imu.zAngle() >= targetAngle - 10 && _imu.zAngle() <= targetAngle + 10)
+        {
+            return false;
+        }
+        else if(targetAngle == 0)
+        {
+            if(_imu.zAngle() < 10 && _imu.zAngle() > 350)
+            {
+                return false;
+            }
+        }
         if(Math.abs(error) > BUFFER_PARAM && System.currentTimeMillis() - startTime < TIMEOUT
                 && !endCommand && _drivetrain.base().opMode.opModeIsActive())
         {

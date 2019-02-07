@@ -28,7 +28,7 @@ public class PulleyTilt extends RobotComponent
     public void init(final RobotBase BASE)
     {
         super.init(BASE);
-        pulleys =  mapper.mapMotor("pulleys", DcMotorSimple.Direction.FORWARD);
+        pulleys =  mapper.mapMotor("pulleys", DcMotorSimple.Direction.REVERSE);
     }
 
     public void tiltByPower(double POWER)

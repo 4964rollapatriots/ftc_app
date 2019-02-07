@@ -18,13 +18,13 @@ public class CollectorSystem extends RobotComponent {
         super.init(BASE);
         collector = mapper.mapMotor("collector", DcMotorSimple.Direction.REVERSE);
         collector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        extendCollector = mapper.mapMotor("extend", DcMotorSimple.Direction.FORWARD);
+        extendCollector = mapper.mapMotor("extend", DcMotorSimple.Direction.REVERSE);
         extendCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
 
 
-    public void powerLift(double POWER)
+    public void powerExtension(double POWER)
     {
         extendCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         extendCollector.setPower(POWER);

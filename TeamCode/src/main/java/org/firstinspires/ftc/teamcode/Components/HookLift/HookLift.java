@@ -91,7 +91,7 @@ public class HookLift extends RobotComponent
             hook.setPower(1);
             try
             {
-                Thread.sleep(2100);
+                Thread.sleep(time);
             }
             catch(Exception ex)
             {

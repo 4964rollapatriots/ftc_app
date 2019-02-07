@@ -213,21 +213,21 @@ public  class NoIMUTeleOp extends LinearOpMode
             _base.latchSystem.stop();
             /* -------------- HOOK SYSTEM ------------------------*/
 
-        if (gamepad1.left_trigger > .20 && hookOpen){
+        if (gamepad1.dpad_left && hookOpen){
             _base.latchSystem.closeHook(2100);
             hookOpen = false;
         }
-        else if (gamepad1.right_trigger > .20 && !hookOpen){
+        else if (gamepad1.dpad_right && !hookOpen){
             _base.latchSystem.openHook(2100);
             hookOpen = true;
         }
-        else if (gamepad1.dpad_right)
+        else if (gamepad1.right_trigger > 0.2)
         {
             _base.latchSystem.openHook();
             hookOpen = true;
         }
 
-        else if (gamepad1.dpad_left)
+        else if (gamepad1.left_trigger > .2)
         {
             _base.latchSystem.closeHook();
             hookOpen = false;
@@ -244,19 +244,19 @@ public  class NoIMUTeleOp extends LinearOpMode
         {
             if(gamepad2.left_stick_y > .85)
             {
-                _base.collector.powerLift(EXTEND_LIFT_POW);
+                _base.collector.powerExtension(EXTEND_LIFT_POW);
             }
             else if(gamepad2.left_stick_y < -.85)
             {
-                _base.collector.powerLift(-1);
+                _base.collector.powerExtension(-1);
             }
             else
             {
-                _base.collector.powerLift(gamepad2.left_stick_y);
+                _base.collector.powerExtension(gamepad2.left_stick_y);
             }
         }
         else
-            _base.collector.powerLift(0);
+            _base.collector.powerExtension(0);
 
 
         //Collect particles using foam wheel :)

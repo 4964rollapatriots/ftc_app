@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.MRRange;
@@ -30,9 +31,9 @@ public class Base extends RobotBase
     public HookLift latchSystem = new HookLift();
     public PulleyTilt tiltChannel = new PulleyTilt();
     public MarkerDelivery deliver = new MarkerDelivery();
-    //public REVColorSensor rightDistSensor = new REVColorSensor(this);
     public Touch bump = new Touch();
     public MRRange frontDistSensor = new MRRange();
+    public MRRange backDistSensor = new MRRange();
     @Override
     public void init(final HardwareMap hwm, final LinearOpMode op)
     {
@@ -57,7 +58,8 @@ public class Base extends RobotBase
         outTelemetry.update();
         //rightDistSensor.mapREVDistanceSensor("rightRange");
         bump.init(this, "touch");
-        frontDistSensor.init(this, "frontRange");
+        frontDistSensor.init(this, "frontRange",I2cAddr.create8bit(0x28));
+        backDistSensor.init(this, "backRange", I2cAddr.create8bit(0x3c));
         outTelemetry.write("B. I. G. RANGE ");
         outTelemetry.update();
         //Try catches to prevent crashes
@@ -75,7 +77,8 @@ public class Base extends RobotBase
 
         // Dependency setting
         //drivetrain.setDependencies(imu, rightDistSensor,bump, frontDistSensor);
-        drivetrain.setDependencies(imu, bump, frontDistSensor);
+        drivetrain.setDependencies(imu, bump, frontDistSensor, backDistSensor);
+
 
     }
 

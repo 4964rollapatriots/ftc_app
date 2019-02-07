@@ -7,21 +7,18 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.Autonomous
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.CustomTensorFlow;
-import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.UtilGoldDetector;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-import java.util.ArrayList;
-
-@Autonomous(name = "No Park LIFT SINGLE CRATER")
+@Autonomous(name = "No Arc, Park Double Crater")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
-public class LiftSingleCraterNoPark extends LinearOpMode {
+public class NoArcParkDoubleCrater extends LinearOpMode {
 
     private Base _base = new Base();
     //private UtilGoldDetector eye;
@@ -42,7 +39,7 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
     private final static double TURN_SPEED = 0.33;
     private final static double BLOCK_TURN_SPEED = 0.55;
     private final static double DRIVING_SPEED = 0.63;
-    private final static double DRIVING_SPEED_CRATER = .75;
+    private final static double DRIVING_SPEED_CRATER = .95;
     private final static double DRIVING_SPEED_BLOCK = .53;
     public double FINAL_CONFIDENCE = 0;
     public double silverConfidence = 0;
@@ -87,7 +84,7 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
         _base.latchSystem.extendHook(0);
         _base.latchSystem.openHook(1300);
         telemetry.addData("communicate with rev hub", "so doesn't disconnect");
-        _base.latchSystem.openHook(1300);
+        _base.latchSystem.openHook(1000);
 
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
@@ -125,10 +122,10 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
         {
             _base.deliver.raiseMarker();
             //to use one run of aligned to make sure stuff works
-            _base.drivetrain.turnTo.goTo(334,BLOCK_TURN_SPEED-.2);
+            _base.drivetrain.turnTo.goTo(332,BLOCK_TURN_SPEED-.2);
             _base.drivetrain.turnTo.blockRunSequentially(3,5);
 
-            this.sleep(800);
+            this.sleep(700);
             if (aligned()) {
                 _block = blockState.RIGHT;
                 telemetry.addData("FOUND IN RIGHT", "");
@@ -139,7 +136,7 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
         }
         _base.deliver.raiseMarker();
         if (_block == blockState.UNCERTAIN){
-            for  (double i = 336; i < 339; i += TURN_INCREMENT - 1){
+            for  (double i = 334; i < 337; i += TURN_INCREMENT - 1){
                 telemetry.addData("Searching for right block!" , "");
                 telemetry.update();
                 _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED-.2);
@@ -169,7 +166,7 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
 
         if(_block == blockState.UNCERTAIN)
         {
-            _base.drivetrain.turnTo.goTo( 39, TURN_SPEED+.1);
+            _base.drivetrain.turnTo.goTo( 37, TURN_SPEED+.1);
             _base.drivetrain.turnTo.blockRunSequentially(2,5);
             _block = blockState.LEFT;
         }
@@ -190,7 +187,7 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
         //drive forward to knock the block off and then go back the same distance
         // this works because at this point the robot is facing the block
         if (_block == blockState.MIDDLE){
-            block_distance -= 7.5;
+            block_distance -= 6.5;
         }
         else if(_block == blockState.RIGHT)
         {
@@ -200,10 +197,25 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
         {
             block_distance -= 1;
         }
+
         _base.drivetrain.driveTo.goTo(block_distance - 1,DRIVING_SPEED_BLOCK);
         _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.driveTo.goTo(-(block_distance -4),DRIVING_SPEED_BLOCK);
-        _base.drivetrain.driveTo.runSequentially();
+
+        if(_block == blockState.RIGHT)
+        {
+            _base.drivetrain.driveTo.goTo(-(block_distance),DRIVING_SPEED_BLOCK);
+            _base.drivetrain.driveTo.runSequentially();
+        }
+        else if(_block == blockState.MIDDLE)
+        {
+            _base.drivetrain.driveTo.goTo(-(block_distance - 3), DRIVING_SPEED_BLOCK);
+            _base.drivetrain.driveTo.runSequentially();
+        }
+        else
+        {
+            _base.drivetrain.driveTo.goTo(-(block_distance - 4), DRIVING_SPEED_BLOCK);
+            _base.drivetrain.driveTo.runSequentially();
+        }
         _base.deliver.raiseMarker();
 
         // the robot is at a common spot, but a different angle based on where the block was
@@ -211,7 +223,7 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
         if(_block == blockState.LEFT)
         {
             _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(64, TURN_SPEED-.05);
+            _base.drivetrain.turnTo.goTo(67, TURN_SPEED-.05);
             _base.drivetrain.turnTo.runSequentially(2,5);
             _base.deliver.raiseMarker();
         }
@@ -238,7 +250,7 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
 
         //turn to drive in between particle on teammate's side and wall
         _base.drivetrain.turnTo.goTo(125, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially(3);
+        _base.drivetrain.turnTo.runSequentially(2);
 
         _base.deliver.raiseMarker();
 
@@ -264,8 +276,20 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
         telemetry.addData("ARC TURNING" ," NOW");
         telemetry.update();
 
-        _base.drivetrain.turnTo.goTo(158, TURN_SPEED - 0.1);
+        _base.drivetrain.turnTo.goTo(143, TURN_SPEED );
         _base.drivetrain.turnTo.arcSequentially(3, 2.5);
+
+        _base.drivetrain.turnTo.goTo(158, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially(2,1.5);
+
+        if (_block == blockState.LEFT){
+            _base.drivetrain.driveTo.goTo(18,DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially(4);
+        }
+        else{
+            _base.drivetrain.driveTo.goTo(15,DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially(4);
+        }
 
 
         // deposits the marker
@@ -277,22 +301,85 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
             Thread.sleep(400);}
         catch(Exception ex){ex.printStackTrace();}
 
+        //raises the delivery syste
 
-        //raises the delivery system
-
-
-        _base.drivetrain.driveTo.goTo(-8, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
+        if (_block == blockState.RIGHT ){
+            _base.drivetrain.driveTo.goTo(-2, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+        }
 
         _base.deliver.deliverMarker();
 
+        double secondAngle = 226;
+        if (_block == blockState.RIGHT){
+            secondAngle = 293;
+        }
+        else if (_block == blockState.LEFT){
+            secondAngle = 227;
+        }
+        else if (_block == blockState.MIDDLE){
+            secondAngle = 254;
+        }
+        // turn to face the second group of particles
+        _base.drivetrain.turnTo.goTo(secondAngle, BLOCK_TURN_SPEED-.1);
+        _base.drivetrain.turnTo.runSequentially();
+        _base.deliver.raiseMarker();
+        if(_block == blockState.LEFT)
+        {
+            _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE + 9, DRIVING_SPEED+.37);
+            _base.drivetrain.driveTo.runSequentially();
+        }
+        else
+        {
+            _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE + 8.5, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+        }
 
+        if(_block == blockState.RIGHT)
+        {
+            _base.drivetrain.driveTo.goTo(6,DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+
+            _base.drivetrain.turnTo.goTo(347, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+            driveAndExtend(31, 4);
+        }
+        else if(_block == blockState.MIDDLE)
+        {
+            // knock the second block off and comes back
+            _base.drivetrain.driveTo.goTo(-20,DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+
+            _base.drivetrain.turnTo.goTo(0, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+            _base.drivetrain.driveTo.goTo(24, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runStopIfDist(6,1);
+
+            _base.drivetrain.turnTo.goTo(360 -39 , TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+            driveAndExtend(39,7);
+
+        }
+        else
+        {
+            _base.drivetrain.driveTo.goTo(6,DRIVING_SPEED+.37);
+            _base.drivetrain.driveTo.runSequentially();
+
+            _base.drivetrain.turnTo.goTo(210, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+            driveAndExtend(31, 4);
+        }
 
         _base.deliver.raiseMarker();
-
-        //we are done, so stop the robot
         _base.drivetrain.stop();
         detector.deactivate();
+        while(opModeIsActive()) {
+            _base.collector.powerExtension(-1);
+        }
     }
 
     private void sendTelemetry(){
@@ -328,6 +415,30 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
     private void turnToAlign(double ANGLE_ADDITION){
         _base.drivetrain.turnTo.goTo(_base.imu.zAngle() + ANGLE_ADDITION, TURN_SPEED);
         _base.drivetrain.turnTo.blockRunSequentially();
+    }
+    private void driveAndExtend(double distance, double timeout){
+        double COUNTS_PER_INCH = 40.78651685 * .80;
+        timeout *= 1000;
+        if(_base.drivetrain.getEncoderMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+            _base.drivetrain.encoderToPos();
+        }
+
+        _base.drivetrain.backLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _base.drivetrain.backLeft().getCurrentPosition());
+        _base.drivetrain.backRight().setTargetPosition((int)(distance * COUNTS_PER_INCH)+ _base.drivetrain.backRight().getCurrentPosition());
+        _base.drivetrain.frontLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _base.drivetrain.frontLeft().getCurrentPosition());
+        _base.drivetrain.frontRight().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _base.drivetrain.frontRight().getCurrentPosition());
+
+        _base.drivetrain.setAllMotorPower(1);
+        long startTime = System.currentTimeMillis();
+
+        while((_base.drivetrain.isBusy()  && opModeIsActive() && System.currentTimeMillis() - startTime < timeout))
+        {
+            _base.collector.powerExtension(-1);
+        }
+
+        _base.collector.powerExtension(0);
+        _base.drivetrain.setAllMotorPower(0);
+
     }
 
     public boolean aligned(){
@@ -485,4 +596,5 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
 
     }
 }
+
 

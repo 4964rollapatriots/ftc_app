@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
@@ -66,6 +67,11 @@ public class TeleOpMain extends LinearOpMode
 //        {
 //            invertedControl = true;
 //        }
+
+        telemetry.addData("Back Address ", true);
+        telemetry.addData("Back Distance in Inches ", _base.drivetrain.back_range.distance(DistanceUnit.INCH));
+        telemetry.addData("Front Distance in Inches " , _base.drivetrain.front_range.distance(DistanceUnit.INCH));
+        telemetry.update();
 
         if(gamepad1.left_bumper) {
             if (slowModeControl) {
@@ -145,6 +151,8 @@ public class TeleOpMain extends LinearOpMode
        if (( gamepad1.right_stick_button) && !bHeld){
             if (!imuCalibrated){
                 _base.imu.calibrateTo(0);
+                telemetry.addData("Calibrating: ", _base.imu.zAngle());
+                telemetry.update();
                 imuCalibrated = true;
             }
             autoTurntoLander = true;
@@ -190,13 +198,9 @@ public class TeleOpMain extends LinearOpMode
         }
         else
         {
-//            telemetry.addData("State: ",_base.drivetrain.state());
-//            telemetry.addData("State: ",_base.drivetrain.state());
-//            telemetry.addData("State: ",_base.drivetrain.state());
-//            telemetry.update();
 
         }
-        _base.outTelemetry();
+        //_base.outTelemetry();
         /*------------------------------------ MARKER DELIVERY --------------------------------*/
         //this is to be used just in case the marker delivery system needs to be used
         if(gamepad2.dpad_right)
@@ -252,19 +256,19 @@ public class TeleOpMain extends LinearOpMode
         {
             if(gamepad2.left_stick_y > .85)
             {
-                _base.collector.powerLift(EXTEND_LIFT_POW);
+                _base.collector.powerExtension(EXTEND_LIFT_POW);
             }
             else if(gamepad2.left_stick_y < -.85)
             {
-                _base.collector.powerLift(-1);
+                _base.collector.powerExtension(-1);
             }
             else
             {
-                _base.collector.powerLift(gamepad2.left_stick_y);
+                _base.collector.powerExtension(gamepad2.left_stick_y);
             }
         }
         else
-            _base.collector.powerLift(0);
+            _base.collector.powerExtension(0);
 
 
         //Collect particles using foam wheel :)

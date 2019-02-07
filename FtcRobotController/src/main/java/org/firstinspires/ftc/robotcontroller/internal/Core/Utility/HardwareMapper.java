@@ -140,6 +140,21 @@ public final class HardwareMapper
         return tempRange;
     }
 
+    public ModernRoboticsI2cRangeSensor mapMRRange(final String NAME, final I2cAddr Address)
+    {
+        ModernRoboticsI2cRangeSensor tempRange;
+        tempRange = robot.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, NAME);
+        tempRange.setI2cAddress(Address);
+        tempRange.initialize();
+
+        try {
+            tempRange = robot.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, NAME);
+        }
+        catch(Exception e){
+        }
+        return tempRange;
+    }
+
     public OpticalDistanceSensor mapODS(final String NAME){
 
         OpticalDistanceSensor tempODS = null;

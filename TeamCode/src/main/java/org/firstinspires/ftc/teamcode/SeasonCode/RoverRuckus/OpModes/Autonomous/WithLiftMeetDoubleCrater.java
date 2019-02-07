@@ -85,7 +85,9 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
         _base.drivetrain.driveTo.runSequentially();
         _base.imu.calibrateTo(0);
         _base.latchSystem.extendHook(0);
-        _base.latchSystem.openHook(2300);
+        _base.latchSystem.openHook(1300);
+        telemetry.addData("communicate with rev hub", "so doesn't disconnect");
+        _base.latchSystem.openHook(800);
 
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to

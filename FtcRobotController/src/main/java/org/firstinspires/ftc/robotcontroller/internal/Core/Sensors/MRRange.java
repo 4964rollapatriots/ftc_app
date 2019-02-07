@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.robotcontroller.internal.Core.Sensors;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
@@ -26,6 +27,12 @@ public final class MRRange
         range = mapHelper.mapMRRange(NAME);
     }
 
+    public void init(final RobotBase robot, final String NAME, I2cAddr Address){
+
+        HardwareMapper mapHelper = new HardwareMapper(robot);
+
+        range = mapHelper.mapMRRange(NAME, Address);
+    }
 
     public double distance (final DistanceUnit UNIT)
     {
