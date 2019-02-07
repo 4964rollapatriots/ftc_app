@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-@Autonomous(name = "No Arc, Park Double Crater")
+@Autonomous(name = "Park Double Crater")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
@@ -73,7 +73,12 @@ public class NoArcParkDoubleCrater extends LinearOpMode {
         _base.outTelemetry.update();
 
         _base.deliver.raiseMarker();
-        waitForStart();
+
+
+        while (! opModeIsActive()){
+            telemetry.addData("Waiting to start", "no crashing");
+            telemetry.update();
+        }
 
         //Gets the robot onto the field from the hanger
         _base.latchSystem.lowerRobot(3250);

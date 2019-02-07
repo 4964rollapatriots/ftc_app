@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -99,6 +100,14 @@ public final class HardwareMapper
         tempColor = robot.hardwareMap.get(DistanceSensor.class, NAME);
 
         return tempColor;
+    }
+
+    public I2cDevice mapI2cDevice(final String name){
+        I2cDevice tempDevice;
+
+        tempDevice = robot.hardwareMap.i2cDevice.get(name);
+
+        return tempDevice;
     }
 
     /*

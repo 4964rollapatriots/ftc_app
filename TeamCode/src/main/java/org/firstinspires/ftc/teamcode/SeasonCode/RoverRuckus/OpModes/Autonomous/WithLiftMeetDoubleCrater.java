@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class WithLiftMeetDoubleCrater extends LinearOpMode {
 
     private Base _base = new Base();
-    //private UtilGoldDetector eye;
+    private UtilGoldDetector eye;
     private CustomTensorFlow detector;
 
 
@@ -418,46 +418,66 @@ public class WithLiftMeetDoubleCrater extends LinearOpMode {
 
     }
 
-    public boolean relativelyAligned(){
+    //returns true if the robot is facing a gold particle
+    private boolean relativelyAligned(){
 
+        // if we are not using tensor flow, we can use the OpenCV software
         if (runUsingTensorFlow){
+
+            //these will store the maximum confidence for silver and gold particles
             double silverConfidence = 0;
             double goldConfidence = 0;
+
+            //updates the particles the robot sees
             detector.refresh();
+
+            //if the robot cannot see anything, we cannot be aligned with a block, so we return false
             if(detector.recognitions == null)
             {
                 return false;
             }
+
+            // if the robot can see something
             else{
+                //iterates through every particle (of the class Recognition) that is visible
                 for (int i = 0; i < detector.recognitions.size(); i ++){
                     Recognition rec = detector.recognitions.get(i);
 
+                    //checks if the particle is silver and if the confidence is the greatest of all silvers
+                    //in this way we find the maximum silver confidence
                     if (rec.getLabel().equals(LABEL_SILVER_MINERAL)){
-                        telemetry.addData("Silver detecting with confidence ", rec.getConfidence());
-                        telemetry.update();
+
                         if (rec.getConfidence() > silverConfidence){
                             silverConfidence = rec.getConfidence();
                         }
                     }
+                    // we do the same thing to find the maximum gold confidence
                     if (rec.getLabel().equals(LABEL_GOLD_MINERAL) && rec.getConfidence() > ACCEPTABLE_CONFIDENCE){
-                        telemetry.addData("Gold detecting with confidence ", rec.getConfidence());
-                        telemetry.update();
+
                         if (rec.getConfidence() > goldConfidence){
                             goldConfidence = rec.getConfidence();
                         }
                     }
                 }
             }
+            //after iterating through all the particles, the robot should be more confident it sees
+            //gold than silver if we are aligned with a gold particle
+
+            // It also must be higher than a certain value to make sure it is not misidentifying something for a particle
+
             if (goldConfidence > silverConfidence && goldConfidence > ACCEPTABLE_CONFIDENCE){
                 return true;
             }
+            // if these conditions are not met, then the robot is not aligned
             else{
                 return false;
             }
 
         }
+        //if we are not using Tensor Flow, we can use the OpenCV software
         else{
-            return false;
+            //our GoldDetector instance is called eye, and the function is straightforward
+            return eye.isAligned();
         }
     }
 
