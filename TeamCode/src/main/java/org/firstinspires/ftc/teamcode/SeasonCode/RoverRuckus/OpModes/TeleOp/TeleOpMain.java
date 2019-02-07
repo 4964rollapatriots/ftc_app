@@ -71,6 +71,7 @@ public class TeleOpMain extends LinearOpMode
         telemetry.addData("Back Address ", true);
         telemetry.addData("Back Distance in Inches ", _base.drivetrain.back_range.distance(DistanceUnit.INCH));
         telemetry.addData("Front Distance in Inches " , _base.drivetrain.front_range.distance(DistanceUnit.INCH));
+        telemetry.addData("IMU calibrated ", imuCalibrated);
         telemetry.update();
 
         if(gamepad1.left_bumper) {
@@ -152,7 +153,6 @@ public class TeleOpMain extends LinearOpMode
             if (!imuCalibrated){
                 _base.imu.calibrateTo(0);
                 telemetry.addData("Calibrating: ", _base.imu.zAngle());
-                telemetry.update();
                 imuCalibrated = true;
             }
             autoTurntoLander = true;
@@ -200,6 +200,14 @@ public class TeleOpMain extends LinearOpMode
         {
 
         }
+
+        if (_base.drivetrain.back_range.distance(DistanceUnit.INCH) < 2){
+            telemetry.addLine("CLOSE     CLOSE    CLOSE    CLOSE    CLOSE ");
+            telemetry.addLine("CLOSE     CLOSE    CLOSE    CLOSE    CLOSE ");
+            telemetry.addLine("CLOSE     CLOSE    CLOSE    CLOSE    CLOSE ");
+            telemetry.update();
+        }
+
         //_base.outTelemetry();
         /*------------------------------------ MARKER DELIVERY --------------------------------*/
         //this is to be used just in case the marker delivery system needs to be used
