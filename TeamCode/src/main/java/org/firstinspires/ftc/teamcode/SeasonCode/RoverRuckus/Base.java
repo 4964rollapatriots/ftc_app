@@ -4,8 +4,10 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.I2cDeviceRange;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.MRRange;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.ODS;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVColorSensor;
@@ -33,6 +35,7 @@ public class Base extends RobotBase
     public MarkerDelivery deliver = new MarkerDelivery();
     public Touch bump = new Touch();
     public MRRange frontDistSensor = new MRRange();
+    //public MRRange backDistSensor = new MRRange();
     public MRRange backDistSensor = new MRRange();
     @Override
     public void init(final HardwareMap hwm, final LinearOpMode op)
@@ -59,7 +62,7 @@ public class Base extends RobotBase
         //rightDistSensor.mapREVDistanceSensor("rightRange");
         bump.init(this, "touch");
         frontDistSensor.init(this, "frontRange",I2cAddr.create8bit(0x28));
-        backDistSensor.init(this, "backRange", I2cAddr.create8bit(0x3c));
+        backDistSensor.init(this, "backRange", I2cAddr.create8bit(0x10));
         outTelemetry.write("B. I. G. RANGE ");
         outTelemetry.update();
         //Try catches to prevent crashes

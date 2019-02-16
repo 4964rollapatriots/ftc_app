@@ -14,11 +14,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-//@Autonomous(name = "LIFT Park Double Crater")
+@Autonomous(name = "Park Double Crater")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
-public class LiftQualifierDoubleCrater extends LinearOpMode {
+public class ParkDoubleCrater extends LinearOpMode {
 
     private Base _base = new Base();
     //private UtilGoldDetector eye;
@@ -73,7 +73,12 @@ public class LiftQualifierDoubleCrater extends LinearOpMode {
         _base.outTelemetry.update();
 
         _base.deliver.raiseMarker();
-        waitForStart();
+
+
+        while (! opModeIsActive()){
+            telemetry.addData("All systems go", "no crashing");
+            telemetry.update();
+        }
 
         //Gets the robot onto the field from the hanger
         _base.latchSystem.lowerRobot(3250);
@@ -84,7 +89,7 @@ public class LiftQualifierDoubleCrater extends LinearOpMode {
         _base.latchSystem.extendHook(0);
         _base.latchSystem.openHook(1300);
         telemetry.addData("communicate with rev hub", "so doesn't disconnect");
-        _base.latchSystem.openHook(800);
+        _base.latchSystem.openHook(1000);
 
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
@@ -97,7 +102,7 @@ public class LiftQualifierDoubleCrater extends LinearOpMode {
         _base.drivetrain.turnTo.goTo(1, .35);
         _base.drivetrain.turnTo.runSequentially();
         detector.activate();
-        _base.drivetrain.driveTo.goTo(3,DRIVING_SPEED/2);
+        _base.drivetrain.driveTo.goTo(7,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
         this.sleep(800);
         if(_block == blockState.UNCERTAIN)
@@ -125,7 +130,7 @@ public class LiftQualifierDoubleCrater extends LinearOpMode {
             _base.drivetrain.turnTo.goTo(332,BLOCK_TURN_SPEED-.2);
             _base.drivetrain.turnTo.blockRunSequentially(3,5);
 
-            this.sleep(800);
+            this.sleep(700);
             if (aligned()) {
                 _block = blockState.RIGHT;
                 telemetry.addData("FOUND IN RIGHT", "");
@@ -136,7 +141,7 @@ public class LiftQualifierDoubleCrater extends LinearOpMode {
         }
         _base.deliver.raiseMarker();
         if (_block == blockState.UNCERTAIN){
-            for  (double i = 334; i < 337; i += TURN_INCREMENT - 1){
+            for  (double i = 333; i < 337; i += TURN_INCREMENT - 1){
                 telemetry.addData("Searching for right block!" , "");
                 telemetry.update();
                 _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED-.2);
@@ -187,11 +192,11 @@ public class LiftQualifierDoubleCrater extends LinearOpMode {
         //drive forward to knock the block off and then go back the same distance
         // this works because at this point the robot is facing the block
         if (_block == blockState.MIDDLE){
-            block_distance -= 6.5;
+            block_distance -= 4;
         }
         else if(_block == blockState.RIGHT)
         {
-            block_distance -= 2.0;
+            block_distance -= 1.0;
         }
         else
         {
@@ -203,7 +208,12 @@ public class LiftQualifierDoubleCrater extends LinearOpMode {
 
         if(_block == blockState.RIGHT)
         {
-            _base.drivetrain.driveTo.goTo(-(block_distance),DRIVING_SPEED_BLOCK);
+            _base.drivetrain.driveTo.goTo(-(block_distance-3),DRIVING_SPEED_BLOCK);
+            _base.drivetrain.driveTo.runSequentially();
+        }
+        else if(_block == blockState.MIDDLE)
+        {
+            _base.drivetrain.driveTo.goTo(-(block_distance - 4), DRIVING_SPEED_BLOCK);
             _base.drivetrain.driveTo.runSequentially();
         }
         else
@@ -218,34 +228,34 @@ public class LiftQualifierDoubleCrater extends LinearOpMode {
         if(_block == blockState.LEFT)
         {
             _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(64, TURN_SPEED-.05);
+            _base.drivetrain.turnTo.goTo(67, TURN_SPEED-.05);
             _base.drivetrain.turnTo.runSequentially(2,5);
             _base.deliver.raiseMarker();
         }
         else if(_block == blockState.RIGHT)
         {
             _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(67, TURN_SPEED-.05);
+            _base.drivetrain.turnTo.goTo(74, TURN_SPEED-.05);
             _base.drivetrain.turnTo.runSequentially(2,5);
             _base.deliver.raiseMarker();
         }
         else
         {
             _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(73, TURN_SPEED-0.1);
+            _base.drivetrain.turnTo.goTo(72.5, TURN_SPEED-0.1);
             _base.drivetrain.turnTo.runSequentially(2,5);
             _base.deliver.raiseMarker();
         }
 
         // drives between the lander and the far left particle so the path is clear to our teammate's side
 
-        _base.drivetrain.driveTo.goTo(53, DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(52.5, DRIVING_SPEED);
         _base.drivetrain.driveTo.runStopIfTouch(8);
         _base.deliver.raiseMarker();
 
         //turn to drive in between particle on teammate's side and wall
         _base.drivetrain.turnTo.goTo(125, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially(3);
+        _base.drivetrain.turnTo.runSequentially(2);
 
         _base.deliver.raiseMarker();
 
@@ -271,21 +281,38 @@ public class LiftQualifierDoubleCrater extends LinearOpMode {
         telemetry.addData("ARC TURNING" ," NOW");
         telemetry.update();
 
-        _base.drivetrain.turnTo.goTo(158, TURN_SPEED );
+        _base.drivetrain.turnTo.goTo(143, TURN_SPEED );
         _base.drivetrain.turnTo.arcSequentially(3, 2.5);
 
-
-        // deposits the marker
-        _base.deliver.deliverMarker();
+        _base.collector.runCollector(-0.45);
 
 
         // gives time for the marker to slide off
         try{
-            Thread.sleep(400);}
+            Thread.sleep(1000);}
         catch(Exception ex){ex.printStackTrace();}
 
-        //raises the delivery syste
+        _base.collector.stop();
 
+        _base.drivetrain.turnTo.goTo(158, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially(2,1.5);
+
+        if (_block == blockState.LEFT){
+            _base.drivetrain.driveTo.goTo(28,DRIVING_SPEED+.37);
+            _base.drivetrain.driveTo.runSequentially(4);
+        }
+        else{
+            _base.drivetrain.driveTo.goTo(28,DRIVING_SPEED+.37);
+            _base.drivetrain.driveTo.runSequentially(4);
+        }
+
+
+        // deposits the marker
+
+        _base.drivetrain.turnTo.goTo(170, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially(2,1.5);
+
+        //raises the delivery syste
 
         if (_block == blockState.RIGHT ){
             _base.drivetrain.driveTo.goTo(-2, DRIVING_SPEED);
@@ -302,24 +329,29 @@ public class LiftQualifierDoubleCrater extends LinearOpMode {
             secondAngle = 227;
         }
         else if (_block == blockState.MIDDLE){
-            secondAngle = 246;
+            secondAngle = 254;
         }
         // turn to face the second group of particles
         _base.drivetrain.turnTo.goTo(secondAngle, BLOCK_TURN_SPEED-.1);
         _base.drivetrain.turnTo.runSequentially();
         _base.deliver.raiseMarker();
-        _base.drivetrain.driveTo.goTo(3, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
-
-        _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE+5,DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
+        if(_block == blockState.LEFT)
+        {
+            _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE + 9, DRIVING_SPEED+.37);
+            _base.drivetrain.driveTo.runSequentially();
+        }
+        else
+        {
+            _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE + 8.5, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+        }
 
         if(_block == blockState.RIGHT)
         {
             _base.drivetrain.driveTo.goTo(6,DRIVING_SPEED);
             _base.drivetrain.driveTo.runSequentially();
 
-            _base.drivetrain.turnTo.goTo(347, TURN_SPEED);
+            _base.drivetrain.turnTo.goTo(343, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
 
             driveAndExtend(31, 4);
@@ -327,7 +359,7 @@ public class LiftQualifierDoubleCrater extends LinearOpMode {
         else if(_block == blockState.MIDDLE)
         {
             // knock the second block off and comes back
-            _base.drivetrain.driveTo.goTo(-20,DRIVING_SPEED);
+            _base.drivetrain.driveTo.goTo(-22,DRIVING_SPEED);
             _base.drivetrain.driveTo.runSequentially();
 
             _base.drivetrain.turnTo.goTo(0, TURN_SPEED);
@@ -336,28 +368,30 @@ public class LiftQualifierDoubleCrater extends LinearOpMode {
             _base.drivetrain.driveTo.goTo(24, DRIVING_SPEED);
             _base.drivetrain.driveTo.runStopIfDist(6,1);
 
-            _base.drivetrain.turnTo.goTo(360 -44 , TURN_SPEED);
+            _base.drivetrain.turnTo.goTo(360 -39 , TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
 
-            driveAndExtend(45,7);
+            driveAndExtend(39,7);
 
         }
         else
         {
-            _base.drivetrain.driveTo.goTo(6,DRIVING_SPEED);
+            _base.drivetrain.driveTo.goTo(6,DRIVING_SPEED+.37);
             _base.drivetrain.driveTo.runSequentially();
 
-            _base.drivetrain.turnTo.goTo(167, TURN_SPEED);
+            _base.drivetrain.turnTo.goTo(210, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
 
-            driveAndExtend(31, 4);
+            driveAndExtend(40, 4);
         }
 
         _base.deliver.raiseMarker();
-
-
         _base.drivetrain.stop();
         detector.deactivate();
+        while(opModeIsActive()) {
+            _base.deliver.deliverMarker();
+            //_base.collector.powerExtension(-1);
+        }
     }
 
     private void sendTelemetry(){
@@ -411,7 +445,7 @@ public class LiftQualifierDoubleCrater extends LinearOpMode {
 
         while((_base.drivetrain.isBusy()  && opModeIsActive() && System.currentTimeMillis() - startTime < timeout))
         {
-            _base.collector.powerExtension(1);
+            _base.collector.powerExtension(-1);
         }
 
         _base.collector.powerExtension(0);

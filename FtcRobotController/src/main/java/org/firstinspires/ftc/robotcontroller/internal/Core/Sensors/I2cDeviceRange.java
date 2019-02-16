@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.HardwareMapper;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class I2cDeviceRange {
 
@@ -29,7 +30,7 @@ public class I2cDeviceRange {
 
     }
 
-    public double getUltrasonicDistance(){
+    public double distance(DistanceUnit INCH){
 
         rangeCache = reader.read(0x04,2);
 

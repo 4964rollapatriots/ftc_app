@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.I2cDeviceRange;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.MRRange;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.ODS;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVColorSensor;
@@ -18,7 +19,7 @@ public class Drivetrain extends RobotComponent
 
     private final double FORWARD = 1;
     private final double BACKWARD = -1;
-    private final double SLOW = .70;
+    private final double SLOW = .60;
     private final double SLOWER = .30;
     private final double FAST = 1;
     private final double STOP = 0;

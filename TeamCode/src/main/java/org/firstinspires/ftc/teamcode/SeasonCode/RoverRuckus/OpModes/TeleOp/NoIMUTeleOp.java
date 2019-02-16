@@ -40,7 +40,11 @@ public  class NoIMUTeleOp extends LinearOpMode
         _base.init(hardwareMap, this);
 
         _base.deliver.markerDelivery.setPosition(0);
-        waitForStart();
+
+        while (!opModeIsActive()){
+            telemetry.addData("Waiting", "for start");
+            telemetry.update();
+        }
 
         //Set State of the Drivetrain
         _base.drivetrain.setCurrState(Drivetrain.State.FORWARD_FAST);
@@ -130,6 +134,32 @@ public  class NoIMUTeleOp extends LinearOpMode
             drivetrainScale = 1;
         }
 
+        if(finalLift)
+        {
+            telemetry.addLine("LIFT         LIFT        LIFT     LIFT       LIFT");
+            telemetry.addLine("LIFT         LIFT        LIFT     LIFT       LIFT");
+            telemetry.addLine("LIFT         LIFT        LIFT     LIFT       LIFT");
+            telemetry.addLine("LIFT         LIFT        LIFT     LIFT       LIFT");
+            telemetry.update();
+        }
+        else if(slowMode)
+        {
+            telemetry.addLine("SLOW         SLOW        SLOW     SLOW       SLOW");
+            telemetry.addLine("SLOW         SLOW        SLOW     SLOW       SLOW");
+            telemetry.addLine("SLOW         SLOW        SLOW     SLOW       SLOW");
+            telemetry.addLine("SLOW         SLOW        SLOW     SLOW       SLOW");
+            telemetry.update();
+        }
+        else
+        {
+            telemetry.addLine("FAST         FAST        FAST     FAST       FAST");
+            telemetry.addLine("FAST         FAST        FAST     FAST       FAST");
+            telemetry.addLine("FAST         FAST        FAST     FAST       FAST");
+            telemetry.addLine("FAST         FAST        FAST     FAST       FAST");
+            telemetry.update();
+
+
+        }
         _base.drivetrain.run(-com.qualcomm.robotcore.util.Range.clip(gamepad1.left_stick_y, -1, 1),
                 com.qualcomm.robotcore.util.Range.clip(gamepad1.right_stick_x, -1, 1), scaleMode,drivetrainScale);
 
@@ -221,13 +251,13 @@ public  class NoIMUTeleOp extends LinearOpMode
             _base.latchSystem.openHook(2100);
             hookOpen = true;
         }
-        else if (gamepad1.right_trigger > 0.2)
+        else if (gamepad1.right_trigger > 0.1)
         {
             _base.latchSystem.openHook();
             hookOpen = true;
         }
 
-        else if (gamepad1.left_trigger > .2)
+        else if (gamepad1.left_trigger > .1)
         {
             _base.latchSystem.closeHook();
             hookOpen = false;
@@ -307,9 +337,6 @@ public  class NoIMUTeleOp extends LinearOpMode
         {
 
             if(_base.tiltChannel.tiltUpByEnc()) {
-                telemetry.addData("GOT IN HERE!!!", true);
-                telemetry.update();
-
                 automateLift = false;
                 up = false;
                 down = false;

@@ -14,11 +14,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-@Autonomous(name = "Lift Single Crater Park")
+@Autonomous(name = "No Park Single Crater")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
-public class LiftMeetSingleCrater extends LinearOpMode {
+public class NoParkSingleCrater extends LinearOpMode {
 
     private Base _base = new Base();
     //private UtilGoldDetector eye;
@@ -305,25 +305,11 @@ public class LiftMeetSingleCrater extends LinearOpMode {
 
 
         _base.deliver.raiseMarker();
-
-        // turn back to face the crater
-        _base.drivetrain.turnTo.goTo(0, TURN_SPEED-.05);
-        _base.drivetrain.turnTo.runSequentially(2,5);
-
-        // drive to the crater
-        _base.drivetrain.driveTo.goTo(15,DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
-
-        // turn back to face the crater
-        _base.drivetrain.turnTo.goTo(355, TURN_SPEED-.05);
-        _base.drivetrain.turnTo.runSequentially(2,5);
-
-        // drive to the crater
-        driveAndExtend(40,6);
-
-
         _base.drivetrain.stop();
         detector.deactivate();
+        while(opModeIsActive()) {
+            _base.collector.powerExtension(-1);
+        }
 
     }
 
@@ -541,7 +527,5 @@ public class LiftMeetSingleCrater extends LinearOpMode {
 
     }
 }
-
-
 
 

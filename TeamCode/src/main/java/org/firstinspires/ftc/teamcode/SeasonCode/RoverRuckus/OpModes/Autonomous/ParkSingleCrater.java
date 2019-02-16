@@ -14,11 +14,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-@Autonomous(name = "Lift Single Crater, No Park")
+@Autonomous(name = "Park Single Crater")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
-public class LiftSingleCraterNoPark extends LinearOpMode {
+public class ParkSingleCrater extends LinearOpMode {
 
     private Base _base = new Base();
     //private UtilGoldDetector eye;
@@ -102,7 +102,7 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
         _base.drivetrain.turnTo.goTo(1, .35);
         _base.drivetrain.turnTo.runSequentially();
         detector.activate();
-        _base.drivetrain.driveTo.goTo(3,DRIVING_SPEED/2);
+        _base.drivetrain.driveTo.goTo(7,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
         this.sleep(800);
         if(_block == blockState.UNCERTAIN)
@@ -192,11 +192,11 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
         //drive forward to knock the block off and then go back the same distance
         // this works because at this point the robot is facing the block
         if (_block == blockState.MIDDLE){
-            block_distance -= 6.5;
+            block_distance -= 4;
         }
         else if(_block == blockState.RIGHT)
         {
-            block_distance -= 2.0;
+            block_distance -= 1.0;
         }
         else
         {
@@ -287,7 +287,7 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
         _base.drivetrain.turnTo.goTo(158, TURN_SPEED);
         _base.drivetrain.turnTo.runSequentially(2,1.5);
 
-        _base.drivetrain.driveTo.goTo(15,DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(18,DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially(4);
 
 
@@ -297,7 +297,7 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
 
         // gives time for the marker to slide off
         try{
-            Thread.sleep(400);}
+            Thread.sleep(600);}
         catch(Exception ex){ex.printStackTrace();}
 
 
@@ -305,9 +305,28 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
 
 
         _base.deliver.raiseMarker();
+
+        // turn back to face the crater
+        _base.drivetrain.turnTo.goTo(347, TURN_SPEED-.05);
+        _base.drivetrain.turnTo.runSequentially(2,5);
+
+        // drive to the crater
+        _base.drivetrain.driveTo.goTo(18,DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
+
+        // turn back to face the crater
+        _base.drivetrain.turnTo.goTo(320, TURN_SPEED-.05);
+        _base.drivetrain.turnTo.runSequentially(2,5);
+
+        // drive to the crater
+        driveAndExtend(43,6);
+
+
         _base.drivetrain.stop();
         detector.deactivate();
-
+        while(opModeIsActive()) {
+            _base.collector.powerExtension(-1);
+        }
     }
 
     private void sendTelemetry(){
@@ -524,5 +543,7 @@ public class LiftSingleCraterNoPark extends LinearOpMode {
 
     }
 }
+
+
 
 

@@ -17,18 +17,18 @@ public class PulleyTilt extends RobotComponent
 
     public DcMotor pulleys;
 
-    private double TILT_UP_POW = -.80;
-    private double TILT_DOWN_POW = .80;
+    private double TILT_UP_POW = -1;
+    private double TILT_DOWN_POW = 1;
 
-    private int TILT_UP_ENC = -550; //test this
-    private int TILT_DOWN_ENC = 1550;
+    private int TILT_UP_ENC = -500; //test this
+    private int TILT_DOWN_ENC = 2100;
 
     public int BUFFER = 75;
 
     public void init(final RobotBase BASE)
     {
         super.init(BASE);
-        pulleys =  mapper.mapMotor("pulleys", DcMotorSimple.Direction.REVERSE);
+        pulleys =  mapper.mapMotor("pulleys", DcMotorSimple.Direction.FORWARD);
     }
 
     public void tiltByPower(double POWER)
@@ -46,7 +46,7 @@ public class PulleyTilt extends RobotComponent
         base.outTelemetry.update();
 
         //If already there, stop
-        if (pulleys.getCurrentPosition() <= TILT_UP_ENC )
+        if (pulleys.getCurrentPosition() <= TILT_UP_ENC)
         {
             stop();
             return true;
@@ -55,12 +55,12 @@ public class PulleyTilt extends RobotComponent
         else if(Math.abs(pulleys.getCurrentPosition() - TILT_UP_ENC) < 300)
         {
             //TILT_UP_POW *= .95;
-            pulleys.setPower(TILT_UP_POW * .40);
+            pulleys.setPower(TILT_UP_POW * .60);
         }
         //Slow Down a bit
         else if(Math.abs(pulleys.getCurrentPosition() - TILT_UP_ENC) < 500)
         {
-            pulleys.setPower(TILT_UP_POW * .70);
+            pulleys.setPower(TILT_UP_POW * .85);
         }
         //Set Power to Full
         else
@@ -85,17 +85,43 @@ public class PulleyTilt extends RobotComponent
         else if(Math.abs(pulleys.getCurrentPosition() - TILT_DOWN_ENC) < 900)
         {
             //TILT_UP_POW *= .95;
-            pulleys.setPower(TILT_DOWN_POW * .70);
+            pulleys.setPower(TILT_DOWN_POW * .85);
         }
         else if(Math.abs(pulleys.getCurrentPosition() - TILT_DOWN_ENC) < 300)
         {
-            pulleys.setPower(TILT_DOWN_POW * .40);
+            pulleys.setPower(TILT_DOWN_POW * .60);
         }
         else {
             pulleys.setPower(TILT_DOWN_POW);
         }
         return false;
 
+    }
+
+    public boolean tiltToEncoder (int encoders){
+        pulleys.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        base.outTelemetry.addData("Position: ", pulleys.getCurrentPosition());
+        base.outTelemetry.update();
+        if (pulleys.getCurrentPosition() >= encoders )
+        {
+            base.outTelemetry.addData("Got Inside the IF Statemnt for TILT UP", true);
+            base.outTelemetry.update();
+            stop();
+            return true;
+        }
+        else if(Math.abs(pulleys.getCurrentPosition() - encoders) < 900)
+        {
+            //TILT_UP_POW *= .95;
+            pulleys.setPower(TILT_DOWN_POW * .85);
+        }
+        else if(Math.abs(pulleys.getCurrentPosition() - encoders) < 300)
+        {
+            pulleys.setPower(TILT_DOWN_POW * .60);
+        }
+        else {
+            pulleys.setPower(TILT_DOWN_POW);
+        }
+        return false;
     }
 
     public void outTelemetry()

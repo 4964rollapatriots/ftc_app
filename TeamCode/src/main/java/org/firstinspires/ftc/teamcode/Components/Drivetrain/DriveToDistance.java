@@ -410,7 +410,7 @@ public class DriveToDistance extends RobotCommand
                 powerMultiplier = Math.abs(currentRange - FRONT_DESIRED_OFFSET) * .05;
                 withinDist = false;
             }
-            else if(currentRange < FRONT_DESIRED_OFFSET && currentRange > 15)
+            else if(currentRange < FRONT_DESIRED_OFFSET && currentRange > 30)
             {
                 withinDist = true;
                 break;

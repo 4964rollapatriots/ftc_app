@@ -14,11 +14,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-@Autonomous(name = "Park Double Crater")
+@Autonomous(name = "Park Single Depo")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
-public class NoArcParkDoubleCrater extends LinearOpMode {
+public class ParkSingleDepo extends LinearOpMode {
 
     private Base _base = new Base();
     //private UtilGoldDetector eye;
@@ -76,7 +76,7 @@ public class NoArcParkDoubleCrater extends LinearOpMode {
 
 
         while (! opModeIsActive()){
-            telemetry.addData("Waiting to start", "no crashing");
+            telemetry.addData("All systems go", "");
             telemetry.update();
         }
 
@@ -97,13 +97,33 @@ public class NoArcParkDoubleCrater extends LinearOpMode {
         _base.drivetrain.turnTo.blockRunSequentially(2, 1.2);
 
         //drives forward to avoid hitting the lander while turning
-        _base.drivetrain.driveTo.goTo(4,DRIVING_SPEED/2);
+        driveAndExtend(4, 4);
         _base.drivetrain.driveTo.runSequentially();
         _base.drivetrain.turnTo.goTo(1, .35);
         _base.drivetrain.turnTo.runSequentially();
         detector.activate();
-        _base.drivetrain.driveTo.goTo(3,DRIVING_SPEED/2);
+        driveAndExtend(14, 10);
         _base.drivetrain.driveTo.runSequentially();
+
+        while (_base.tiltChannel.tiltToEncoder(1500)){
+            _base.collector.powerExtension(-1);
+        }
+
+
+        _base.collector.powerExtension(-1);
+        sleep(500);
+        _base.collector.stop();
+
+        _base.collector.runCollector(-0.5);
+        sleep(1000);
+        _base.collector.stop();
+
+
+        _base.drivetrain.driveTo.goTo(-7, DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
+
+
+
         this.sleep(800);
         if(_block == blockState.UNCERTAIN)
         {
@@ -141,7 +161,7 @@ public class NoArcParkDoubleCrater extends LinearOpMode {
         }
         _base.deliver.raiseMarker();
         if (_block == blockState.UNCERTAIN){
-            for  (double i = 334; i < 337; i += TURN_INCREMENT - 1){
+            for  (double i = 333; i < 337; i += TURN_INCREMENT - 1){
                 telemetry.addData("Searching for right block!" , "");
                 telemetry.update();
                 _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED-.2);
@@ -153,21 +173,7 @@ public class NoArcParkDoubleCrater extends LinearOpMode {
             }
         }
         _base.deliver.raiseMarker();
-        // if it is not in the middle, the robot turns until it sees the left block or reaches 18 degrees
 
-//        if(_block == blockState.UNCERTAIN) {
-//            _base.drivetrain.turnTo.goTo(2, BLOCK_TURN_SPEED - .2);
-//            _base.drivetrain.turnTo.blockRunSequentially();
-//
-//            this.sleep(1000);
-//            if (aligned()) {
-//                _block = blockState.MIDDLE;
-//                telemetry.addData("FOUND IN MIDDLE", "");
-//                telemetry.update();
-//            }
-//        }
-        //if the block is still not found, the block is on the left
-        // the robot turns until it reaches 17 degrees and then pans until it sees the block
 
         if(_block == blockState.UNCERTAIN)
         {
@@ -192,11 +198,11 @@ public class NoArcParkDoubleCrater extends LinearOpMode {
         //drive forward to knock the block off and then go back the same distance
         // this works because at this point the robot is facing the block
         if (_block == blockState.MIDDLE){
-            block_distance -= 6.5;
+            block_distance -= 4;
         }
         else if(_block == blockState.RIGHT)
         {
-            block_distance -= 2.0;
+            block_distance -= 1.0;
         }
         else
         {
@@ -208,12 +214,12 @@ public class NoArcParkDoubleCrater extends LinearOpMode {
 
         if(_block == blockState.RIGHT)
         {
-            _base.drivetrain.driveTo.goTo(-(block_distance),DRIVING_SPEED_BLOCK);
+            _base.drivetrain.driveTo.goTo(-(block_distance-3),DRIVING_SPEED_BLOCK);
             _base.drivetrain.driveTo.runSequentially();
         }
         else if(_block == blockState.MIDDLE)
         {
-            _base.drivetrain.driveTo.goTo(-(block_distance - 3), DRIVING_SPEED_BLOCK);
+            _base.drivetrain.driveTo.goTo(-(block_distance - 4), DRIVING_SPEED_BLOCK);
             _base.drivetrain.driveTo.runSequentially();
         }
         else
@@ -235,21 +241,21 @@ public class NoArcParkDoubleCrater extends LinearOpMode {
         else if(_block == blockState.RIGHT)
         {
             _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(67, TURN_SPEED-.05);
+            _base.drivetrain.turnTo.goTo(74, TURN_SPEED-.05);
             _base.drivetrain.turnTo.runSequentially(2,5);
             _base.deliver.raiseMarker();
         }
         else
         {
             _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(73, TURN_SPEED-0.1);
+            _base.drivetrain.turnTo.goTo(72.5, TURN_SPEED-0.1);
             _base.drivetrain.turnTo.runSequentially(2,5);
             _base.deliver.raiseMarker();
         }
 
         // drives between the lander and the far left particle so the path is clear to our teammate's side
 
-        _base.drivetrain.driveTo.goTo(53, DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(52.5, DRIVING_SPEED);
         _base.drivetrain.driveTo.runStopIfTouch(8);
         _base.deliver.raiseMarker();
 
@@ -275,115 +281,16 @@ public class NoArcParkDoubleCrater extends LinearOpMode {
 
         //drives to the deposit zone
         _base.drivetrain.driveTo.goTo(45, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runStopIfDist(7);
-
-        telemetry.addData("Range Value: ", _base.frontDistSensor.distance(DistanceUnit.INCH));
-        telemetry.addData("ARC TURNING" ," NOW");
-        telemetry.update();
-
-        _base.drivetrain.turnTo.goTo(143, TURN_SPEED );
-        _base.drivetrain.turnTo.arcSequentially(3, 2.5);
-
-        _base.drivetrain.turnTo.goTo(158, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially(2,1.5);
-
-        if (_block == blockState.LEFT){
-            _base.drivetrain.driveTo.goTo(18,DRIVING_SPEED);
-            _base.drivetrain.driveTo.runSequentially(4);
-        }
-        else{
-            _base.drivetrain.driveTo.goTo(15,DRIVING_SPEED);
-            _base.drivetrain.driveTo.runSequentially(4);
-        }
+        _base.drivetrain.driveTo.runSequentially();
 
 
-        // deposits the marker
-        _base.deliver.deliverMarker();
-
-
-        // gives time for the marker to slide off
-        try{
-            Thread.sleep(400);}
-        catch(Exception ex){ex.printStackTrace();}
-
-        //raises the delivery syste
-
-        if (_block == blockState.RIGHT ){
-            _base.drivetrain.driveTo.goTo(-2, DRIVING_SPEED);
-            _base.drivetrain.driveTo.runSequentially();
-        }
-
-        _base.deliver.deliverMarker();
-
-        double secondAngle = 226;
-        if (_block == blockState.RIGHT){
-            secondAngle = 293;
-        }
-        else if (_block == blockState.LEFT){
-            secondAngle = 227;
-        }
-        else if (_block == blockState.MIDDLE){
-            secondAngle = 254;
-        }
-        // turn to face the second group of particles
-        _base.drivetrain.turnTo.goTo(secondAngle, BLOCK_TURN_SPEED-.1);
-        _base.drivetrain.turnTo.runSequentially();
-        _base.deliver.raiseMarker();
-        if(_block == blockState.LEFT)
-        {
-            _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE + 9, DRIVING_SPEED+.37);
-            _base.drivetrain.driveTo.runSequentially();
-        }
-        else
-        {
-            _base.drivetrain.driveTo.goTo(SECOND_BLOCK_DISTANCE + 8.5, DRIVING_SPEED);
-            _base.drivetrain.driveTo.runSequentially();
-        }
-
-        if(_block == blockState.RIGHT)
-        {
-            _base.drivetrain.driveTo.goTo(6,DRIVING_SPEED);
-            _base.drivetrain.driveTo.runSequentially();
-
-            _base.drivetrain.turnTo.goTo(347, TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
-
-            driveAndExtend(31, 4);
-        }
-        else if(_block == blockState.MIDDLE)
-        {
-            // knock the second block off and comes back
-            _base.drivetrain.driveTo.goTo(-20,DRIVING_SPEED);
-            _base.drivetrain.driveTo.runSequentially();
-
-            _base.drivetrain.turnTo.goTo(0, TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
-
-            _base.drivetrain.driveTo.goTo(24, DRIVING_SPEED);
-            _base.drivetrain.driveTo.runStopIfDist(6,1);
-
-            _base.drivetrain.turnTo.goTo(360 -39 , TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
-
-            driveAndExtend(39,7);
-
-        }
-        else
-        {
-            _base.drivetrain.driveTo.goTo(6,DRIVING_SPEED+.37);
-            _base.drivetrain.driveTo.runSequentially();
-
-            _base.drivetrain.turnTo.goTo(210, TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
-
-            driveAndExtend(31, 4);
-        }
 
         _base.deliver.raiseMarker();
         _base.drivetrain.stop();
         detector.deactivate();
         while(opModeIsActive()) {
-            _base.collector.powerExtension(-1);
+            _base.deliver.deliverMarker();
+            //_base.collector.powerExtension(-1);
         }
     }
 

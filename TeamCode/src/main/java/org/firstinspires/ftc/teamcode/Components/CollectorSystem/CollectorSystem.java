@@ -10,8 +10,8 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
 
 public class CollectorSystem extends RobotComponent {
 
-    private DcMotor collector;
-    private DcMotor extendCollector;
+    public DcMotor collector;
+    public DcMotor extendCollector;
 
     public void init(RobotBase BASE)
     {
@@ -58,9 +58,8 @@ public class CollectorSystem extends RobotComponent {
 
     public void releaseBalls()
     {
-        collector.setPower(-.53);
+        collector.setPower(-.65);
     }
-
 
     public void outTelemetry()
     {
@@ -75,5 +74,6 @@ public class CollectorSystem extends RobotComponent {
 
     {
         collector.setPower(0);
+        extendCollector.setPower(0);
     }
 }

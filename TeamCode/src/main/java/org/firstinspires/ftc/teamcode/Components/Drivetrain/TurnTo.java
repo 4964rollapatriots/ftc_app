@@ -41,7 +41,7 @@ public class TurnTo extends RobotCommand
         _imu = IMU;
     }
 
-    public void goTo(double ANGLE, double MAXSPEED)
+    public void     goTo(double ANGLE, double MAXSPEED)
     {
         if(ANGLE == 360)
             ANGLE = 0;
@@ -329,33 +329,19 @@ public class TurnTo extends RobotCommand
             currSpeed = minSpeed;
         }
 
-        if(currSpeed > maxSpeed)
-        {
+        if(currSpeed > maxSpeed) {
             currSpeed = maxSpeed;
         }
 
-        if(currSpeed < minSpeed)
-        {
-            currSpeed = minSpeed;
-        }
 
-        //_drivetrain.outTelemetry();
-        _drivetrain.base().outTelemetry.update();
+        _drivetrain.run(0.0, (Math.abs(error) / -error), false,1);
 
-        _drivetrain.run(0.0, Math.abs(error) / -error * currSpeed, false,1);
-
-        if(targetAngle == 170 && _imu.zAngle() >= targetAngle - 10 && _imu.zAngle() <= targetAngle + 10)
+        if(Math.abs(_imu.zAngle() - targetAngle) > 10)
         {
             return false;
         }
-        else if(targetAngle == 0)
-        {
-            if(_imu.zAngle() < 10 && _imu.zAngle() > 350)
-            {
-                return false;
-            }
-        }
-        if(Math.abs(error) > BUFFER_PARAM && System.currentTimeMillis() - startTime < TIMEOUT
+
+        if(System.currentTimeMillis() - startTime < TIMEOUT
                 && !endCommand && _drivetrain.base().opMode.opModeIsActive())
         {
             return false;

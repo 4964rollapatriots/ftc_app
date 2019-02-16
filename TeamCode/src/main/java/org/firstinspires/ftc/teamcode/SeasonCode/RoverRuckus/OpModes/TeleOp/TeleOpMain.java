@@ -15,6 +15,7 @@ public class TeleOpMain extends LinearOpMode
     //Constants for manipulating the collector's lift power
     private double EXTEND_LIFT_POW = 1;
     private double RETRACT_LIFT_POW = -1;
+    private double init_angle = 0;
     private boolean tilt = false;
     private boolean scaleMode = false;
     private boolean slowMode = false;
@@ -42,7 +43,11 @@ public class TeleOpMain extends LinearOpMode
         _base.init(hardwareMap, this);
 
         _base.deliver.markerDelivery.setPosition(0);
-        waitForStart();
+
+        while (!opModeIsActive()){
+            telemetry.addData("Waiting", "for start");
+            telemetry.update();
+        }
 
         //Set State of the Drivetrain
         _base.drivetrain.setCurrState(Drivetrain.State.FORWARD_FAST);
@@ -151,7 +156,9 @@ public class TeleOpMain extends LinearOpMode
 
        if (( gamepad1.right_stick_button) && !bHeld){
             if (!imuCalibrated){
-                _base.imu.calibrateTo(0);
+
+                init_angle = _base.imu.zAngle();
+
                 telemetry.addData("Calibrating: ", _base.imu.zAngle());
                 imuCalibrated = true;
             }
@@ -164,7 +171,8 @@ public class TeleOpMain extends LinearOpMode
 
         if (autoTurntoLander){
 
-            _base.drivetrain.turnTo.goTo(0,0.9);
+            _base.drivetrain.turnTo.goTo(init_angle,0.9);
+            _base.imu.setAngle();
             if (_base.drivetrain.turnTo.teleopRunSequentially(4, 5)){
                 autoTurntoLander = false;
                 _base.drivetrain.stop();
@@ -182,7 +190,8 @@ public class TeleOpMain extends LinearOpMode
 
         if (autoTurntoCrater){
 
-            _base.drivetrain.turnTo.goTo(170,0.9);
+            _base.drivetrain.turnTo.goTo(init_angle + 180,0.9);
+            _base.imu.setAngle();
             if (_base.drivetrain.turnTo.teleopRunSequentially(4, 5)){
                 autoTurntoCrater = false;
                 _base.drivetrain.stop();
@@ -277,7 +286,8 @@ public class TeleOpMain extends LinearOpMode
         }
         else
             _base.collector.powerExtension(0);
-
+        telemetry.addData("Extension Power: ", _base.collector.extendCollector.getPower());
+        telemetry.update();
 
         //Collect particles using foam wheel :)
         if(gamepad2.right_trigger > .2)
