@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.MRRange;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.ODS;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVColorSensor;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVIMU;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVMagnetic;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.Touch;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Components.CollectorSystem.CollectorSystem;
@@ -35,8 +36,10 @@ public class Base extends RobotBase
     public MarkerDelivery deliver = new MarkerDelivery();
     public Touch bump = new Touch();
     public MRRange frontDistSensor = new MRRange();
-    //public MRRange backDistSensor = new MRRange();
     public MRRange backDistSensor = new MRRange();
+    public REVMagnetic hookLimitSwitch = new REVMagnetic();
+    public REVMagnetic liftLimitSwitch = new REVMagnetic();
+
     @Override
     public void init(final HardwareMap hwm, final LinearOpMode op)
     {
@@ -53,8 +56,10 @@ public class Base extends RobotBase
         // Basic component initialization
         imu.init(this, "imu", params);
         drivetrain.init(this , imu);
+        hookLimitSwitch.init(this, "hookMagnet");
+        liftLimitSwitch.init(this, "liftMagnet");
+        latchSystem.init(this, hookLimitSwitch,liftLimitSwitch);//
         deliver.init(this);
-        latchSystem.init(this);//
         collector.init(this);//
         tiltChannel.init(this);//
         outTelemetry.write("ABOUT TO RANGE YOU");
@@ -94,10 +99,6 @@ public class Base extends RobotBase
         //deliver.outTelemetry();
         //outTelemetry.addData("Right Range: ", rightDistSensor.distance());
         //outTelemetry.addData("Front Range: ", frontDistSensor.distance(DistanceUnit.INCH));
-        outTelemetry.telemetry.addData("Drivetrain State", drivetrain.state());
-        outTelemetry.telemetry.addData("Drivetrain State", drivetrain.state());
-        outTelemetry.telemetry.addData("Drivetrain State", drivetrain.state());
-        outTelemetry.telemetry.addData("Drivetrain State", drivetrain.state());
         outTelemetry.update();
     }
     @Override

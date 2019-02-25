@@ -232,7 +232,7 @@ public  class NoIMUTeleOp extends LinearOpMode
 
             /*---------------------------- HOOK EXTENSION/LIFT ROBOT --------------------------------*/
         if(gamepad2.a || gamepad1.dpad_up)
-            _base.latchSystem.extendHook();
+            _base.latchSystem.extendHookManual();
         else if(gamepad2.b || gamepad1.dpad_down)
             _base.latchSystem.retractHook();
         else if(gamepad1.x)

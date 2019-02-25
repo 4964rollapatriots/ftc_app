@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
+import org.firstinspires.ftc.robotcontroller.internal.Core.Sensors.REVMagnetic;
 
 import static com.qualcomm.hardware.hitechnic.HiTechnicNxtIrSeekerSensor.DIRECTION;
 
@@ -19,12 +20,18 @@ public class HookLift extends RobotComponent
     private DcMotor winch;
     private CRServo extendHookLift;
     private CRServo hook;
+    public REVMagnetic hookLimitSwitch;
+    public REVMagnetic liftLimitSwitch;
 
     private int LIFT_TO_POS = 50;
 
-    public void init(RobotBase BASE)
+    long startTime = 0;
+
+    public void init(RobotBase BASE, REVMagnetic hookSwitch, REVMagnetic liftSwitch)
     {
         super.init(BASE);
+        hookLimitSwitch = hookSwitch;
+        liftLimitSwitch = liftSwitch;
         winch = mapper.mapMotor("winch", DcMotorSimple.Direction.REVERSE);
         winch.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         extendHookLift = mapper.mapCRServo("lift", CRServo.Direction.REVERSE);
@@ -38,15 +45,10 @@ public class HookLift extends RobotComponent
 
         public void lowerRobot(int TIME)
         {
-            winch.setPower(-1);
-            extendHookLift.setPower(0);
-            try
+            long startTime = System.currentTimeMillis();
+            while(!liftLimitSwitch.isClose() &&  Math.abs(System.currentTimeMillis() - startTime) < TIME)
             {
-                Thread.sleep(TIME);
-            }
-            catch(Exception ex)
-            {
-                ex.printStackTrace();
+                winch.setPower(-1);
             }
             winch.setPower(0);
         }
@@ -67,10 +69,38 @@ public class HookLift extends RobotComponent
             extendHookLift.setPower(-.47);
         }
 
-        public void extendHook()
-        {
-            extendHookLift.setPower(1);
+        public void startLiftingTime(long time){
+            startTime = time;
         }
+
+        public boolean extendHookTeleop(int  TIMEOUT){
+
+            if(!liftLimitSwitch.isClose() &&  Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT)
+            {
+                extendHookLift.setPower(1);
+                return false;
+            }
+            else{
+                extendHook(0);
+                return true;
+            }
+
+        }
+
+        public void extendHookWithSensor()
+        {
+            long startTime = System.currentTimeMillis();
+            while(!liftLimitSwitch.isClose() &&  Math.abs(System.currentTimeMillis() - startTime) < 4500)
+            {
+                extendHookLift.setPower(1);
+            }
+            stopHook();
+
+        }
+        public void extendHookManual()
+    {
+        extendHookLift.setPower(1);
+    }
         public void extendHook(double power){
             extendHookLift.setPower(power);
         }
@@ -87,21 +117,18 @@ public class HookLift extends RobotComponent
         public void openHook(){
             hook.setPower(1);
         }
-        public void openHook(int time){
-            hook.setPower(1);
-            try
+        public void openHook(int TIMEOUT){
+            long startTime = System.currentTimeMillis();
+            while(!hookLimitSwitch.isClose() &&  Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT)
             {
-                Thread.sleep(time);
-            }
-            catch(Exception ex)
-            {
-                ex.printStackTrace();
+                hook.setPower(1);
             }
             stopHook();
         }
+
     public void openHookandExtend(int time){
         hook.setPower(1);
-        extendHook();
+        extendHookWithSensor();
         try
         {
             Thread.sleep(time);

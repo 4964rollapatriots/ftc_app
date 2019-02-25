@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDevice;
@@ -100,6 +101,14 @@ public final class HardwareMapper
         tempColor = robot.hardwareMap.get(DistanceSensor.class, NAME);
 
         return tempColor;
+    }
+
+    public DigitalChannel mapDigitalChannel(final String NAME){
+        DigitalChannel temp;
+
+        temp = robot.hardwareMap.get(DigitalChannel.class, NAME);
+
+        return temp;
     }
 
     public I2cDevice mapI2cDevice(final String name){

@@ -34,6 +34,7 @@ public class TeleOpMain extends LinearOpMode
     private boolean autoTurntoLander = false;
     private boolean autoTurntoCrater = false;
     private boolean imuCalibrated = false;
+    private boolean liftingWithSensor = false;
 
     private boolean bHeld = false;
     private boolean aHeld = false;
@@ -77,6 +78,10 @@ public class TeleOpMain extends LinearOpMode
         telemetry.addData("Back Distance in Inches ", _base.drivetrain.back_range.distance(DistanceUnit.INCH));
         telemetry.addData("Front Distance in Inches " , _base.drivetrain.front_range.distance(DistanceUnit.INCH));
         telemetry.addData("IMU calibrated ", imuCalibrated);
+
+        telemetry.addData("Hook Mag Reading ", _base.hookLimitSwitch.isClose());
+        telemetry.addData("LiftMagReadig", _base.liftLimitSwitch.isClose());
+        telemetry.update();
         telemetry.update();
 
         if(gamepad1.left_bumper) {
@@ -200,10 +205,10 @@ public class TeleOpMain extends LinearOpMode
         }
         if(finalLift)
         {
-            telemetry.addLine("LIFT     LIFT    LIFT    LIFT    LIFT ");
-            telemetry.addLine("LIFT     LIFT    LIFT    LIFT    LIFT ");
-            telemetry.addLine("LIFT     LIFT    LIFT    LIFT    LIFT ");
-            telemetry.update();
+//            telemetry.addLine("LIFT     LIFT    LIFT    LIFT    LIFT ");
+//            telemetry.addLine("LIFT     LIFT    LIFT    LIFT    LIFT ");
+//            telemetry.addLine("LIFT     LIFT    LIFT    LIFT    LIFT ");
+//            telemetry.update();
         }
         else
         {
@@ -211,13 +216,13 @@ public class TeleOpMain extends LinearOpMode
         }
 
         if (_base.drivetrain.back_range.distance(DistanceUnit.INCH) < 2){
-            telemetry.addLine("CLOSE     CLOSE    CLOSE    CLOSE    CLOSE ");
-            telemetry.addLine("CLOSE     CLOSE    CLOSE    CLOSE    CLOSE ");
-            telemetry.addLine("CLOSE     CLOSE    CLOSE    CLOSE    CLOSE ");
-            telemetry.update();
+//            telemetry.addLine("CLOSE     CLOSE    CLOSE    CLOSE    CLOSE ");
+//            telemetry.addLine("CLOSE     CLOSE    CLOSE    CLOSE    CLOSE ");
+//            telemetry.addLine("CLOSE     CLOSE    CLOSE    CLOSE    CLOSE ");
+//            telemetry.update();
         }
 
-        //_base.outTelemetry();
+        _base.outTelemetry();
         /*------------------------------------ MARKER DELIVERY --------------------------------*/
         //this is to be used just in case the marker delivery system needs to be used
         if(gamepad2.dpad_right)
@@ -230,8 +235,24 @@ public class TeleOpMain extends LinearOpMode
         }
 
         /*---------------------------- HOOK EXTENSION/LIFT ROBOT --------------------------------*/
-        if(gamepad2.a || gamepad1.dpad_up)
-            _base.latchSystem.extendHook();
+        if(gamepad1.b){
+            _base.latchSystem.startLiftingTime(System.currentTimeMillis());
+            liftingWithSensor =  true;
+        }
+        if (liftingWithSensor){
+            telemetry.addData("Got inside the lift with sensor", true);
+            if  (_base.latchSystem.extendHookTeleop(3000)) {
+                telemetry.addData("Done with extend hook!!!", true);
+                liftingWithSensor = false;
+                _base.latchSystem.stop();
+            }
+            telemetry.update();
+
+        }
+        if(gamepad2.a || gamepad1.dpad_up) {
+            _base.latchSystem.extendHookManual();
+            liftingWithSensor = false;
+        }
         else if(gamepad2.b || gamepad1.dpad_down)
             _base.latchSystem.retractHook();
         else if(gamepad1.x)
