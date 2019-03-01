@@ -45,7 +45,7 @@ public class ParkSingleCrater extends LinearOpMode {
     public double silverConfidence = 0;
 
     // these are the only final values that are used multiple times
-    private double block_distance = 27;
+    private double block_distance = 26;
     private final static double SECOND_BLOCK_DISTANCE = 23.0;
 
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -102,7 +102,7 @@ public class ParkSingleCrater extends LinearOpMode {
         _base.drivetrain.turnTo.goTo(1, .35);
         _base.drivetrain.turnTo.runSequentially();
         detector.activate();
-        _base.drivetrain.driveTo.goTo(7,DRIVING_SPEED/2);
+        _base.drivetrain.driveTo.goTo(3,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
         this.sleep(800);
         if(_block == blockState.UNCERTAIN)
@@ -117,8 +117,6 @@ public class ParkSingleCrater extends LinearOpMode {
         }
 
 
-        _base.deliver.raiseMarker();
-
         // method that sends information about our angles and powers
         sendTelemetry();
 
@@ -127,7 +125,7 @@ public class ParkSingleCrater extends LinearOpMode {
         {
             _base.deliver.raiseMarker();
             //to use one run of aligned to make sure stuff works
-            _base.drivetrain.turnTo.goTo(332,BLOCK_TURN_SPEED-.2);
+            _base.drivetrain.turnTo.goTo(330,BLOCK_TURN_SPEED-.2);
             _base.drivetrain.turnTo.blockRunSequentially(3,5);
 
             this.sleep(700);
@@ -221,14 +219,13 @@ public class ParkSingleCrater extends LinearOpMode {
             _base.drivetrain.driveTo.goTo(-(block_distance - 4), DRIVING_SPEED_BLOCK);
             _base.drivetrain.driveTo.runSequentially();
         }
-        _base.deliver.raiseMarker();
 
         // the robot is at a common spot, but a different angle based on where the block was
         // since the turnTo class uses a gyroscope, turning to 60 gives a common angle also
         if(_block == blockState.LEFT)
         {
             _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(67, TURN_SPEED-.05);
+            _base.drivetrain.turnTo.goTo(63, TURN_SPEED-.05);
             _base.drivetrain.turnTo.runSequentially(2,5);
             _base.deliver.raiseMarker();
         }
@@ -242,14 +239,14 @@ public class ParkSingleCrater extends LinearOpMode {
         else
         {
             _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(73, TURN_SPEED-0.1);
+            _base.drivetrain.turnTo.goTo(62, TURN_SPEED-0.1);
             _base.drivetrain.turnTo.runSequentially(2,5);
             _base.deliver.raiseMarker();
         }
 
         // drives between the lander and the far left particle so the path is clear to our teammate's side
 
-        _base.drivetrain.driveTo.goTo(53, DRIVING_SPEED);
+        _base.drivetrain.driveTo.goTo(60, DRIVING_SPEED);
         _base.drivetrain.driveTo.runStopIfTouch(8);
         _base.deliver.raiseMarker();
 
@@ -268,7 +265,7 @@ public class ParkSingleCrater extends LinearOpMode {
 
 
         // turns in preparation for moving towards the deposit zone
-        _base.drivetrain.turnTo.goTo(132, TURN_SPEED);
+        _base.drivetrain.turnTo.goTo(134, TURN_SPEED);
         _base.drivetrain.turnTo.runSequentially(3);
 
         _base.deliver.raiseMarker();
@@ -277,55 +274,46 @@ public class ParkSingleCrater extends LinearOpMode {
         _base.drivetrain.driveTo.goTo(45, DRIVING_SPEED);
         _base.drivetrain.driveTo.runStopIfDist(7);
 
-        telemetry.addData("Range Value: ", _base.frontDistSensor.distance(DistanceUnit.INCH));
-        telemetry.addData("ARC TURNING" ," NOW");
-        telemetry.update();
+        _base.collector.powerExtension(1);
+        try{
+            Thread.sleep(200);}
+        catch(Exception ex){ex.printStackTrace();}
 
-        _base.drivetrain.turnTo.goTo(143, TURN_SPEED );
-        _base.drivetrain.turnTo.arcSequentially(3, 2.5);
-
-        _base.drivetrain.turnTo.goTo(158, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially(2,1.5);
-
-        _base.drivetrain.driveTo.goTo(18,DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially(4);
-
-
-        // deposits the marker
-        _base.deliver.deliverMarker();
-
+        _base.tiltChannel.lowestTiltDownByEnc(3000);
+        _base.collector.runCollector(-.40);
 
         // gives time for the marker to slide off
         try{
-            Thread.sleep(600);}
+            Thread.sleep(800);}
         catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(0);
+        _base.collector.runCollector(-.25);
+        _base.tiltChannel.AUTOTiltToZero(3500);
+        //_base.collector.powerExtension(-.65);
+//        try{
+//            Thread.sleep(800);}
+//        catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(0);
+        _base.collector.stop();
 
-
-        _base.deliver.deliverMarker();
-
-
-        _base.deliver.raiseMarker();
-
-        // turn back to face the crater
-        _base.drivetrain.turnTo.goTo(347, TURN_SPEED-.05);
-        _base.drivetrain.turnTo.runSequentially(2,5);
-
-        // drive to the crater
-        _base.drivetrain.driveTo.goTo(18,DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
-
-        // turn back to face the crater
-        _base.drivetrain.turnTo.goTo(320, TURN_SPEED-.05);
-        _base.drivetrain.turnTo.runSequentially(2,5);
-
-        // drive to the crater
-        driveAndExtend(43,6);
-
+        telemetry.addData("About to park!", true);
+        telemetry.update();
+        _base.drivetrain.driveTo.goTo(-45, .70);
+        _base.drivetrain.driveTo.runSequentially(7);
+        telemetry.addData("Done Parking!", true);
+        telemetry.update();
+        try
+        {
+            Thread.sleep(300);
+        }
+        catch(Exception ex){ex.printStackTrace();}
+        _base.drivetrain.driveTo.goTo(-4, .25);
+        _base.drivetrain.driveTo.runSequentially(7);
 
         _base.drivetrain.stop();
         detector.deactivate();
         while(opModeIsActive()) {
-            _base.collector.powerExtension(-1);
+            _base.collector.powerExtension(0);
         }
     }
 

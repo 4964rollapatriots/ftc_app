@@ -38,12 +38,12 @@ public class ScoreIntoCenter extends RobotCommand
 
     public void rotateUp()
     {
-        _tilt.tiltUpByEnc();
+        _tilt.tiltUpBallByEnc();
     }
 
     public void rotateDown()
     {
-        _tilt.tiltDownByEnc();
+        _tilt.teleOpTiltDownByEnc();
     }
     @Override
     public void runParallel()

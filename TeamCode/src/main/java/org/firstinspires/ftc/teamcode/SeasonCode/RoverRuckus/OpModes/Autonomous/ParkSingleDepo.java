@@ -76,7 +76,7 @@ public class ParkSingleDepo extends LinearOpMode {
 
 
         while (! opModeIsActive()){
-            telemetry.addData("All systems go", "");
+            telemetry.addData("Waiting to start", "no crashing");
             telemetry.update();
         }
 
@@ -97,33 +97,13 @@ public class ParkSingleDepo extends LinearOpMode {
         _base.drivetrain.turnTo.blockRunSequentially(2, 1.2);
 
         //drives forward to avoid hitting the lander while turning
-        driveAndExtend(4, 4);
+        _base.drivetrain.driveTo.goTo(4,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
         _base.drivetrain.turnTo.goTo(1, .35);
         _base.drivetrain.turnTo.runSequentially();
         detector.activate();
-        driveAndExtend(14, 10);
+        _base.drivetrain.driveTo.goTo(3,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
-
-        while (_base.tiltChannel.tiltToEncoder(1500)){
-            _base.collector.powerExtension(-1);
-        }
-
-
-        _base.collector.powerExtension(-1);
-        sleep(500);
-        _base.collector.stop();
-
-        _base.collector.runCollector(-0.5);
-        sleep(1000);
-        _base.collector.stop();
-
-
-        _base.drivetrain.driveTo.goTo(-7, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
-
-
-
         this.sleep(800);
         if(_block == blockState.UNCERTAIN)
         {
@@ -137,8 +117,6 @@ public class ParkSingleDepo extends LinearOpMode {
         }
 
 
-        _base.deliver.raiseMarker();
-
         // method that sends information about our angles and powers
         sendTelemetry();
 
@@ -147,7 +125,7 @@ public class ParkSingleDepo extends LinearOpMode {
         {
             _base.deliver.raiseMarker();
             //to use one run of aligned to make sure stuff works
-            _base.drivetrain.turnTo.goTo(332,BLOCK_TURN_SPEED-.2);
+            _base.drivetrain.turnTo.goTo(330,BLOCK_TURN_SPEED-.2);
             _base.drivetrain.turnTo.blockRunSequentially(3,5);
 
             this.sleep(700);
@@ -161,7 +139,7 @@ public class ParkSingleDepo extends LinearOpMode {
         }
         _base.deliver.raiseMarker();
         if (_block == blockState.UNCERTAIN){
-            for  (double i = 333; i < 337; i += TURN_INCREMENT - 1){
+            for  (double i = 334; i < 337; i += TURN_INCREMENT - 1){
                 telemetry.addData("Searching for right block!" , "");
                 telemetry.update();
                 _base.drivetrain.turnTo.goTo(i,BLOCK_TURN_SPEED-.2);
@@ -173,7 +151,21 @@ public class ParkSingleDepo extends LinearOpMode {
             }
         }
         _base.deliver.raiseMarker();
+        // if it is not in the middle, the robot turns until it sees the left block or reaches 18 degrees
 
+//        if(_block == blockState.UNCERTAIN) {
+//            _base.drivetrain.turnTo.goTo(2, BLOCK_TURN_SPEED - .2);
+//            _base.drivetrain.turnTo.blockRunSequentially();
+//
+//            this.sleep(1000);
+//            if (aligned()) {
+//                _block = blockState.MIDDLE;
+//                telemetry.addData("FOUND IN MIDDLE", "");
+//                telemetry.update();
+//            }
+//        }
+        //if the block is still not found, the block is on the left
+        // the robot turns until it reaches 17 degrees and then pans until it sees the block
 
         if(_block == blockState.UNCERTAIN)
         {
@@ -197,101 +189,45 @@ public class ParkSingleDepo extends LinearOpMode {
 
         //drive forward to knock the block off and then go back the same distance
         // this works because at this point the robot is facing the block
-        if (_block == blockState.MIDDLE){
-            block_distance -= 4;
-        }
-        else if(_block == blockState.RIGHT)
+        if(_block == blockState.RIGHT || _block == blockState.LEFT)
         {
-            block_distance -= 1.0;
-        }
-        else
-        {
-            block_distance -= 1;
+            block_distance += 8.0;
         }
 
-        _base.drivetrain.driveTo.goTo(block_distance - 1,DRIVING_SPEED_BLOCK);
+        _base.drivetrain.driveTo.goTo(block_distance, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
-        if(_block == blockState.RIGHT)
-        {
-            _base.drivetrain.driveTo.goTo(-(block_distance-3),DRIVING_SPEED_BLOCK);
+        if (_block == blockState.LEFT){
+            _base.drivetrain.turnTo.goTo(360-35, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+            deliver();
+
+            _base.drivetrain.driveTo.goTo(-54, 0.8);
             _base.drivetrain.driveTo.runSequentially();
         }
-        else if(_block == blockState.MIDDLE)
-        {
-            _base.drivetrain.driveTo.goTo(-(block_distance - 4), DRIVING_SPEED_BLOCK);
+
+        else if (_block == blockState.RIGHT){
+            _base.drivetrain.turnTo.goTo(35, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+            deliver();
+
+            _base.drivetrain.driveTo.goTo(-54, 0.8);
             _base.drivetrain.driveTo.runSequentially();
-        }
-        else
-        {
-            _base.drivetrain.driveTo.goTo(-(block_distance - 4), DRIVING_SPEED_BLOCK);
-            _base.drivetrain.driveTo.runSequentially();
-        }
-        _base.deliver.raiseMarker();
 
-        // the robot is at a common spot, but a different angle based on where the block was
-        // since the turnTo class uses a gyroscope, turning to 60 gives a common angle also
-        if(_block == blockState.LEFT)
-        {
-            _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(67, TURN_SPEED-.05);
-            _base.drivetrain.turnTo.runSequentially(2,5);
-            _base.deliver.raiseMarker();
-        }
-        else if(_block == blockState.RIGHT)
-        {
-            _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(74, TURN_SPEED-.05);
-            _base.drivetrain.turnTo.runSequentially(2,5);
-            _base.deliver.raiseMarker();
-        }
-        else
-        {
-            _base.deliver.raiseMarker();
-            _base.drivetrain.turnTo.goTo(72.5, TURN_SPEED-0.1);
-            _base.drivetrain.turnTo.runSequentially(2,5);
-            _base.deliver.raiseMarker();
         }
 
-        // drives between the lander and the far left particle so the path is clear to our teammate's side
-
-        _base.drivetrain.driveTo.goTo(52.5, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runStopIfTouch(8);
-        _base.deliver.raiseMarker();
-
-        //turn to drive in between particle on teammate's side and wall
-        _base.drivetrain.turnTo.goTo(125, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially(2);
-
-        _base.deliver.raiseMarker();
-
-        //drives between the particle on teammate's side and wall
-        _base.drivetrain.driveTo.goTo(11, DRIVING_SPEED );
-        _base.drivetrain.driveTo.runSequentially(10);
 
 
-        _base.deliver.raiseMarker();
 
-
-        // turns in preparation for moving towards the deposit zone
-        _base.drivetrain.turnTo.goTo(132, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially(3);
-
-        _base.deliver.raiseMarker();
-
-        //drives to the deposit zone
-        _base.drivetrain.driveTo.goTo(45, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
 
 
 
         _base.deliver.raiseMarker();
         _base.drivetrain.stop();
         detector.deactivate();
-        while(opModeIsActive()) {
-            _base.deliver.deliverMarker();
-            //_base.collector.powerExtension(-1);
-        }
+
     }
 
     private void sendTelemetry(){
@@ -392,6 +328,30 @@ public class ParkSingleDepo extends LinearOpMode {
         sleep(500);
         return aligned;
 
+    }
+
+    private void deliver(){
+        _base.collector.powerExtension(1);
+        try{
+            Thread.sleep(200);}
+        catch(Exception ex){ex.printStackTrace();}
+
+        _base.tiltChannel.lowestTiltDownByEnc(3000);
+        _base.collector.runCollector(-.40);
+
+        // gives time for the marker to slide off
+        try{
+            Thread.sleep(800);}
+        catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(0);
+        _base.collector.runCollector(-.25);
+        _base.tiltChannel.AUTOTiltToZero(3500);
+        //_base.collector.powerExtension(-.65);
+//        try{
+//            Thread.sleep(800);}
+//        catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(0);
+        _base.collector.stop();
     }
 
     public boolean relativelyAligned(){

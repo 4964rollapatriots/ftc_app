@@ -78,6 +78,9 @@ public class HookLift extends RobotComponent
             if(!liftLimitSwitch.isClose() &&  Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT)
             {
                 extendHookLift.setPower(1);
+                base.outTelemetry.addData("Powering on now!!!!", true);
+                base.outTelemetry.update();
+
                 return false;
             }
             else{

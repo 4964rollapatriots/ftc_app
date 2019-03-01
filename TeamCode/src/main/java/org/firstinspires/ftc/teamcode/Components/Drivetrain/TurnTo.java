@@ -329,20 +329,20 @@ public class TurnTo extends RobotCommand
             currSpeed = minSpeed;
         }
 
-        if(currSpeed > maxSpeed) {
+        if(currSpeed > maxSpeed)
+        {
             currSpeed = maxSpeed;
         }
-
-
-        _drivetrain.run(0.0, (Math.abs(error) / -error), false,1);
-
-        if(Math.abs(_imu.zAngle() - targetAngle) > 10)
+        if(currSpeed < minSpeed)
         {
-            return false;
+            currSpeed = minSpeed;
         }
 
-        if(System.currentTimeMillis() - startTime < TIMEOUT
-                && !endCommand && _drivetrain.base().opMode.opModeIsActive())
+
+        _drivetrain.run(0.0, (Math.abs(error) / -error * currSpeed), false,1);
+
+        if(Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT
+                && !endCommand && _drivetrain.base().opMode.opModeIsActive() && Math.abs(_imu.zAngle() - targetAngle) > 10)
         {
             return false;
         }

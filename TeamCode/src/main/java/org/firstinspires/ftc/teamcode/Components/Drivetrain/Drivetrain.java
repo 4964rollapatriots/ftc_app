@@ -318,7 +318,7 @@ public class Drivetrain extends RobotComponent
         base.outTelemetry.addData("Front Left Encoder: ", frontLeftEncoderCount());
         base.outTelemetry.addData("Back Right Encoder: ", backRightEncoderCount());
         base.outTelemetry.addData("Front Right Encoder: ", frontRightEncoderCount());
-        base.outTelemetry.addData("IMU Z Angle: ", imu.zAngle());
+        //base.outTelemetry.addData("IMU Z Angle: ", imu.zAngle());
         base.outTelemetry.write("-----END DRIVETRAIN -------------");
         base.outTelemetry.newLine();
     }

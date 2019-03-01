@@ -16,7 +16,7 @@ public class DriveToDistance extends RobotCommand
     private int BUFFER = 7;
 
     private final static double DESIRED_OFFSET = 3.9;
-    private final static double FRONT_DESIRED_OFFSET = 34.4;
+    private final static double FRONT_DESIRED_OFFSET = 32.4;
 
     private boolean _busy = false;
     private boolean endCommand = false;

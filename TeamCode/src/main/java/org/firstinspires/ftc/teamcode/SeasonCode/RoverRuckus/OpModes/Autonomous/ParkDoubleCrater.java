@@ -74,7 +74,6 @@ public class ParkDoubleCrater extends LinearOpMode {
 
         _base.deliver.raiseMarker();
 
-
         while (! opModeIsActive()){
             telemetry.addData("All systems go", "no crashing");
             telemetry.update();

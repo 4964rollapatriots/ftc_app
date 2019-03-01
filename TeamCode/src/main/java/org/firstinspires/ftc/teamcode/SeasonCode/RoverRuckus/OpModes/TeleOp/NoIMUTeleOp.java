@@ -35,6 +35,8 @@ public  class NoIMUTeleOp extends LinearOpMode
     private boolean bHeld = false;
     private boolean aHeld = false;
 
+    private int count;
+
     public void runOpMode() throws InterruptedException
     {
         _base.init(hardwareMap, this);
@@ -50,9 +52,12 @@ public  class NoIMUTeleOp extends LinearOpMode
         _base.drivetrain.setCurrState(Drivetrain.State.FORWARD_FAST);
 
         //run teleop while opmode is active
+        count = 0;
         while(opModeIsActive())
         {
             run();
+            count ++;
+            telemetry.addData("Count ", count);
         }
     }
     //The Actual Teleop commands
@@ -336,7 +341,7 @@ public  class NoIMUTeleOp extends LinearOpMode
         else if (up && automateLift)
         {
 
-            if(_base.tiltChannel.tiltUpByEnc()) {
+            if(_base.tiltChannel.tiltUpBallByEnc()) {
                 automateLift = false;
                 up = false;
                 down = false;
@@ -344,7 +349,7 @@ public  class NoIMUTeleOp extends LinearOpMode
         }
         else if (down && automateLift)
         {
-            if(_base.tiltChannel.tiltDownByEnc())
+            if(_base.tiltChannel.teleOpTiltDownByEnc())
             {
                 automateLift = false;
                 up = false;
