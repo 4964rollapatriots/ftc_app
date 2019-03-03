@@ -72,8 +72,6 @@ public class ParkSingleDepo extends LinearOpMode {
         _base.outTelemetry.write("All Systems Go");
         _base.outTelemetry.update();
 
-        _base.deliver.raiseMarker();
-
 
         while (! opModeIsActive()){
             telemetry.addData("Waiting to start", "no crashing");
@@ -85,7 +83,9 @@ public class ParkSingleDepo extends LinearOpMode {
 
         _base.drivetrain.driveTo.goTo(0.25,0.1);
         _base.drivetrain.driveTo.runSequentially();
+
         _base.imu.calibrateTo(0);
+
         _base.latchSystem.extendHook(0);
         _base.latchSystem.openHook(1300);
         telemetry.addData("communicate with rev hub", "so doesn't disconnect");
@@ -93,14 +93,14 @@ public class ParkSingleDepo extends LinearOpMode {
 
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
-        _base.drivetrain.turnTo.goTo(1,BLOCK_TURN_SPEED-.2);
-        _base.drivetrain.turnTo.blockRunSequentially(2, 1.2);
+        _base.drivetrain.turnTo.goTo(1,.20);
+        _base.drivetrain.turnTo.blockRunSequentially(3, 2.5);
 
         //drives forward to avoid hitting the lander while turning
         _base.drivetrain.driveTo.goTo(4,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.turnTo.goTo(1, .35);
-        _base.drivetrain.turnTo.runSequentially();
+        _base.drivetrain.turnTo.goTo(1,.20);
+        _base.drivetrain.turnTo.blockRunSequentially(3, 2.5);
         detector.activate();
         _base.drivetrain.driveTo.goTo(3,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
@@ -180,49 +180,82 @@ public class ParkSingleDepo extends LinearOpMode {
         //this turns a small amount to account for the offset of our phone on the left side of our robot
         //turnToAlign();
 
-
-        sendTelemetry();
-        telemetry.addData("block state is", _block);
-        telemetry.addData("Silver Confidence = ", silverConfidence);
-        telemetry.addData("Gold Confidence = ", FINAL_CONFIDENCE);
         telemetry.update();
 
         //drive forward to knock the block off and then go back the same distance
         // this works because at this point the robot is facing the block
         if(_block == blockState.RIGHT || _block == blockState.LEFT)
         {
-            block_distance += 8.0;
+            block_distance += 10.0;
+        }
+        else{
+            block_distance += 7;
         }
 
         _base.drivetrain.driveTo.goTo(block_distance, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
         if (_block == blockState.LEFT){
-            _base.drivetrain.turnTo.goTo(360-35, TURN_SPEED);
+            _base.drivetrain.turnTo.goTo(360-42, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
 
             deliver();
 
-            _base.drivetrain.driveTo.goTo(-54, 0.8);
+            _base.drivetrain.driveTo.goTo(-20, 0.8);
+            _base.drivetrain.driveTo.runSequentially();
+
+            _base.drivetrain.turnTo.goTo(132, 0.3);
+            _base.drivetrain.turnTo.runSequentially();
+
+            _base.drivetrain.driveTo.goTo(15, 0.7);
             _base.drivetrain.driveTo.runSequentially();
         }
 
         else if (_block == blockState.RIGHT){
-            _base.drivetrain.turnTo.goTo(35, TURN_SPEED);
+            _base.drivetrain.turnTo.goTo(42, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
+
+            _base.drivetrain.driveTo.goTo(8, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
 
             deliver();
 
-            _base.drivetrain.driveTo.goTo(-54, 0.8);
+            _base.drivetrain.turnTo.goTo(70, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+            _base.drivetrain.driveTo.goTo(30, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runStopIfTouch();
+
+            _base.drivetrain.turnTo.goTo(132, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+            _base.drivetrain.driveTo.goTo(57, DRIVING_SPEED);
             _base.drivetrain.driveTo.runSequentially();
 
         }
+        else{
 
+            deliver();
 
+            _base.drivetrain.turnTo.goTo(55, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
 
+            _base.drivetrain.driveTo.goTo(25, 0.5);
+            _base.drivetrain.driveTo.runStopIfTouch();
 
+            _base.drivetrain.turnTo.goTo(132, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
 
+            _base.drivetrain.driveTo.goTo(45, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
 
+            _base.drivetrain.turnTo.goTo(125, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+            _base.drivetrain.driveTo.goTo(10, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+
+        }
 
         _base.deliver.raiseMarker();
         _base.drivetrain.stop();
@@ -331,7 +364,7 @@ public class ParkSingleDepo extends LinearOpMode {
     }
 
     private void deliver(){
-        _base.collector.powerExtension(1);
+        _base.collector.powerExtension(-1);
         try{
             Thread.sleep(200);}
         catch(Exception ex){ex.printStackTrace();}
@@ -341,7 +374,7 @@ public class ParkSingleDepo extends LinearOpMode {
 
         // gives time for the marker to slide off
         try{
-            Thread.sleep(800);}
+            Thread.sleep(750);}
         catch(Exception ex){ex.printStackTrace();}
         _base.collector.powerExtension(0);
         _base.collector.runCollector(-.25);

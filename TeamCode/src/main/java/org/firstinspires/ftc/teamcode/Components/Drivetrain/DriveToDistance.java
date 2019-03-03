@@ -259,6 +259,9 @@ public class DriveToDistance extends RobotCommand
                 bumped = true;
                 break;
             }
+            if(_drivetrain.front_range.distance(DistanceUnit.INCH) < 10){
+                _drivetrain.setAllMotorPower(0.3);
+            }
         }
 
         _drivetrain.setAllMotorPower(0);
@@ -298,6 +301,9 @@ public class DriveToDistance extends RobotCommand
 
                 bumped = true;
                 break;
+            }
+            if (_drivetrain.front_range.distance(DistanceUnit.INCH) < 10){
+                _drivetrain.setAllMotorPower(0.3);
             }
         }
 
@@ -486,7 +492,7 @@ public class DriveToDistance extends RobotCommand
                 powerMultiplier = Math.abs(currentRange - frontDistance) * .05;
                 withinDist = false;
             }
-            else if(currentRange < frontDistance && currentRange > 15)
+            else if(currentRange < frontDistance && currentRange > frontDistance - 7)
             {
                 withinDist = true;
                 break;

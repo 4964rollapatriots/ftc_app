@@ -85,6 +85,7 @@ public class TeleOpMain extends LinearOpMode
 //        telemetry.addData("LiftMagReadig", _base.liftLimitSwitch.isClose());
 
         telemetry.addData("Drawbridge Encoders:", _base.tiltChannel.pulleys.getCurrentPosition());
+        telemetry.addData("Collector Extension Encoder: ", _base.collector.extendCollector.getCurrentPosition());
         telemetry.update();
 
         if(gamepad1.left_bumper) {
@@ -157,6 +158,7 @@ public class TeleOpMain extends LinearOpMode
             autoTurntoLander = false;
             autoTurntoCrater = false;
         }
+
         else if (! autoTurntoCrater && ! autoTurntoLander){
             _base.drivetrain.stop();
         }
@@ -222,7 +224,7 @@ public class TeleOpMain extends LinearOpMode
         }
 
 
-       _base.outTelemetry();
+       //_base.outTelemetry();
 
 
         /*---------------------------- HOOK EXTENSION/LIFT ROBOT --------------------------------*/

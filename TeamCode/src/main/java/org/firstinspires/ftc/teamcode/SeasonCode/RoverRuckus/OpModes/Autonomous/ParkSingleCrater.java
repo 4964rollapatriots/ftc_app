@@ -72,8 +72,6 @@ public class ParkSingleCrater extends LinearOpMode {
         _base.outTelemetry.write("All Systems Go");
         _base.outTelemetry.update();
 
-        _base.deliver.raiseMarker();
-
 
         while (! opModeIsActive()){
             telemetry.addData("Waiting to start", "no crashing");
@@ -85,7 +83,9 @@ public class ParkSingleCrater extends LinearOpMode {
 
         _base.drivetrain.driveTo.goTo(0.25,0.1);
         _base.drivetrain.driveTo.runSequentially();
+
         _base.imu.calibrateTo(0);
+
         _base.latchSystem.extendHook(0);
         _base.latchSystem.openHook(1300);
         telemetry.addData("communicate with rev hub", "so doesn't disconnect");
@@ -93,8 +93,8 @@ public class ParkSingleCrater extends LinearOpMode {
 
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
-        _base.drivetrain.turnTo.goTo(1,BLOCK_TURN_SPEED-.2);
-        _base.drivetrain.turnTo.blockRunSequentially(2, 1.2);
+        _base.drivetrain.turnTo.goTo(1,.20);
+        _base.drivetrain.turnTo.blockRunSequentially(3, 2.5);
 
         //drives forward to avoid hitting the lander while turning
         _base.drivetrain.driveTo.goTo(4,DRIVING_SPEED/2);
@@ -194,7 +194,7 @@ public class ParkSingleCrater extends LinearOpMode {
         }
         else if(_block == blockState.RIGHT)
         {
-            block_distance -= 1.0;
+            //block_distance -= 1.0;
         }
         else
         {
@@ -224,24 +224,24 @@ public class ParkSingleCrater extends LinearOpMode {
         // since the turnTo class uses a gyroscope, turning to 60 gives a common angle also
         if(_block == blockState.LEFT)
         {
-            _base.deliver.raiseMarker();
+
             _base.drivetrain.turnTo.goTo(63, TURN_SPEED-.05);
             _base.drivetrain.turnTo.runSequentially(2,5);
-            _base.deliver.raiseMarker();
+
         }
         else if(_block == blockState.RIGHT)
         {
-            _base.deliver.raiseMarker();
+
             _base.drivetrain.turnTo.goTo(67, TURN_SPEED-.05);
             _base.drivetrain.turnTo.runSequentially(2,5);
-            _base.deliver.raiseMarker();
+
         }
         else
         {
-            _base.deliver.raiseMarker();
+
             _base.drivetrain.turnTo.goTo(62, TURN_SPEED-0.1);
             _base.drivetrain.turnTo.runSequentially(2,5);
-            _base.deliver.raiseMarker();
+
         }
 
         // drives between the lander and the far left particle so the path is clear to our teammate's side
@@ -274,27 +274,7 @@ public class ParkSingleCrater extends LinearOpMode {
         _base.drivetrain.driveTo.goTo(45, DRIVING_SPEED);
         _base.drivetrain.driveTo.runStopIfDist(7);
 
-        _base.collector.powerExtension(1);
-        try{
-            Thread.sleep(200);}
-        catch(Exception ex){ex.printStackTrace();}
-
-        _base.tiltChannel.lowestTiltDownByEnc(3000);
-        _base.collector.runCollector(-.40);
-
-        // gives time for the marker to slide off
-        try{
-            Thread.sleep(800);}
-        catch(Exception ex){ex.printStackTrace();}
-        _base.collector.powerExtension(0);
-        _base.collector.runCollector(-.25);
-        _base.tiltChannel.AUTOTiltToZero(3500);
-        //_base.collector.powerExtension(-.65);
-//        try{
-//            Thread.sleep(800);}
-//        catch(Exception ex){ex.printStackTrace();}
-        _base.collector.powerExtension(0);
-        _base.collector.stop();
+        deliver();
 
         telemetry.addData("About to park!", true);
         telemetry.update();
@@ -307,7 +287,7 @@ public class ParkSingleCrater extends LinearOpMode {
             Thread.sleep(300);
         }
         catch(Exception ex){ex.printStackTrace();}
-        _base.drivetrain.driveTo.goTo(-4, .25);
+        _base.drivetrain.driveTo.goTo(-3, .25);
         _base.drivetrain.driveTo.runSequentially(7);
 
         _base.drivetrain.stop();
@@ -322,6 +302,30 @@ public class ParkSingleCrater extends LinearOpMode {
         //telemetry.addData("Angle X: ", _base.imu.xAngle());
         //telemetry.addData("Angle Y: ", _base.imu.yAngle());
         //telemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
+    }
+
+    private void deliver(){
+        _base.collector.powerExtension(-1);
+        try{
+            Thread.sleep(200);}
+        catch(Exception ex){ex.printStackTrace();}
+
+        _base.tiltChannel.lowestTiltDownByEnc(3000);
+        _base.collector.runCollector(-.40);
+
+        // gives time for the marker to slide off
+        try{
+            Thread.sleep(750);}
+        catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(0);
+        _base.collector.runCollector(-.25);
+        _base.tiltChannel.AUTOTiltToZero(3500);
+        //_base.collector.powerExtension(-.65);
+//        try{
+//            Thread.sleep(800);}
+//        catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(0);
+        _base.collector.stop();
     }
 
     private void turnToAlign(){

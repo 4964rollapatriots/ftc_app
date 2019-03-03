@@ -22,6 +22,7 @@ public class PulleyTilt extends RobotComponent {
     private int TILT_UP_BLOCK_ENC = -1800;
     private int TILT_DOWN_ENC = 950;
     private int TILT_TEAM_MARKER_ENC = 1150;
+    private int TILT_AUTO_COLLECT_ENC = 1420;
 
     public int BUFFER = 75;
 
@@ -106,12 +107,12 @@ public class PulleyTilt extends RobotComponent {
 
     }
 
-    public void tiltDownByEnc(int TIMEOUT) {
+    public void tiltDownByEnc(int MILLISECONDS) {
         pulleys.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         base.outTelemetry.addData("Position: ", pulleys.getCurrentPosition());
         base.outTelemetry.update();
         long startTime = System.currentTimeMillis();
-        while (!(pulleys.getCurrentPosition() >= TILT_DOWN_ENC) && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT) {
+        while (!(pulleys.getCurrentPosition() >= TILT_DOWN_ENC) && Math.abs(System.currentTimeMillis() - startTime) < MILLISECONDS) {
             if (Math.abs(pulleys.getCurrentPosition() - TILT_DOWN_ENC) < 300)
             {
                 pulleys.setPower(TILT_DOWN_POW * .45);
@@ -180,7 +181,29 @@ public class PulleyTilt extends RobotComponent {
 
 
 
+    public void AutoTiltToCollect(int TIMEOUT) {
+        pulleys.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        base.outTelemetry.addData("Position: ", pulleys.getCurrentPosition());
+        base.outTelemetry.update();
+        long startTime = System.currentTimeMillis();
+        while (!(pulleys.getCurrentPosition() >= TILT_TEAM_MARKER_ENC) && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT) {
+            if (Math.abs(pulleys.getCurrentPosition() - TILT_TEAM_MARKER_ENC) < 300)
+            {
+                pulleys.setPower(TILT_AUTO_COLLECT_ENC * .25);
+            }
+            else if (Math.abs(pulleys.getCurrentPosition() - TILT_TEAM_MARKER_ENC) < 600)
+            {
+                pulleys.setPower(TILT_AUTO_COLLECT_ENC * .70);
+            }
+            else
+            {
+                pulleys.setPower(TILT_AUTO_COLLECT_ENC);
+            }
 
+        }
+        stop();
+
+    }
 
 
     public boolean tiltToEncoder (int encoders){
