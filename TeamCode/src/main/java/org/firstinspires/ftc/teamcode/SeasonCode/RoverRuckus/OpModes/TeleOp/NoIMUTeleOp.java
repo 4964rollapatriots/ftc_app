@@ -182,7 +182,7 @@ public  class NoIMUTeleOp extends LinearOpMode
         }
         if (autoTurntoLander){
             autoTurntoLander = false;
-            double turningPower = 0.9;
+            double turningPower = 1;
             _base.drivetrain.backRight().setPower(-turningPower);
             _base.drivetrain.frontRight().setPower(-turningPower);
             _base.drivetrain.backLeft().setPower(turningPower);
@@ -209,7 +209,7 @@ public  class NoIMUTeleOp extends LinearOpMode
         }
         if (autoTurntoCrater){
             autoTurntoCrater = false;
-            double turningPower = 0.9;
+            double turningPower = 1;
             _base.drivetrain.backRight().setPower(turningPower);
             _base.drivetrain.frontRight().setPower(turningPower);
             _base.drivetrain.backLeft().setPower(-turningPower);
@@ -221,7 +221,6 @@ public  class NoIMUTeleOp extends LinearOpMode
                 sleep(5);
             }
             _base.drivetrain.stop();
-
         }
         //_base.outTelemetry();f
             /*------------------------------------ MARKER DELIVERY --------------------------------*/

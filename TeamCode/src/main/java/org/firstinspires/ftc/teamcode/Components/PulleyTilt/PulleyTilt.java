@@ -142,7 +142,7 @@ public class PulleyTilt extends RobotComponent {
             }
             else if (Math.abs(pulleys.getCurrentPosition() - TILT_TEAM_MARKER_ENC) < 600)
             {
-                pulleys.setPower(TILT_DOWN_POW * .50);
+                pulleys.setPower(TILT_DOWN_POW * .80);
             }
             else
             {

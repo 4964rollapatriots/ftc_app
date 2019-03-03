@@ -118,12 +118,11 @@ public class ParkDoubleCrater extends LinearOpMode {
 
 
         // method that sends information about our angles and powers
-        sendTelemetry();
+        //sendTelemetry();
 
         //turns to the far right in preparation for panning across the particles from right to left
         if(_block == blockState.UNCERTAIN)
         {
-            _base.deliver.raiseMarker();
             //to use one run of aligned to make sure stuff works
             _base.drivetrain.turnTo.goTo(330,BLOCK_TURN_SPEED-.2);
             _base.drivetrain.turnTo.blockRunSequentially(3,5);
@@ -137,7 +136,6 @@ public class ParkDoubleCrater extends LinearOpMode {
             // pans across the particles until it either sees the block or reaches 348 degrees
             // 348 degrees should be past the far right particle
         }
-        _base.deliver.raiseMarker();
         if (_block == blockState.UNCERTAIN){
             for  (double i = 334; i < 337; i += TURN_INCREMENT - 1){
                 telemetry.addData("Searching for right block!" , "");
@@ -150,7 +148,6 @@ public class ParkDoubleCrater extends LinearOpMode {
                 }
             }
         }
-        _base.deliver.raiseMarker();
         // if it is not in the middle, the robot turns until it sees the left block or reaches 18 degrees
 
 //        if(_block == blockState.UNCERTAIN) {
@@ -174,14 +171,12 @@ public class ParkDoubleCrater extends LinearOpMode {
             _block = blockState.LEFT;
         }
 
-        _base.deliver.raiseMarker();
 
 
         //this turns a small amount to account for the offset of our phone on the left side of our robot
-        //turnToAlign();
 
 
-        sendTelemetry();
+        //sendTelemetry();
         telemetry.addData("block state is", _block);
         telemetry.addData("Silver Confidence = ", silverConfidence);
         telemetry.addData("Gold Confidence = ", FINAL_CONFIDENCE);
@@ -340,6 +335,8 @@ public class ParkDoubleCrater extends LinearOpMode {
         }
 
         else{
+            //Block State: left
+
 
         }
 
@@ -352,13 +349,38 @@ public class ParkDoubleCrater extends LinearOpMode {
     }
 
     private void sendTelemetry(){
-        //telemetry.addData("Angle Z: ", _base.imu.zAngle());
-        //telemetry.addData("Angle X: ", _base.imu.xAngle());
-        //telemetry.addData("Angle Y: ", _base.imu.yAngle());
-        //telemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
+        telemetry.addData("Angle Z: ", _base.imu.zAngle());
+        telemetry.addData("Angle X: ", _base.imu.xAngle());
+        telemetry.addData("Angle Y: ", _base.imu.yAngle());
+        telemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
+        telemetry.update();
     }
 
     private void deliver(){
+        _base.collector.powerExtension(-1);
+        try{
+            Thread.sleep(200);}
+        catch(Exception ex){ex.printStackTrace();}
+
+        _base.tiltChannel.lowestTiltDownByEnc(3000);
+        _base.collector.runCollector(-.40);
+
+        // gives time for the marker to slide off
+        try{
+            Thread.sleep(750);}
+        catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(0);
+        _base.collector.runCollector(-.25);
+        _base.tiltChannel.AUTOTiltToZero(3500);
+        //_base.collector.powerExtension(-.65);
+//        try{
+//            Thread.sleep(800);}
+//        catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(0);
+        _base.collector.stop();
+    }
+
+    private void testDeliver(){
         _base.collector.powerExtension(-1);
         try{
             Thread.sleep(200);}

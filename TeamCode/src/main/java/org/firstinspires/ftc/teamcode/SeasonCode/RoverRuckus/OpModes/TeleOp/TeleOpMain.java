@@ -212,7 +212,6 @@ public class TeleOpMain extends LinearOpMode
             liftingWithSensor =  true;
         }
 
-
         if(gamepad2.a || gamepad1.dpad_up) {
             _base.latchSystem.extendHookManual();
             liftingWithSensor = false;
@@ -257,8 +256,6 @@ public class TeleOpMain extends LinearOpMode
         }
 
         /* -------------- COLLECTING SYSTEM ---------------------*/
-
-
         //Precision Based Extension/Retraction
         if(gamepad2.left_stick_y > .15 || gamepad2.left_stick_y < -.15)
         {
@@ -377,5 +374,4 @@ public class TeleOpMain extends LinearOpMode
             automateLift = true;
         }
     }
-
 }
