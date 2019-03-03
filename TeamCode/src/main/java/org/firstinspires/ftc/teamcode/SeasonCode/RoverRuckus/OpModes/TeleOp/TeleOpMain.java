@@ -19,7 +19,6 @@ public class TeleOpMain extends LinearOpMode
     private boolean scaleMode = false;
     private boolean slowMode = false;
     private boolean inverted = false;
-    private boolean invertedControl = false;
     private boolean scaleModeControl = false;
     private boolean slowModeControl = false;
     private boolean tiltControl = false;
@@ -66,15 +65,6 @@ public class TeleOpMain extends LinearOpMode
         /*----------------------------------- STANDARD DRIVING ----------------------------------*/
         //drive the robot using gamepad1 joysticks, standard six wheel movement
 
-//        if (gamepad1.right_bumper) {
-//            if (invertedControl) {
-//                invertedControl = false;
-//                inverted = !inverted;
-//            }
-//        } else
-//        {
-//            invertedControl = true;
-//        }
 
         //telemetry.addData("Count ", count);
 //        telemetry.addData("Back Distance in Inches ", _base.drivetrain.back_range.distance(DistanceUnit.INCH));
@@ -184,10 +174,6 @@ public class TeleOpMain extends LinearOpMode
 
             autoTurntoCrater = false;
             _base.drivetrain.turnTo.goTo(init_angle,0.9);
-//            _base.drivetrain.backLeft().setPower(-1);
-//            _base.drivetrain.frontLeft().setPower(-1);
-//            _base.drivetrain.backRight().setPower(1);
-//            _base.drivetrain.frontRight().setPower(1);
             if (_base.drivetrain.turnTo.teleopRunSequentially(4, 5)){
                 telemetry.addData("turning to lander", " now");
                 telemetry.update();
@@ -206,27 +192,20 @@ public class TeleOpMain extends LinearOpMode
         }
 
         if (autoTurntoCrater){
-
             autoTurntoLander = false;
-
             _base.drivetrain.turnTo.goTo(init_angle + 180,0.9);
             _base.imu.setAngle();
             if (_base.drivetrain.turnTo.teleopRunSequentially(4, 5)){
                 autoTurntoCrater = false;
                 _base.drivetrain.stop();
             }
-
         }
         if(finalLift)
         {
             telemetry.addLine("LIFT     LIFT    LIFT    LIFT    LIFT ");
             telemetry.update();
         }
-
-
-       //_base.outTelemetry();
-
-
+        //_base.outTelemetry();
         /*---------------------------- HOOK EXTENSION/LIFT ROBOT --------------------------------*/
         if(gamepad1.b && !_base.liftLimitSwitch.isClose()){
             _base.latchSystem.startLiftingTime(System.currentTimeMillis());
@@ -249,9 +228,7 @@ public class TeleOpMain extends LinearOpMode
                 liftingWithSensor = false;
                 _base.latchSystem.stop();
             }
-
         }
-
         else
             _base.latchSystem.stop();
         /* -------------- HOOK SYSTEM ------------------------*/
@@ -291,7 +268,7 @@ public class TeleOpMain extends LinearOpMode
             }
             else if(gamepad2.left_stick_y < -.85)
             {
-                _base.collector.powerExtension(-1);
+                _base.collector.powerExtension(RETRACT_LIFT_POW);
             }
             else
             {
@@ -399,9 +376,6 @@ public class TeleOpMain extends LinearOpMode
             blockUp = true;
             automateLift = true;
         }
-
-
-
     }
 
 }
