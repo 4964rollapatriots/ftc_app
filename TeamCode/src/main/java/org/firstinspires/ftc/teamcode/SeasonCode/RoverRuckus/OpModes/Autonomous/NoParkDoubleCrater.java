@@ -92,13 +92,13 @@ public class NoParkDoubleCrater extends LinearOpMode {
 
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
-        _base.drivetrain.turnTo.goTo(1,BLOCK_TURN_SPEED-.2);
+        //_base.drivetrain.turnTo.goTo(1,BLOCK_TURN_SPEED-.2);
         _base.drivetrain.turnTo.blockRunSequentially(2, 1.2);
 
         //drives forward to avoid hitting the lander while turning
         _base.drivetrain.driveTo.goTo(4,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.turnTo.goTo(1, .35);
+        //_base.drivetrain.turnTo.goTo(1, .35);
         _base.drivetrain.turnTo.runSequentially();
         detector.activate();
         _base.drivetrain.driveTo.goTo(7,DRIVING_SPEED/2);

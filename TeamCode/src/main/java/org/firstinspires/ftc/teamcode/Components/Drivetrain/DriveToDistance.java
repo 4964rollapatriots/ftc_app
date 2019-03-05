@@ -261,6 +261,8 @@ public class DriveToDistance extends RobotCommand
             }
             if(_drivetrain.front_range.distance(DistanceUnit.INCH) < 10){
                 _drivetrain.setAllMotorPower(0.3);
+                _drivetrain.base().outTelemetry.write("SLOWING DOWN");
+                _drivetrain.base().outTelemetry.update();
             }
         }
 
@@ -297,13 +299,15 @@ public class DriveToDistance extends RobotCommand
 
         while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT)
         {
-            if (_drivetrain.touch.isPressed()){
+            if (_drivetrain.touch.isPressed() || _drivetrain.front_range.distance(DistanceUnit.INCH) < 2){
 
                 bumped = true;
                 break;
             }
-            if (_drivetrain.front_range.distance(DistanceUnit.INCH) < 10){
+            if (_drivetrain.front_range.distance(DistanceUnit.INCH) < 15){
                 _drivetrain.setAllMotorPower(0.3);
+                _drivetrain.base().outTelemetry.write("SLOWING DOWN");
+                _drivetrain.base().outTelemetry.update();
             }
         }
 

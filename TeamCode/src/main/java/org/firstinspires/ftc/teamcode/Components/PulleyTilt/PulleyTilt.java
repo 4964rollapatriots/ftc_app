@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotBase;
 import org.firstinspires.ftc.robotcontroller.internal.Core.RobotComponent;
+import org.firstinspires.ftc.teamcode.Components.CollectorSystem.CollectorSystem;
 
 /**
  * Created by pmkf2 on 11/11/2018.
@@ -15,13 +16,14 @@ public class PulleyTilt extends RobotComponent {
 
     public DcMotor pulleys;
 
+    public CollectorSystem collector = new CollectorSystem();
     private double TILT_UP_POW = -1;
     private double TILT_DOWN_POW = 1;
 
     private int TILT_UP_BALL_ENC = -1275;
     private int TILT_UP_BLOCK_ENC = -1800;
     private int TILT_DOWN_ENC = 950;
-    private int TILT_TEAM_MARKER_ENC = 1150;
+    public static int TILT_TEAM_MARKER_ENC = 1150;
     private int TILT_AUTO_COLLECT_ENC = 1420;
 
     public int BUFFER = 75;
@@ -56,6 +58,7 @@ public class PulleyTilt extends RobotComponent {
 
         //Set Power to Full
         else {
+
             pulleys.setPower(TILT_UP_POW);
         }
         return false;
@@ -130,12 +133,12 @@ public class PulleyTilt extends RobotComponent {
         stop();
 
     }
-    public void lowestTiltDownByEnc(int TIMEOUT) {
+    public void lowestTiltDownByEnc(int MILLISECONDS) {
         pulleys.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         base.outTelemetry.addData("Position: ", pulleys.getCurrentPosition());
         base.outTelemetry.update();
         long startTime = System.currentTimeMillis();
-        while (!(pulleys.getCurrentPosition() >= TILT_TEAM_MARKER_ENC) && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT) {
+        while (!(pulleys.getCurrentPosition() >= TILT_TEAM_MARKER_ENC) && Math.abs(System.currentTimeMillis() - startTime) < MILLISECONDS) {
             if (Math.abs(pulleys.getCurrentPosition() - TILT_TEAM_MARKER_ENC) < 300)
             {
                 pulleys.setPower(TILT_DOWN_POW * .25);
@@ -154,12 +157,12 @@ public class PulleyTilt extends RobotComponent {
 
     }
 
-    public void AUTOTiltToZero(int TIMEOUT) {
+    public void AUTOTiltToZero(int MILLISECONDS) {
         pulleys.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         base.outTelemetry.addData("Position: ", pulleys.getCurrentPosition());
         base.outTelemetry.update();
         long startTime = System.currentTimeMillis();
-        while (!(pulleys.getCurrentPosition() <= 15) && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT) {
+        while (!(pulleys.getCurrentPosition() <= 15) && Math.abs(System.currentTimeMillis() - startTime) < MILLISECONDS) {
             if (Math.abs(pulleys.getCurrentPosition()) <= 300)
             {
                 pulleys.setPower(TILT_UP_POW * .60);

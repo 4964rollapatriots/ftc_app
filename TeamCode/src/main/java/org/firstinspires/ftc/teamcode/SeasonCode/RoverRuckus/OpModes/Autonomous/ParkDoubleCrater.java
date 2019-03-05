@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcontroller.internal.Core.Utility.CustomTensorFlow;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.Components.PulleyTilt.PulleyTilt;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
 @Autonomous(name = "Park Double Crater")
@@ -93,14 +94,16 @@ public class ParkDoubleCrater extends LinearOpMode {
 
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
-        _base.drivetrain.turnTo.goTo(1,.20);
-        _base.drivetrain.turnTo.blockRunSequentially(3, 2.5);
+//        _base.drivetrain.turnTo.goTo(1,.20);
+//        _base.drivetrain.turnTo.blockRunSequentially(3, 2.5);
 
         //drives forward to avoid hitting the lander while turning
         _base.drivetrain.driveTo.goTo(4,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.turnTo.goTo(1, .35);
-        _base.drivetrain.turnTo.runSequentially();
+
+//        _base.drivetrain.turnTo.goTo(1, .35);
+//        _base.drivetrain.turnTo.runSequentially();
+
         detector.activate();
         _base.drivetrain.driveTo.goTo(3,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
@@ -206,7 +209,7 @@ public class ParkDoubleCrater extends LinearOpMode {
         }
         else if(_block == blockState.MIDDLE)
         {
-            _base.drivetrain.driveTo.goTo(-(block_distance - 3), DRIVING_SPEED_BLOCK);
+            _base.drivetrain.driveTo.goTo(-(block_distance-1), DRIVING_SPEED_BLOCK);
             _base.drivetrain.driveTo.runSequentially();
         }
         else
@@ -234,7 +237,7 @@ public class ParkDoubleCrater extends LinearOpMode {
         else
         {
 
-            _base.drivetrain.turnTo.goTo(62, TURN_SPEED-0.1);
+            _base.drivetrain.turnTo.goTo(65, TURN_SPEED-0.1);
             _base.drivetrain.turnTo.runSequentially(2,5);
 
         }
@@ -270,6 +273,73 @@ public class ParkDoubleCrater extends LinearOpMode {
         }
 
         else if (_block== blockState.MIDDLE){
+
+
+
+            _base.drivetrain.driveTo.goTo(60, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runStopIfTouch(8);
+
+            //turn to drive in between particle on teammate's side and wall
+            _base.drivetrain.turnTo.goTo(126, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially(2);
+
+
+            //drives between the particle on teammate's side and wall
+            _base.drivetrain.driveTo.goTo(11, DRIVING_SPEED );
+            _base.drivetrain.driveTo.runSequentially(10);
+
+
+
+            // turns in preparation for moving towards the deposit zone
+            _base.drivetrain.turnTo.goTo(134, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially(3);
+
+            _base.tiltChannel.pulleys.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            _base.tiltChannel.pulleys.setTargetPosition(PulleyTilt.TILT_TEAM_MARKER_ENC);
+            _base.tiltChannel.pulleys.setPower(1);
+
+            //drives to the deposit zone
+            _base.drivetrain.driveTo.goTo(45, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runStopIfDist(7);
+
+            deliver();
+
+            _base.drivetrain.turnTo.goTo(143, TURN_SPEED );
+            _base.drivetrain.turnTo.arcSequentially(3, 2.5);
+
+
+            _base.drivetrain.turnTo.goTo(144, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially(2,1);
+
+            _base.drivetrain.driveTo.goTo(18, 0.5);
+            _base.drivetrain.driveTo.runSequentially();
+
+            _base.drivetrain.turnTo.goTo(260, BLOCK_TURN_SPEED-.1);
+            _base.drivetrain.turnTo.runSequentially(2,4);
+
+            //knock block off
+            _base.drivetrain.driveTo.goTo(27, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+
+            //back up into the depot
+            _base.drivetrain.driveTo.goTo(-30, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+
+            _base.drivetrain.turnTo.goTo(360 -40, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+            _base.drivetrain.driveTo.goTo(32, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+
+            _base.drivetrain.turnTo.goTo(360-42, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+            _base.drivetrain.driveTo.goTo(38, 1);
+            _base.drivetrain.driveTo.runSequentially();
+        }
+
+        else{
+            //Block State: left
             _base.drivetrain.driveTo.goTo(60, DRIVING_SPEED);
             _base.drivetrain.driveTo.runStopIfTouch(8);
 
@@ -302,42 +372,14 @@ public class ParkDoubleCrater extends LinearOpMode {
             _base.drivetrain.turnTo.goTo(144, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially(2,1);
 
-            _base.drivetrain.driveTo.goTo(18, 0.5);
+            _base.drivetrain.driveTo.goTo(13, 0.5);
             _base.drivetrain.driveTo.runSequentially();
 
-            _base.drivetrain.turnTo.goTo(254, BLOCK_TURN_SPEED-.1);
+            _base.drivetrain.turnTo.goTo(207, BLOCK_TURN_SPEED-.1);
             _base.drivetrain.turnTo.runSequentially();
 
-            _base.tiltChannel.AutoTiltToCollect(3500);
-
-            _base.collector.runCollector(1);
-
-            _base.drivetrain.driveTo.goTo(5, DRIVING_SPEED);
+            _base.drivetrain.driveTo.goTo(65, 0.9);
             _base.drivetrain.driveTo.runSequentially();
-
-            _base.tiltChannel.pulleys.setPower(-1);
-            _base.collector.stop();
-            _base.drivetrain.driveTo.goTo(-8, DRIVING_SPEED);
-            _base.drivetrain.driveTo.runSequentially();
-
-            _base.tiltChannel.stop();
-            _base.drivetrain.turnTo.goTo(360 -40, TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
-
-            _base.drivetrain.driveTo.goTo(32, DRIVING_SPEED);
-            _base.drivetrain.driveTo.runSequentially();
-
-            _base.drivetrain.turnTo.goTo(360-50, TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
-
-            _base.drivetrain.driveTo.goTo(25, TURN_SPEED);
-            _base.drivetrain.driveTo.runSequentially();
-        }
-
-        else{
-            //Block State: left
-
-
         }
 
 

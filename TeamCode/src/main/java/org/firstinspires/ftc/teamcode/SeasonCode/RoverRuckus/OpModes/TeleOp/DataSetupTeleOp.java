@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-    @TeleOp(name = "MainTeleOp", group = "TeleOp")
-public class TeleOpMain extends LinearOpMode
+@TeleOp(name = "Data Setup Teleop", group = "TeleOp")
+public class DataSetupTeleOp extends LinearOpMode
 {
     //create an instance of our base which contains all of the components of the robot
     private Base _base = new Base();
@@ -67,16 +68,16 @@ public class TeleOpMain extends LinearOpMode
 
 
         //telemetry.addData("Count ", count);
-//        telemetry.addData("Back Distance in Inches ", _base.drivetrain.back_range.distance(DistanceUnit.INCH));
+        telemetry.addData("Back Distance in Inches ", _base.drivetrain.back_range.distance(DistanceUnit.INCH));
 //        telemetry.addData("Front Distance in Inches " , _base.drivetrain.front_range.distance(DistanceUnit.INCH));
 //        telemetry.addData("IMU calibrated ", imuCalibrated);
 //s
 //        telemetry.addData("Hook Mag Reading ", _base.hookLimitSwitch.isClose());
 //        telemetry.addData("LiftMagReadig", _base.liftLimitSwitch.isClose());
 
-//        telemetry.addData("Drawbridge Encoders:", _base.tiltChannel.pulleys.getCurrentPosition());
-//        telemetry.addData("Collector Extension Encoder: ", _base.collector.extendCollector.getCurrentPosition());
-//        telemetry.update();
+        telemetry.addData("Drawbridge Encoders:", _base.tiltChannel.pulleys.getCurrentPosition());
+        telemetry.addData("Collector Extension Encoder: ", _base.collector.extendCollector.getCurrentPosition());
+        telemetry.update();
 
         if(gamepad1.left_bumper) {
             if (slowModeControl) {
@@ -154,7 +155,7 @@ public class TeleOpMain extends LinearOpMode
         }
 
 
-       if (( gamepad1.right_stick_button) && !bHeld){
+        if (( gamepad1.right_stick_button) && !bHeld){
             if (!imuCalibrated){
 
                 init_angle = _base.imu.zAngle();
@@ -171,19 +172,15 @@ public class TeleOpMain extends LinearOpMode
         }
 
         if (autoTurntoLander){
-            autoTurntoLander = false;
-            double turningPower = 1;
-            _base.drivetrain.backRight().setPower(-turningPower);
-            _base.drivetrain.frontRight().setPower(-turningPower);
-            _base.drivetrain.backLeft().setPower(turningPower);
-            _base.drivetrain.frontLeft().setPower(turningPower);
-            for (int i = 0; i < 100; i ++){
-                if (gamepad1.left_stick_y > 0.1 && gamepad1.right_stick_x > 0.1){
-                    break;
-                }
-                sleep(5);
+
+            autoTurntoCrater = false;
+            _base.drivetrain.turnTo.goTo(init_angle,0.9);
+            if (_base.drivetrain.turnTo.teleopRunSequentially(4, 5)){
+                telemetry.addData("turning to lander", " now");
+                telemetry.update();
+                autoTurntoLander = false;
+                _base.drivetrain.stop();
             }
-            _base.drivetrain.stop();
 
         }
 
@@ -196,34 +193,26 @@ public class TeleOpMain extends LinearOpMode
         }
 
         if (autoTurntoCrater){
-            autoTurntoCrater = false;
-            double turningPower = 1;
-            _base.drivetrain.backRight().setPower(turningPower);
-            _base.drivetrain.frontRight().setPower(turningPower);
-            _base.drivetrain.backLeft().setPower(-turningPower);
-            _base.drivetrain.frontLeft().setPower(-turningPower);
-            for (int i = 0; i < 100; i ++){
-                if (gamepad1.left_stick_y > 0.1 && gamepad1.right_stick_x > 0.1){
-                    break;
-                }
-                sleep(5);
+            autoTurntoLander = false;
+            _base.drivetrain.turnTo.goTo(init_angle + 180,0.9);
+            _base.imu.setAngle();
+            if (_base.drivetrain.turnTo.teleopRunSequentially(4, 5)){
+                autoTurntoCrater = false;
+                _base.drivetrain.stop();
             }
-            _base.drivetrain.stop();
         }
-
         if(finalLift)
         {
             telemetry.addLine("LIFT     LIFT    LIFT    LIFT    LIFT ");
-            telemetry.update();
         }
-        //_base.outTelemetry();
+        _base.outTelemetry();
         /*---------------------------- HOOK EXTENSION/LIFT ROBOT --------------------------------*/
         if(gamepad1.b && !_base.liftLimitSwitch.isClose()){
             _base.latchSystem.startLiftingTime(System.currentTimeMillis());
             liftingWithSensor =  true;
         }
 
-        if( gamepad1.dpad_up) {
+        if(gamepad2.a || gamepad1.dpad_up) {
             _base.latchSystem.extendHookManual();
             liftingWithSensor = false;
         }
@@ -371,7 +360,7 @@ public class TeleOpMain extends LinearOpMode
             blockUp = false;
             automateLift = true;
         }
-        else if(gamepad2.x || gamepad2.a)
+        else if(gamepad2.x)
         {
             up=false;
             down=true;
