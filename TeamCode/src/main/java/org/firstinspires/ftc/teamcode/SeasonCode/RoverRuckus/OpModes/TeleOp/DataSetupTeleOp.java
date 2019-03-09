@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Components.Drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
@@ -68,8 +67,7 @@ public class DataSetupTeleOp extends LinearOpMode
 
 
         //telemetry.addData("Count ", count);
-        telemetry.addData("Back Distance in Inches ", _base.drivetrain.back_range.distance(DistanceUnit.INCH));
-//        telemetry.addData("Front Distance in Inches " , _base.drivetrain.front_range.distance(DistanceUnit.INCH));
+
 //        telemetry.addData("IMU calibrated ", imuCalibrated);
 //s
 //        telemetry.addData("Hook Mag Reading ", _base.hookLimitSwitch.isClose());
@@ -205,7 +203,7 @@ public class DataSetupTeleOp extends LinearOpMode
         {
             telemetry.addLine("LIFT     LIFT    LIFT    LIFT    LIFT ");
         }
-        _base.outTelemetry();
+        //_base.outTelemetry();
         /*---------------------------- HOOK EXTENSION/LIFT ROBOT --------------------------------*/
         if(gamepad1.b && !_base.liftLimitSwitch.isClose()){
             _base.latchSystem.startLiftingTime(System.currentTimeMillis());

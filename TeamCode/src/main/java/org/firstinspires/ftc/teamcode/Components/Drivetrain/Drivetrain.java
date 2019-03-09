@@ -35,7 +35,6 @@ public class Drivetrain extends RobotComponent
     public REVIMU imu;
     //public REVColorSensor right_range;
     public MRRange front_range;
-    public MRRange back_range;
     public Touch touch;
 
     //Instantiate Commands
@@ -90,7 +89,6 @@ public class Drivetrain extends RobotComponent
 
         imu = IMU;
         front_range = FRONT_RANGE;
-        back_range = BACK_RANGE;
         touch = t;
         turnTo = new TurnTo(this, imu);
         driveTo = new DriveToDistance(this);

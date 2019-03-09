@@ -36,7 +36,7 @@ public class Base extends RobotBase
     public MarkerDelivery deliver = new MarkerDelivery();
     public Touch bump = new Touch();
     public MRRange frontDistSensor = new MRRange();
-    public MRRange backDistSensor = new MRRange();
+    //public MRRange backDistSensor = new MRRange();
     public REVMagnetic hookLimitSwitch = new REVMagnetic();
     public REVMagnetic liftLimitSwitch = new REVMagnetic();
 
@@ -67,7 +67,7 @@ public class Base extends RobotBase
         //rightDistSensor.mapREVDistanceSensor("rightRange");
         bump.init(this, "touch");
         frontDistSensor.init(this, "frontRange",I2cAddr.create8bit(0x28));
-        backDistSensor.init(this, "backRange", I2cAddr.create8bit(0x10));
+        //backDistSensor.init(this, "backRange", I2cAddr.create8bit(0x10));
         outTelemetry.write("B. I. G. RANGE ");
         outTelemetry.update();
         //Try catches to prevent crashes
@@ -85,7 +85,7 @@ public class Base extends RobotBase
 
         // Dependency setting
         //drivetrain.setDependencies(imu, rightDistSensor,bump, frontDistSensor);
-        drivetrain.setDependencies(imu, bump, frontDistSensor, backDistSensor);
+        drivetrain.setDependencies(imu, bump, frontDistSensor);
 
 
     }

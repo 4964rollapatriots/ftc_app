@@ -66,7 +66,7 @@ public class HookLift extends RobotComponent
         public void liftRobot()
         {
             winch.setPower(1);
-            extendHookLift.setPower(-.38);
+            extendHookLift.setPower(-.30);
         }
 
         public void startLiftingTime(long time){

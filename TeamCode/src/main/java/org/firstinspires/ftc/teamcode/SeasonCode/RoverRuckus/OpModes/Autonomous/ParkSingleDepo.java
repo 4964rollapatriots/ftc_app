@@ -196,7 +196,7 @@ public class ParkSingleDepo extends LinearOpMode {
         _base.drivetrain.driveTo.runSequentially();
 
         if (_block == blockState.LEFT){
-            _base.drivetrain.turnTo.goTo(360-42, TURN_SPEED);
+            _base.drivetrain.turnTo.goTo(360-42, TURN_SPEED + .07);
             _base.drivetrain.turnTo.runSequentially();
 
             deliver();
@@ -204,33 +204,33 @@ public class ParkSingleDepo extends LinearOpMode {
             _base.drivetrain.driveTo.goTo(-20, 0.8);
             _base.drivetrain.driveTo.runSequentially();
 
-            _base.drivetrain.turnTo.goTo(132, 0.3);
+            _base.drivetrain.turnTo.goTo(126, 0.3);
             _base.drivetrain.turnTo.runSequentially();
 
-            _base.drivetrain.driveTo.goTo(15, 0.7);
+            _base.drivetrain.driveTo.goTo(11, 0.7);
             _base.drivetrain.driveTo.runSequentially();
         }
 
         else if (_block == blockState.RIGHT){
-            _base.drivetrain.turnTo.goTo(42, TURN_SPEED);
+            _base.drivetrain.turnTo.goTo(42, TURN_SPEED +.07);
             _base.drivetrain.turnTo.runSequentially();
 
-            _base.drivetrain.driveTo.goTo(8, DRIVING_SPEED);
+            _base.drivetrain.driveTo.goTo(8, DRIVING_SPEED + .07);
             _base.drivetrain.driveTo.runSequentially();
 
             deliver();
 
-            _base.drivetrain.turnTo.goTo(70, TURN_SPEED);
+            _base.drivetrain.turnTo.goTo(70, TURN_SPEED + .07);
             _base.drivetrain.turnTo.runSequentially();
 
-            _base.drivetrain.driveTo.goTo(30, DRIVING_SPEED);
-            _base.drivetrain.driveTo.runStopIfTouch();
+            _base.drivetrain.driveTo.goTo(50, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runStopIfTouch(3000);
 
-            _base.drivetrain.turnTo.goTo(132, TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
+            _base.drivetrain.turnTo.goTo(130, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially(10);
 
-            _base.drivetrain.driveTo.goTo(57, DRIVING_SPEED);
-            _base.drivetrain.driveTo.runSequentially();
+            _base.drivetrain.driveTo.goTo(55, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially(10);
 
         }
         else{
@@ -241,7 +241,7 @@ public class ParkSingleDepo extends LinearOpMode {
             _base.drivetrain.turnTo.runSequentially();
 
             _base.drivetrain.driveTo.goTo(25, 0.5);
-            _base.drivetrain.driveTo.runStopIfTouch();
+            _base.drivetrain.driveTo.runStopIfTouch(3000);
 
             _base.drivetrain.turnTo.goTo(132, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();

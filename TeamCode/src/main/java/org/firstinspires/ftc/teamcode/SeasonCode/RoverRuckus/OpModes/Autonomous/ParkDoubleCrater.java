@@ -196,7 +196,7 @@ public class ParkDoubleCrater extends LinearOpMode {
         }
         else
         {
-            block_distance -= 1;
+            //block_distance -= 1;
         }
 
         _base.drivetrain.driveTo.goTo(block_distance - 1,DRIVING_SPEED_BLOCK);
@@ -340,11 +340,12 @@ public class ParkDoubleCrater extends LinearOpMode {
 
         else{
             //Block State: left
+
             _base.drivetrain.driveTo.goTo(60, DRIVING_SPEED);
             _base.drivetrain.driveTo.runStopIfTouch(8);
 
             //turn to drive in between particle on teammate's side and wall
-            _base.drivetrain.turnTo.goTo(125, TURN_SPEED);
+            _base.drivetrain.turnTo.goTo(126, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially(2);
 
 
@@ -372,7 +373,7 @@ public class ParkDoubleCrater extends LinearOpMode {
             _base.drivetrain.turnTo.goTo(144, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially(2,1);
 
-            _base.drivetrain.driveTo.goTo(13, 0.5);
+            _base.drivetrain.driveTo.goTo(8.5, 0.5);
             _base.drivetrain.driveTo.runSequentially();
 
             _base.drivetrain.turnTo.goTo(207, BLOCK_TURN_SPEED-.1);

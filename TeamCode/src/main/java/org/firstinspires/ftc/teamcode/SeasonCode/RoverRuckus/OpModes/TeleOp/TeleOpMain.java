@@ -73,10 +73,9 @@ public class TeleOpMain extends LinearOpMode
 //s
 //        telemetry.addData("Hook Mag Reading ", _base.hookLimitSwitch.isClose());
 //        telemetry.addData("LiftMagReadig", _base.liftLimitSwitch.isClose());
-
-//        telemetry.addData("Drawbridge Encoders:", _base.tiltChannel.pulleys.getCurrentPosition());
+        //  telemetry.addData("Drawbridge Encoders:", _base.tiltChannel.pulleys.getCurrentPosition());
 //        telemetry.addData("Collector Extension Encoder: ", _base.collector.extendCollector.getCurrentPosition());
-//        telemetry.update();
+        //  telemetry.update();
 
         if(gamepad1.left_bumper) {
             if (slowModeControl) {

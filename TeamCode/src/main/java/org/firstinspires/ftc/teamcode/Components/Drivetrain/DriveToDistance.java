@@ -299,7 +299,7 @@ public class DriveToDistance extends RobotCommand
 
         while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT)
         {
-            if (_drivetrain.touch.isPressed() || _drivetrain.front_range.distance(DistanceUnit.INCH) < 2){
+            if (_drivetrain.touch.isPressed() || _drivetrain.front_range.distance(DistanceUnit.INCH) < 0.25){
 
                 bumped = true;
                 break;
