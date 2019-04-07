@@ -12,6 +12,9 @@ public class CollectorSystem extends RobotComponent {
 
     public DcMotor collector;
     public DcMotor extendCollector;
+    public Servo sort;
+
+    private long openedTime = -1;
 
     public void init(RobotBase BASE)
     {
@@ -20,7 +23,34 @@ public class CollectorSystem extends RobotComponent {
         collector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         extendCollector = mapper.mapMotor("extend", DcMotorSimple.Direction.FORWARD);
         extendCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        sort=mapper.mapServo("sort", Servo.Direction.FORWARD);
+    }
 
+    public void dropBlocksSequentially()
+    {
+        sort.setPosition(sort.getPosition()-0.05);
+    }
+    public void dropBlocks()
+    {
+
+        sort.setPosition(.15);
+        openedTime = System.currentTimeMillis();
+    }
+
+    public void raiseBlocksSequentially()
+    {
+        sort.setPosition(sort.getPosition()+.05);
+    }
+    public void raiseBlocks()
+    {
+        sort.setPosition(.420);
+        openedTime = -1;
+    }
+    public long openMilliseconds(){
+        if (openedTime != -1){
+            return (System.currentTimeMillis() - openedTime);
+        }
+        return 0;
     }
 
 

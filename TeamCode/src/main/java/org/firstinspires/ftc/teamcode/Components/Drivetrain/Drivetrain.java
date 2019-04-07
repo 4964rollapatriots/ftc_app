@@ -171,7 +171,7 @@ public class Drivetrain extends RobotComponent
 
     public void arcRun(double leftPower,double rightPower)
     {
-        frontLeft.setPower(leftPower);
+        frontLeft.setPower(leftPower * .96);
         backLeft.setPower(leftPower);
         backRight.setPower(rightPower);
         frontRight.setPower(rightPower);
@@ -192,7 +192,7 @@ public class Drivetrain extends RobotComponent
         backRight.setPower((drivePower + rotatePower)*hardScale);
         backLeft.setPower((drivePower - rotatePower)*hardScale);
         frontRight.setPower((drivePower + rotatePower)*hardScale);
-        frontLeft.setPower((drivePower - rotatePower)*hardScale);
+        frontLeft.setPower((drivePower - rotatePower)*hardScale * .96);
     }
 
     public void encoderOn()

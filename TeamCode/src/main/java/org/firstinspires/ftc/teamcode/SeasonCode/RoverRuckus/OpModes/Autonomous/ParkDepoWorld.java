@@ -14,11 +14,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.SeasonCode.RoverRuckus.Base;
 
-@Autonomous(name = "Park Single Crater")
+@Autonomous(name = "Park Depo Deposit Over Minerals")
 
 // the name of the class is misleading, refer to the Autonomous name
 //this is the main double crater auto
-public class ParkSingleCrater extends LinearOpMode {
+public class ParkDepoWorld extends LinearOpMode {
 
     private Base _base = new Base();
     //private UtilGoldDetector eye;
@@ -45,7 +45,7 @@ public class ParkSingleCrater extends LinearOpMode {
     public double silverConfidence = 0;
 
     // these are the only final values that are used multiple times
-    private double block_distance = 26;
+    private double block_distance = 27;
     private final static double SECOND_BLOCK_DISTANCE = 23.0;
 
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -99,11 +99,17 @@ public class ParkSingleCrater extends LinearOpMode {
         //drives forward to avoid hitting the lander while turning
         _base.drivetrain.driveTo.goTo(4,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
-        _base.drivetrain.turnTo.goTo(1, .35);
-        _base.drivetrain.turnTo.runSequentially();
+        _base.drivetrain.turnTo.goTo(1,.20);
+        _base.drivetrain.turnTo.blockRunSequentially(3, 2.5);
         detector.activate();
-        _base.drivetrain.driveTo.goTo(3,DRIVING_SPEED/2);
+        _base.drivetrain.driveTo.goTo(13,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
+
+        deliver();
+
+        _base.drivetrain.driveTo.goTo(-10, DRIVING_SPEED /2);
+        _base.drivetrain.driveTo.runSequentially();
+
         this.sleep(800);
         if(_block == blockState.UNCERTAIN)
         {
@@ -180,121 +186,41 @@ public class ParkSingleCrater extends LinearOpMode {
         //this turns a small amount to account for the offset of our phone on the left side of our robot
         //turnToAlign();
 
-
-        sendTelemetry();
-        telemetry.addData("block state is", _block);
-        telemetry.addData("Silver Confidence = ", silverConfidence);
-        telemetry.addData("Gold Confidence = ", FINAL_CONFIDENCE);
         telemetry.update();
 
         //drive forward to knock the block off and then go back the same distance
         // this works because at this point the robot is facing the block
-        if (_block == blockState.MIDDLE){
-            block_distance -= 4;
-        }
-        else if(_block == blockState.RIGHT)
+        if(_block == blockState.RIGHT || _block == blockState.LEFT)
         {
-            //block_distance -= 1.0;
+            block_distance += 10.0;
         }
-        else
-        {
-            block_distance -= 1;
+        else{
+            block_distance += 7;
         }
 
-        _base.drivetrain.driveTo.goTo(block_distance - 1,DRIVING_SPEED_BLOCK);
+        _base.drivetrain.driveTo.goTo(block_distance, DRIVING_SPEED);
         _base.drivetrain.driveTo.runSequentially();
 
-        if(_block == blockState.RIGHT)
-        {
-            _base.drivetrain.driveTo.goTo(-(block_distance),DRIVING_SPEED_BLOCK);
-            _base.drivetrain.driveTo.runSequentially();
-        }
-        else if(_block == blockState.MIDDLE)
-        {
-            _base.drivetrain.driveTo.goTo(-(block_distance - 3), DRIVING_SPEED_BLOCK);
-            _base.drivetrain.driveTo.runSequentially();
-        }
-        else
-        {
-            _base.drivetrain.driveTo.goTo(-(block_distance - 4), DRIVING_SPEED_BLOCK);
-            _base.drivetrain.driveTo.runSequentially();
-        }
+        _base.drivetrain.driveTo.goTo(-block_distance, DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
 
-        // the robot is at a common spot, but a different angle based on where the block was
-        // since the turnTo class uses a gyroscope, turning to 60 gives a common angle also
-        if(_block == blockState.LEFT)
-        {
+        _base.drivetrain.turnTo.goTo(65, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially();
 
-            _base.drivetrain.turnTo.goTo(63, TURN_SPEED-.05);
-            _base.drivetrain.turnTo.runSequentially(2,5);
+        _base.drivetrain.driveTo.goTo(40, DRIVING_SPEED);
+        _base.drivetrain.driveTo.runStopIfTouch();
 
-        }
-        else if(_block == blockState.RIGHT)
-        {
+        _base.drivetrain.turnTo.goTo(135, TURN_SPEED);
+        _base.drivetrain.turnTo.runSequentially();
 
-            _base.drivetrain.turnTo.goTo(67, TURN_SPEED-.05);
-            _base.drivetrain.turnTo.runSequentially(2,5);
-
-        }
-        else
-        {
-
-            _base.drivetrain.turnTo.goTo(65, TURN_SPEED-0.1);
-            _base.drivetrain.turnTo.runSequentially(2,5);
-
-        }
-
-        // drives between the lander and the far left particle so the path is clear to our teammate's side
-
-        _base.drivetrain.driveTo.goTo(60, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runStopIfTouch(8);
-        _base.deliver.raiseMarker();
-
-        //turn to drive in between particle on teammate's side and wall
-        _base.drivetrain.turnTo.goTo(125, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially(2);
-
-        _base.deliver.raiseMarker();
-
-        //drives between the particle on teammate's side and wall
-        _base.drivetrain.driveTo.goTo(11, DRIVING_SPEED );
-        _base.drivetrain.driveTo.runSequentially(10);
+        _base.drivetrain.driveTo.goTo(12, DRIVING_SPEED);
+        _base.drivetrain.driveTo.runSequentially();
 
 
         _base.deliver.raiseMarker();
-
-
-        // turns in preparation for moving towards the deposit zone
-        _base.drivetrain.turnTo.goTo(134, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially(3);
-
-        _base.deliver.raiseMarker();
-
-        //drives to the deposit zone
-        _base.drivetrain.driveTo.goTo(45, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runStopIfDist(7);
-
-        deliver();
-
-        telemetry.addData("About to park!", true);
-        telemetry.update();
-        _base.drivetrain.driveTo.goTo(-45, .70);
-        _base.drivetrain.driveTo.runSequentially(7);
-        telemetry.addData("Done Parking!", true);
-        telemetry.update();
-        try
-        {
-            Thread.sleep(300);
-        }
-        catch(Exception ex){ex.printStackTrace();}
-        _base.drivetrain.driveTo.goTo(-3, .25);
-        _base.drivetrain.driveTo.runSequentially(7);
-
         _base.drivetrain.stop();
         detector.deactivate();
-        while(opModeIsActive()) {
-            _base.collector.powerExtension(0);
-        }
+
     }
 
     private void sendTelemetry(){
@@ -302,30 +228,6 @@ public class ParkSingleCrater extends LinearOpMode {
         //telemetry.addData("Angle X: ", _base.imu.xAngle());
         //telemetry.addData("Angle Y: ", _base.imu.yAngle());
         //telemetry.addData("SPEED: ", _base.drivetrain.frontLeft().getPower());
-    }
-
-    private void deliver(){
-        _base.collector.powerExtension(-1);
-        try{
-            Thread.sleep(200);}
-        catch(Exception ex){ex.printStackTrace();}
-
-        _base.tiltChannel.lowestTiltDownByEnc(3000);
-        _base.collector.runCollector(-.40);
-
-        // gives time for the marker to slide off
-        try{
-            Thread.sleep(750);}
-        catch(Exception ex){ex.printStackTrace();}
-        _base.collector.powerExtension(0);
-        _base.collector.runCollector(-.25);
-        _base.tiltChannel.AUTOTiltToZero(3500);
-        //_base.collector.powerExtension(-.65);
-//        try{
-//            Thread.sleep(800);}
-//        catch(Exception ex){ex.printStackTrace();}
-        _base.collector.powerExtension(0);
-        _base.collector.stop();
     }
 
     private void turnToAlign(){
@@ -419,6 +321,30 @@ public class ParkSingleCrater extends LinearOpMode {
         sleep(500);
         return aligned;
 
+    }
+
+    private void deliver(){
+        _base.collector.powerExtension(-1);
+        try{
+            Thread.sleep(500);}
+        catch(Exception ex){ex.printStackTrace();}
+
+        _base.tiltChannel.lowestTiltDownByEnc(3000);
+        _base.collector.runCollector(-.40);
+
+        // gives time for the marker to slide off
+        try{
+            Thread.sleep(750);}
+        catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(0);
+        _base.collector.runCollector(-.25);
+        _base.tiltChannel.AUTOTiltToZero(3500);
+        //_base.collector.powerExtension(-.65);
+//        try{
+//            Thread.sleep(800);}
+//        catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(0);
+        _base.collector.stop();
     }
 
     public boolean relativelyAligned(){
@@ -535,7 +461,5 @@ public class ParkSingleCrater extends LinearOpMode {
 
     }
 }
-
-
 
 

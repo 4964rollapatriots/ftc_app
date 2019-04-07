@@ -49,4 +49,30 @@ public class DeliverTeamMarker extends LinearOpMode{
         // method that sends information about our angles and powers
         //_base.outTelemetry();
     }
+    private void deliver(){
+        _base.collector.powerExtension(-1);
+        try{
+            Thread.sleep(350);}
+        catch(Exception ex){ex.printStackTrace();}
+
+        _base.tiltChannel.lowestTiltDownByEnc(3000);
+        _base.collector.runCollector(-.40);
+
+        // gives time for the marker to slide off
+        try{
+            Thread.sleep(750);}
+        catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(0);
+        _base.collector.runCollector(-.25);
+        _base.tiltChannel.AUTOTiltToZero(3500);
+        //_base.collector.powerExtension(-.65);
+//        try{
+//            Thread.sleep(800);}
+//        catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(0);
+        _base.collector.stop();
+    }
+
 }
+
+

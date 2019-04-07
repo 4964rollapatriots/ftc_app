@@ -34,6 +34,7 @@ public class TeleOpMain extends LinearOpMode
     private boolean autoTurntoCrater = false;
     private boolean imuCalibrated = false;
     private boolean liftingWithSensor = false;
+    private int openBallTime = 1500;
     //private int count;
 
     private boolean bHeld = false;
@@ -44,6 +45,8 @@ public class TeleOpMain extends LinearOpMode
         _base.init(hardwareMap, this);
 
         _base.imu.calibrateTo(0);
+
+        _base.collector.raiseBlocks();
         while (!opModeIsActive()){
             telemetry.addData("Waiting", "for start");
             telemetry.update();
@@ -298,15 +301,32 @@ public class TeleOpMain extends LinearOpMode
                 _base.collector.runCollector(-gamepad2.left_trigger);
         else if(gamepad2.left_bumper)
         {
-            _base.collector.releaseBalls();
+            _base.collector.raiseBlocks();
         }
         else if(gamepad2.right_bumper)
         {
-            _base.collector.runCollector(-.43);
+            _base.collector.dropBlocks();
+            //telemetry.addData("Drop Positio", _base.collector.sort.getPosition());
+            // telemetry.update();
+        }
+        else if(gamepad2.dpad_up)
+        {
+            _base.collector.releaseBalls();
+            //telemetry.addData("Raise Positio", _base.collector.sort.getPosition());
+            // telemetry.update();
+        }
+        else if (_base.collector.openMilliseconds() > openBallTime){
+            _base.collector.raiseBlocks();
         }
         else
         {
             _base.collector.runCollector(0);
+        }
+        if (gamepad2.right_bumper){
+            _base.collector.dropBlocks();
+        }
+        else{
+            _base.collector.raiseBlocks();
         }
 
 

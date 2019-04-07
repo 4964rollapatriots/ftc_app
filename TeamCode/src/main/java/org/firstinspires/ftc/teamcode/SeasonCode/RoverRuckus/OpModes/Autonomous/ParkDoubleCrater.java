@@ -261,14 +261,6 @@ public class ParkDoubleCrater extends LinearOpMode {
 
             deliver();
 
-            _base.drivetrain.driveTo.goTo(10, DRIVING_SPEED);
-            _base.drivetrain.driveTo.runSequentially();
-
-            _base.drivetrain.turnTo.goTo(360 - 33, TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
-
-            _base.drivetrain.driveTo.goTo(40, 0.9);
-            _base.drivetrain.driveTo.runSequentially();
 
         }
 
