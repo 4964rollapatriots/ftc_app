@@ -47,10 +47,11 @@ public class ParkDepoWorld extends LinearOpMode {
     // these are the only final values that are used multiple times
     private double block_distance = 27;
     private final static double SECOND_BLOCK_DISTANCE = 23.0;
+    private double rightCheckDistance = 2.0;
 
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
-    private static final double ACCEPTABLE_CONFIDENCE = 0.45;
+    private static final double ACCEPTABLE_CONFIDENCE = 0.44;
 
     //Hold state of where gold block is sitting
     private enum blockState
@@ -102,12 +103,12 @@ public class ParkDepoWorld extends LinearOpMode {
         _base.drivetrain.turnTo.goTo(1,.20);
         _base.drivetrain.turnTo.blockRunSequentially(3, 2.5);
         detector.activate();
-        _base.drivetrain.driveTo.goTo(13,DRIVING_SPEED/2);
+        _base.drivetrain.driveTo.goTo(14,DRIVING_SPEED/2);
         _base.drivetrain.driveTo.runSequentially();
 
         deliver();
 
-        _base.drivetrain.driveTo.goTo(-10, DRIVING_SPEED /2);
+        _base.drivetrain.driveTo.goTo(-9, DRIVING_SPEED /2);
         _base.drivetrain.driveTo.runSequentially();
 
         this.sleep(800);
@@ -131,15 +132,24 @@ public class ParkDepoWorld extends LinearOpMode {
         {
             _base.deliver.raiseMarker();
             //to use one run of aligned to make sure stuff works
-            _base.drivetrain.turnTo.goTo(330,BLOCK_TURN_SPEED-.2);
-            _base.drivetrain.turnTo.blockRunSequentially(3,5);
+            _base.drivetrain.turnTo.goTo(332,BLOCK_TURN_SPEED-.1);
+            _base.drivetrain.turnTo.blockRunSequentially(2,5);
 
+            _base.drivetrain.driveTo.goTo(2,0.4);
+            _base.drivetrain.driveTo.runSequentially();
             this.sleep(700);
+
+
             if (aligned()) {
                 _block = blockState.RIGHT;
                 telemetry.addData("FOUND IN RIGHT", "");
                 telemetry.update();
             }
+            else{
+                _base.drivetrain.driveTo.goTo(-2, 0.4);
+                _base.drivetrain.driveTo.runSequentially();
+            }
+
             // pans across the particles until it either sees the block or reaches 348 degrees
             // 348 degrees should be past the far right particle
         }
@@ -180,44 +190,89 @@ public class ParkDepoWorld extends LinearOpMode {
             _block = blockState.LEFT;
         }
 
-        _base.deliver.raiseMarker();
-
-
-        //this turns a small amount to account for the offset of our phone on the left side of our robot
-        //turnToAlign();
-
-        telemetry.update();
 
         //drive forward to knock the block off and then go back the same distance
         // this works because at this point the robot is facing the block
-        if(_block == blockState.RIGHT || _block == blockState.LEFT)
+        if(_block == blockState.RIGHT)
         {
+            block_distance += 6.5;
+        }
+        else if (_block == blockState.LEFT){
             block_distance += 10.0;
         }
         else{
             block_distance += 7;
         }
 
-        _base.drivetrain.driveTo.goTo(block_distance, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
+        if(_block == blockState.LEFT){
+            _base.drivetrain.driveTo.goTo(block_distance + 4, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
 
-        _base.drivetrain.driveTo.goTo(-block_distance, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
+            _base.drivetrain.turnTo.goTo(127, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
 
-        _base.drivetrain.turnTo.goTo(65, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially();
+            _base.collector.powerExtension(-1);
+            _base.drivetrain.driveTo.goTo(30, DRIVING_SPEED+.12);
+            _base.drivetrain.driveTo.runSequentially();
+            _base.collector.powerExtension(0);
+        }
 
-        _base.drivetrain.driveTo.goTo(40, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runStopIfTouch();
+        else if (_block == blockState.RIGHT){
+            _base.drivetrain.turnTo.goTo(331, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+            _base.drivetrain.driveTo.goTo(block_distance-4, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
 
-        _base.drivetrain.turnTo.goTo(135, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially();
+            _base.drivetrain.driveTo.goTo(-(block_distance-2.5), DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
 
-        _base.drivetrain.driveTo.goTo(12, DRIVING_SPEED);
-        _base.drivetrain.driveTo.runSequentially();
+            _base.drivetrain.turnTo.goTo(70, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+            _base.drivetrain.driveTo.goTo(46, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runStopIfTouch();
+
+            _base.drivetrain.turnTo.goTo(135, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
 
 
-        _base.deliver.raiseMarker();
+            _base.collector.powerExtension(-1);
+            _base.drivetrain.driveTo.goTo(6, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+
+
+            sleep(700);
+            _base.collector.powerExtension(0);
+        }
+
+        //For BlockState = Middle
+        else{
+            _base.drivetrain.driveTo.goTo(block_distance, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+
+            _base.drivetrain.driveTo.goTo(-block_distance, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+
+            _base.drivetrain.turnTo.goTo(66, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+            _base.drivetrain.driveTo.goTo(40, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runStopIfTouch();
+
+            _base.drivetrain.turnTo.goTo(135, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially();
+
+
+            _base.collector.powerExtension(-1);
+            _base.drivetrain.driveTo.goTo(8, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially();
+
+            sleep(700);
+            _base.collector.powerExtension(0);
+
+        }
+
+
         _base.drivetrain.stop();
         detector.deactivate();
 
@@ -326,24 +381,25 @@ public class ParkDepoWorld extends LinearOpMode {
     private void deliver(){
         _base.collector.powerExtension(-1);
         try{
-            Thread.sleep(500);}
+            Thread.sleep(1100);}
         catch(Exception ex){ex.printStackTrace();}
 
         _base.tiltChannel.lowestTiltDownByEnc(3000);
-        _base.collector.runCollector(-.40);
+
+        sleep(300);
+
+        _base.collector.runCollector(-1);
 
         // gives time for the marker to slide off
         try{
-            Thread.sleep(750);}
+            Thread.sleep(500);}
         catch(Exception ex){ex.printStackTrace();}
-        _base.collector.powerExtension(0);
-        _base.collector.runCollector(-.25);
+        _base.collector.runCollector(0);
         _base.tiltChannel.AUTOTiltToZero(3500);
-        //_base.collector.powerExtension(-.65);
-//        try{
-//            Thread.sleep(800);}
-//        catch(Exception ex){ex.printStackTrace();}
-        _base.collector.powerExtension(0);
+        _base.collector.powerExtension(1);
+        try{
+            Thread.sleep(500);}
+        catch(Exception ex){ex.printStackTrace();}
         _base.collector.stop();
     }
 

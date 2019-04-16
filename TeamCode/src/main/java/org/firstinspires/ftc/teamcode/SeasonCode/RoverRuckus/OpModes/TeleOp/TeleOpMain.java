@@ -218,7 +218,7 @@ public class TeleOpMain extends LinearOpMode
             telemetry.addLine("LIFT     LIFT    LIFT    LIFT    LIFT ");
             telemetry.update();
         }
-        //_base.outTelemetry();
+        _base.outTelemetry();
         /*---------------------------- HOOK EXTENSION/LIFT ROBOT --------------------------------*/
         if(gamepad1.b && !_base.liftLimitSwitch.isClose()){
             _base.latchSystem.startLiftingTime(System.currentTimeMillis());
@@ -290,8 +290,8 @@ public class TeleOpMain extends LinearOpMode
 
         //Collect particles using foam wheel :)
         if(gamepad2.right_trigger > .2)
-            if(gamepad2.right_trigger > .65)
-                _base.collector.runCollector(1);
+            if(gamepad2.right_trigger > .80)
+                _base.collector.runCollector(.83);
             else
                 _base.collector.runCollector(gamepad2.right_trigger);
         else if(gamepad2.left_trigger > .2)
@@ -301,23 +301,15 @@ public class TeleOpMain extends LinearOpMode
                 _base.collector.runCollector(-gamepad2.left_trigger);
         else if(gamepad2.left_bumper)
         {
-            _base.collector.raiseBlocks();
-        }
-        else if(gamepad2.right_bumper)
-        {
-            _base.collector.dropBlocks();
-            //telemetry.addData("Drop Positio", _base.collector.sort.getPosition());
-            // telemetry.update();
+            _base.collector.runCollector(-.63);
         }
         else if(gamepad2.dpad_up)
         {
-            _base.collector.releaseBalls();
+            _base.collector.runCollector(1);
             //telemetry.addData("Raise Positio", _base.collector.sort.getPosition());
             // telemetry.update();
         }
-        else if (_base.collector.openMilliseconds() > openBallTime){
-            _base.collector.raiseBlocks();
-        }
+
         else
         {
             _base.collector.runCollector(0);
@@ -332,6 +324,12 @@ public class TeleOpMain extends LinearOpMode
 
 
         /*----------------Tilt C-Channel Holding Lifts---------------*/
+
+        if (gamepad2.right_stick_button) {
+
+            _base.tiltChannel.tiltByPower(1);
+            _base.collector.collector.setPower(1);
+        }
 
         if(gamepad2.right_stick_y > .2)
         {

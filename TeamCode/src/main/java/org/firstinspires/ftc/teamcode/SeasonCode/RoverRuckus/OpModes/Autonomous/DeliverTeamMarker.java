@@ -26,21 +26,24 @@ public class DeliverTeamMarker extends LinearOpMode{
 
         //makes sure the landing did not get our robot off course by turning to the angle that we initialized our gyroscope to
 
-        _base.collector.powerExtension(1);
+        _base.collector.powerExtension(-1);
         try{
-            Thread.sleep(200);}
+            Thread.sleep(750);}
         catch(Exception ex){ex.printStackTrace();}
 
         _base.tiltChannel.lowestTiltDownByEnc(3000);
-        _base.collector.runCollector(-.35);
+
+        sleep(300);
+
+        _base.collector.runCollector(-1);
 
         // gives time for the marker to slide off
         try{
-            Thread.sleep(800);}
+            Thread.sleep(500);}
         catch(Exception ex){ex.printStackTrace();}
         _base.collector.runCollector(0);
         _base.tiltChannel.AUTOTiltToZero(3500);
-        _base.collector.powerExtension(-.65);
+        _base.collector.powerExtension(.65);
         try{
             Thread.sleep(300);}
         catch(Exception ex){ex.printStackTrace();}

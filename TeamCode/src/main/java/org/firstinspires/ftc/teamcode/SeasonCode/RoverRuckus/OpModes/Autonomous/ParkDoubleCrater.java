@@ -130,7 +130,7 @@ public class ParkDoubleCrater extends LinearOpMode {
             _base.drivetrain.turnTo.goTo(330,BLOCK_TURN_SPEED-.2);
             _base.drivetrain.turnTo.blockRunSequentially(3,5);
 
-            this.sleep(700);
+            this.sleep(400);
             if (aligned()) {
                 _block = blockState.RIGHT;
                 telemetry.addData("FOUND IN RIGHT", "");
@@ -169,7 +169,7 @@ public class ParkDoubleCrater extends LinearOpMode {
 
         if(_block == blockState.UNCERTAIN)
         {
-            _base.drivetrain.turnTo.goTo( 37, TURN_SPEED+.1);
+            _base.drivetrain.turnTo.goTo( 37, TURN_SPEED+.17);
             _base.drivetrain.turnTo.blockRunSequentially(2,5);
             _block = blockState.LEFT;
         }
@@ -189,6 +189,9 @@ public class ParkDoubleCrater extends LinearOpMode {
         // this works because at this point the robot is facing the block
         if (_block == blockState.MIDDLE){
             block_distance -= 4;
+            _base.drivetrain.turnTo.goTo(3, TURN_SPEED-.05);
+            _base.drivetrain.turnTo.runSequentially(2,5);
+
         }
         else if(_block == blockState.RIGHT)
         {
@@ -214,7 +217,7 @@ public class ParkDoubleCrater extends LinearOpMode {
         }
         else
         {
-            _base.drivetrain.driveTo.goTo(-(block_distance - 4), DRIVING_SPEED_BLOCK);
+            _base.drivetrain.driveTo.goTo(-10, DRIVING_SPEED_BLOCK);
             _base.drivetrain.driveTo.runSequentially();
         }
 
@@ -223,14 +226,14 @@ public class ParkDoubleCrater extends LinearOpMode {
         if(_block == blockState.LEFT)
         {
 
-            _base.drivetrain.turnTo.goTo(63, TURN_SPEED-.05);
-            _base.drivetrain.turnTo.runSequentially(2,5);
+            _base.drivetrain.turnTo.goTo(76, TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially(2,2);
 
         }
         else if(_block == blockState.RIGHT)
         {
 
-            _base.drivetrain.turnTo.goTo(68.5, TURN_SPEED-.05);
+            _base.drivetrain.turnTo.goTo(68.5, 0.4);
             _base.drivetrain.turnTo.runSequentially(2,5);
 
         }
@@ -247,21 +250,27 @@ public class ParkDoubleCrater extends LinearOpMode {
             _base.drivetrain.driveTo.goTo(40, DRIVING_SPEED);
             _base.drivetrain.driveTo.runStopIfDist(17, 3);
 
-            _base.drivetrain.turnTo.goTo(135, TURN_SPEED);
+            _base.drivetrain.turnTo.goTo(137, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially();
 
             _base.drivetrain.driveTo.goTo(36, DRIVING_SPEED);
             _base.drivetrain.driveTo.runSequentially();
 
-            _base.drivetrain.turnTo.goTo(110, TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially();
+            _base.drivetrain.turnTo.goTo(110, TURN_SPEED+.12);
+            _base.drivetrain.turnTo.runSequentially(2.5);
 
-            _base.drivetrain.driveTo.goTo(4, DRIVING_SPEED);
-            _base.drivetrain.driveTo.runSequentially();
+            _base.drivetrain.driveTo.goTo(2, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runSequentially(2);
 
             deliver();
 
+            _base.drivetrain.turnTo.goTo(325, TURN_SPEED+.17);
+            _base.drivetrain.turnTo.runSequentially(5);
 
+            _base.collector.powerExtension(-1);
+            _base.drivetrain.driveTo.goTo(30,1);
+            _base.drivetrain.driveTo.runSequentially();
+            _base.collector.powerExtension(0);
         }
 
         else if (_block== blockState.MIDDLE){
@@ -272,7 +281,7 @@ public class ParkDoubleCrater extends LinearOpMode {
             _base.drivetrain.driveTo.runStopIfTouch(8);
 
             //turn to drive in between particle on teammate's side and wall
-            _base.drivetrain.turnTo.goTo(126, TURN_SPEED);
+            _base.drivetrain.turnTo.goTo(127, TURN_SPEED);
             _base.drivetrain.turnTo.runSequentially(2);
 
 
@@ -284,15 +293,20 @@ public class ParkDoubleCrater extends LinearOpMode {
 
             // turns in preparation for moving towards the deposit zone
             _base.drivetrain.turnTo.goTo(134, TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially(3);
+            _base.drivetrain.turnTo.runSequentially(2);
 
             _base.tiltChannel.pulleys.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            _base.tiltChannel.pulleys.setTargetPosition(PulleyTilt.TILT_TEAM_MARKER_ENC);
+            _base.tiltChannel.pulleys.setTargetPosition(PulleyTilt.CRATER_TILT_TEAM_MARKER_ENC);
             _base.tiltChannel.pulleys.setPower(1);
 
             //drives to the deposit zone
             _base.drivetrain.driveTo.goTo(45, DRIVING_SPEED);
             _base.drivetrain.driveTo.runStopIfDist(7);
+
+            _base.collector.powerExtension(-1);
+            try{
+                Thread.sleep(400);}
+            catch(Exception ex){ex.printStackTrace();}
 
             deliver();
 
@@ -306,7 +320,7 @@ public class ParkDoubleCrater extends LinearOpMode {
             _base.drivetrain.driveTo.goTo(18, 0.5);
             _base.drivetrain.driveTo.runSequentially();
 
-            _base.drivetrain.turnTo.goTo(260, BLOCK_TURN_SPEED-.1);
+            _base.drivetrain.turnTo.goTo(264, BLOCK_TURN_SPEED-.05);
             _base.drivetrain.turnTo.runSequentially(2,4);
 
             //knock block off
@@ -317,10 +331,11 @@ public class ParkDoubleCrater extends LinearOpMode {
             _base.drivetrain.driveTo.goTo(-30, DRIVING_SPEED);
             _base.drivetrain.driveTo.runSequentially();
 
-            _base.drivetrain.turnTo.goTo(360 -40, TURN_SPEED);
+            _base.drivetrain.turnTo.goTo(360 -42, TURN_SPEED+.17);
             _base.drivetrain.turnTo.runSequentially();
 
-            _base.drivetrain.driveTo.goTo(32, DRIVING_SPEED);
+            _base.collector.powerExtension(-1);
+            _base.drivetrain.driveTo.goTo(32, DRIVING_SPEED+.17);
             _base.drivetrain.driveTo.runSequentially();
 
             _base.drivetrain.turnTo.goTo(360-42, TURN_SPEED);
@@ -328,35 +343,38 @@ public class ParkDoubleCrater extends LinearOpMode {
 
             _base.drivetrain.driveTo.goTo(38, 1);
             _base.drivetrain.driveTo.runSequentially();
+
         }
 
         else{
             //Block State: left
 
-            _base.drivetrain.driveTo.goTo(60, DRIVING_SPEED);
-            _base.drivetrain.driveTo.runStopIfTouch(8);
+            _base.drivetrain.driveTo.goTo(29, DRIVING_SPEED);
+            _base.drivetrain.driveTo.runStopIfTouch(4);
 
             //turn to drive in between particle on teammate's side and wall
-            _base.drivetrain.turnTo.goTo(126, TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially(2);
+            _base.drivetrain.turnTo.goTo(126.5, TURN_SPEED+.17);
+            _base.drivetrain.turnTo.runSequentially(2.5);
 
 
             //drives between the particle on teammate's side and wall
             _base.drivetrain.driveTo.goTo(11, DRIVING_SPEED );
-            _base.drivetrain.driveTo.runSequentially(10);
+            _base.drivetrain.driveTo.runSequentially(3);
 
 
 
             // turns in preparation for moving towards the deposit zone
-            _base.drivetrain.turnTo.goTo(134, TURN_SPEED);
-            _base.drivetrain.turnTo.runSequentially(3);
+            _base.drivetrain.turnTo.goTo(134, TURN_SPEED+.17);
+            _base.drivetrain.turnTo.runSequentially(1.7);
 
 
             //drives to the deposit zone
             _base.drivetrain.driveTo.goTo(45, DRIVING_SPEED);
             _base.drivetrain.driveTo.runStopIfDist(7);
 
-            deliver();
+
+
+            leftOnlyDeliver();
 
             _base.drivetrain.turnTo.goTo(143, TURN_SPEED );
             _base.drivetrain.turnTo.arcSequentially(3, 2.5);
@@ -368,11 +386,13 @@ public class ParkDoubleCrater extends LinearOpMode {
             _base.drivetrain.driveTo.goTo(8.5, 0.5);
             _base.drivetrain.driveTo.runSequentially();
 
-            _base.drivetrain.turnTo.goTo(207, BLOCK_TURN_SPEED-.1);
-            _base.drivetrain.turnTo.runSequentially();
+            _base.drivetrain.turnTo.goTo(220, BLOCK_TURN_SPEED);
+            _base.drivetrain.turnTo.runSequentially(3,3);
 
-            _base.drivetrain.driveTo.goTo(65, 0.9);
+            _base.collector.powerExtension(-1);
+            _base.drivetrain.driveTo.goTo(65, 1);
             _base.drivetrain.driveTo.runSequentially();
+            _base.collector.powerExtension(0);
         }
 
 
@@ -394,20 +414,44 @@ public class ParkDoubleCrater extends LinearOpMode {
     private void deliver(){
         _base.collector.powerExtension(-1);
         try{
-            Thread.sleep(200);}
+            Thread.sleep(1000);}
         catch(Exception ex){ex.printStackTrace();}
 
-        _base.tiltChannel.lowestTiltDownByEnc(3000);
-        _base.collector.runCollector(-.40);
+        _base.tiltChannel.craterLowestTiltDownByEnc(3000);
+
+        this.sleep(300);
+        _base.collector.runCollector(-.90);
 
         // gives time for the marker to slide off
         try{
-            Thread.sleep(750);}
+            Thread.sleep(500);}
         catch(Exception ex){ex.printStackTrace();}
-        _base.collector.powerExtension(0);
-        _base.collector.runCollector(-.25);
+        _base.collector.powerExtension(1);
         _base.tiltChannel.AUTOTiltToZero(3500);
-        //_base.collector.powerExtension(-.65);
+//        try{
+//            Thread.sleep(800);}
+//        catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(0);
+        _base.collector.stop();
+    }
+
+    private void leftOnlyDeliver(){
+        _base.collector.powerExtension(-1);
+        try{
+            Thread.sleep(1000);}
+        catch(Exception ex){ex.printStackTrace();}
+
+        _base.tiltChannel.lowestTiltDownByEnc(3000);
+
+        this.sleep(300);
+        _base.collector.runCollector(-.90);
+
+        // gives time for the marker to slide off
+        try{
+            Thread.sleep(500);}
+        catch(Exception ex){ex.printStackTrace();}
+        _base.collector.powerExtension(1);
+        _base.tiltChannel.AUTOTiltToZero(3500);
 //        try{
 //            Thread.sleep(800);}
 //        catch(Exception ex){ex.printStackTrace();}

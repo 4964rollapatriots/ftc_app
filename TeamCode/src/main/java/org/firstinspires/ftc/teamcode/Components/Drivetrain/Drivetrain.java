@@ -192,7 +192,7 @@ public class Drivetrain extends RobotComponent
         backRight.setPower((drivePower + rotatePower)*hardScale);
         backLeft.setPower((drivePower - rotatePower)*hardScale);
         frontRight.setPower((drivePower + rotatePower)*hardScale);
-        frontLeft.setPower((drivePower - rotatePower)*hardScale * .96);
+        frontLeft.setPower((drivePower - rotatePower)*hardScale *.96);
     }
 
     public void encoderOn()

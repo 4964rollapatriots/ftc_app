@@ -22,8 +22,9 @@ public class PulleyTilt extends RobotComponent {
 
     private int TILT_UP_BALL_ENC = -1275;
     private int TILT_UP_BLOCK_ENC = -1800;
-    private int TILT_DOWN_ENC = 950;
-    public static int TILT_TEAM_MARKER_ENC = 1150;
+    private int TILT_DOWN_ENC = 675;
+    public static int CRATER_TILT_TEAM_MARKER_ENC = 700;
+    public static int TILT_TEAM_MARKER_ENC = 820;
     private int TILT_AUTO_COLLECT_ENC = 1420;
 
     public int BUFFER = 75;
@@ -31,6 +32,7 @@ public class PulleyTilt extends RobotComponent {
     public void init(final RobotBase BASE) {
         super.init(BASE);
         pulleys = mapper.mapMotor("pulleys", DcMotorSimple.Direction.FORWARD);
+        collector.init(BASE);
     }
 
     public void tiltByPower(double POWER) {
@@ -53,9 +55,20 @@ public class PulleyTilt extends RobotComponent {
         //Dramatically slow down
         else if (Math.abs(pulleys.getCurrentPosition() - TILT_UP_BALL_ENC) < 300) {
             //TILT_UP_POW *= .95;
-            pulleys.setPower(TILT_UP_POW * .80);
+            pulleys.setPower(TILT_UP_POW * .95);
         }
 
+        else if (Math.abs(pulleys.getCurrentPosition() - TILT_UP_BALL_ENC) < 600) {
+            //TILT_UP_POW *= .95;
+            pulleys.setPower(TILT_UP_POW );
+            collector.extendCollector.setPower(1);
+
+        }
+        else if (Math.abs(pulleys.getCurrentPosition() - TILT_UP_BALL_ENC) < 900) {
+            //TILT_UP_POW *= .95;
+            pulleys.setPower(TILT_UP_POW );
+            collector.extendCollector.setPower(-.70);
+        }
         //Set Power to Full
         else {
 
@@ -98,10 +111,10 @@ public class PulleyTilt extends RobotComponent {
             base.outTelemetry.update();
             stop();
             return true;
-        } else if (Math.abs(pulleys.getCurrentPosition() - TILT_DOWN_ENC) < 300) {
+        } else if (Math.abs(pulleys.getCurrentPosition() - TILT_DOWN_ENC) < 200) {
             //TILT_UP_POW *= .95;
-            pulleys.setPower(TILT_DOWN_POW * .45);
-        } else if (Math.abs(pulleys.getCurrentPosition() - TILT_DOWN_ENC) < 900) {
+            pulleys.setPower(TILT_DOWN_POW * .35);
+        } else if (Math.abs(pulleys.getCurrentPosition() - TILT_DOWN_ENC) < 300) {
             pulleys.setPower(TILT_DOWN_POW * .70);
         } else {
             pulleys.setPower(TILT_DOWN_POW);
@@ -123,6 +136,30 @@ public class PulleyTilt extends RobotComponent {
             else if (Math.abs(pulleys.getCurrentPosition() - TILT_DOWN_ENC) < 900)
             {
                 pulleys.setPower(TILT_DOWN_POW * .70);
+            }
+            else
+            {
+                pulleys.setPower(TILT_DOWN_POW);
+            }
+
+        }
+        stop();
+
+    }
+
+    public void craterLowestTiltDownByEnc(int MILLISECONDS) {
+        pulleys.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        base.outTelemetry.addData("Position: ", pulleys.getCurrentPosition());
+        base.outTelemetry.update();
+        long startTime = System.currentTimeMillis();
+        while (!(pulleys.getCurrentPosition() >= CRATER_TILT_TEAM_MARKER_ENC) && Math.abs(System.currentTimeMillis() - startTime) < MILLISECONDS) {
+            if (Math.abs(pulleys.getCurrentPosition() - CRATER_TILT_TEAM_MARKER_ENC) < 300)
+            {
+                pulleys.setPower(TILT_DOWN_POW * .25);
+            }
+            else if (Math.abs(pulleys.getCurrentPosition() - CRATER_TILT_TEAM_MARKER_ENC) < 600)
+            {
+                pulleys.setPower(TILT_DOWN_POW * .80);
             }
             else
             {
@@ -165,11 +202,11 @@ public class PulleyTilt extends RobotComponent {
         while (!(pulleys.getCurrentPosition() <= 15) && Math.abs(System.currentTimeMillis() - startTime) < MILLISECONDS) {
             if (Math.abs(pulleys.getCurrentPosition()) <= 300)
             {
-                pulleys.setPower(TILT_UP_POW * .60);
+                pulleys.setPower(TILT_UP_POW * .75);
             }
             else if (Math.abs(pulleys.getCurrentPosition()) < 600)
             {
-                pulleys.setPower(TILT_UP_POW * .83);
+                pulleys.setPower(TILT_UP_POW * 1);
             }
             else
             {

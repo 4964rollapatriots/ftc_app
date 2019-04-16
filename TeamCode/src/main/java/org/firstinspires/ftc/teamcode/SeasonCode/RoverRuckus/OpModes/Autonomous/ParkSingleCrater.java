@@ -123,10 +123,9 @@ public class ParkSingleCrater extends LinearOpMode {
         //turns to the far right in preparation for panning across the particles from right to left
         if(_block == blockState.UNCERTAIN)
         {
-            _base.deliver.raiseMarker();
             //to use one run of aligned to make sure stuff works
-            _base.drivetrain.turnTo.goTo(330,BLOCK_TURN_SPEED-.2);
-            _base.drivetrain.turnTo.blockRunSequentially(3,5);
+            _base.drivetrain.turnTo.goTo(332,BLOCK_TURN_SPEED-.2);
+            _base.drivetrain.turnTo.blockRunSequentially(2,5);
 
             this.sleep(700);
             if (aligned()) {
@@ -137,7 +136,6 @@ public class ParkSingleCrater extends LinearOpMode {
             // pans across the particles until it either sees the block or reaches 348 degrees
             // 348 degrees should be past the far right particle
         }
-        _base.deliver.raiseMarker();
         if (_block == blockState.UNCERTAIN){
             for  (double i = 334; i < 337; i += TURN_INCREMENT - 1){
                 telemetry.addData("Searching for right block!" , "");
@@ -150,7 +148,6 @@ public class ParkSingleCrater extends LinearOpMode {
                 }
             }
         }
-        _base.deliver.raiseMarker();
         // if it is not in the middle, the robot turns until it sees the left block or reaches 18 degrees
 
 //        if(_block == blockState.UNCERTAIN) {
@@ -174,7 +171,6 @@ public class ParkSingleCrater extends LinearOpMode {
             _block = blockState.LEFT;
         }
 
-        _base.deliver.raiseMarker();
 
 
         //this turns a small amount to account for the offset of our phone on the left side of our robot
@@ -191,6 +187,8 @@ public class ParkSingleCrater extends LinearOpMode {
         // this works because at this point the robot is facing the block
         if (_block == blockState.MIDDLE){
             block_distance -= 4;
+            _base.drivetrain.turnTo.goTo(3, TURN_SPEED-.05);
+            _base.drivetrain.turnTo.runSequentially(2,5);
         }
         else if(_block == blockState.RIGHT)
         {
@@ -198,7 +196,7 @@ public class ParkSingleCrater extends LinearOpMode {
         }
         else
         {
-            block_distance -= 1;
+            block_distance -= 0;
         }
 
         _base.drivetrain.driveTo.goTo(block_distance - 1,DRIVING_SPEED_BLOCK);
@@ -239,7 +237,7 @@ public class ParkSingleCrater extends LinearOpMode {
         else
         {
 
-            _base.drivetrain.turnTo.goTo(65, TURN_SPEED-0.1);
+            _base.drivetrain.turnTo.goTo(66, TURN_SPEED-0.1);
             _base.drivetrain.turnTo.runSequentially(2,5);
 
         }
@@ -248,27 +246,23 @@ public class ParkSingleCrater extends LinearOpMode {
 
         _base.drivetrain.driveTo.goTo(60, DRIVING_SPEED);
         _base.drivetrain.driveTo.runStopIfTouch(8);
-        _base.deliver.raiseMarker();
 
         //turn to drive in between particle on teammate's side and wall
-        _base.drivetrain.turnTo.goTo(125, TURN_SPEED);
+        _base.drivetrain.turnTo.goTo(126, TURN_SPEED);
         _base.drivetrain.turnTo.runSequentially(2);
 
-        _base.deliver.raiseMarker();
 
         //drives between the particle on teammate's side and wall
         _base.drivetrain.driveTo.goTo(11, DRIVING_SPEED );
         _base.drivetrain.driveTo.runSequentially(10);
 
 
-        _base.deliver.raiseMarker();
 
 
         // turns in preparation for moving towards the deposit zone
         _base.drivetrain.turnTo.goTo(134, TURN_SPEED);
-        _base.drivetrain.turnTo.runSequentially(3);
+        _base.drivetrain.turnTo.runSequentially(2);
 
-        _base.deliver.raiseMarker();
 
         //drives to the deposit zone
         _base.drivetrain.driveTo.goTo(45, DRIVING_SPEED);
@@ -307,15 +301,17 @@ public class ParkSingleCrater extends LinearOpMode {
     private void deliver(){
         _base.collector.powerExtension(-1);
         try{
-            Thread.sleep(200);}
+            Thread.sleep(300);}
         catch(Exception ex){ex.printStackTrace();}
 
         _base.tiltChannel.lowestTiltDownByEnc(3000);
-        _base.collector.runCollector(-.40);
+
+        this.sleep(300);
+        _base.collector.runCollector(-.90);
 
         // gives time for the marker to slide off
         try{
-            Thread.sleep(750);}
+            Thread.sleep(500);}
         catch(Exception ex){ex.printStackTrace();}
         _base.collector.powerExtension(0);
         _base.collector.runCollector(-.25);

@@ -115,6 +115,60 @@ public class DriveToDistance extends RobotCommand
 
     }
 
+    public void driveStraightSequentially(double SECONDS_TIMEOUT)
+    {
+        _drivetrain.imu.setAngle();
+        double initialAngle = _drivetrain.imu.zAngle();
+        double buffer = 2;
+        double adjustSpeed = 0.7;
+
+        TIMEOUT = (long)(SECONDS_TIMEOUT * 1000);
+        if(_drivetrain.getEncoderMode() != DcMotor.RunMode.RUN_TO_POSITION)
+        {
+            _drivetrain.encoderToPos();
+        }
+
+        _drivetrain.backLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.backLeft().getCurrentPosition());
+        _drivetrain.backRight().setTargetPosition((int)(distance * COUNTS_PER_INCH)+ _drivetrain.backRight().getCurrentPosition());
+        _drivetrain.frontLeft().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.frontLeft().getCurrentPosition());
+        _drivetrain.frontRight().setTargetPosition((int)(distance * COUNTS_PER_INCH) + _drivetrain.frontRight().getCurrentPosition());
+        _busy = true;
+
+        _drivetrain.setAllMotorPower(speed);
+        long startTime = System.currentTimeMillis();
+
+        while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT)
+        {
+            _drivetrain.imu.setAngle();
+            if (_drivetrain.imu.zAngle() > initialAngle + buffer){
+                _drivetrain.backRight().setPower(speed * adjustSpeed);
+                _drivetrain.frontRight().setPower(speed * adjustSpeed);
+            }
+            else if (_drivetrain.imu.zAngle() < initialAngle - buffer){
+                _drivetrain.backLeft().setPower(speed * adjustSpeed);
+                _drivetrain.frontLeft().setPower(speed * adjustSpeed);
+            }
+            else{
+                _drivetrain.setAllMotorPower(speed);
+            }
+//            _drivetrain.base().outTelemetry.addData("Start Time: ", startTime);
+//            _drivetrain.base().outTelemetry.addData("Current System Time ", System.currentTimeMillis());
+//            _drivetrain.base().outTelemetry.addData("Timeout ", TIMEOUT);
+            _drivetrain.base().outTelemetry.update();
+
+            //Keep running! :D
+        }
+
+        _drivetrain.setAllMotorPower(0);
+
+        _drivetrain.encoderOn();
+
+        //Command is finished, for teleop now manually drive the robot, for autonomous supply more commands.
+        _busy = false;
+
+
+    }
+
 
     public boolean runSequentiallyBlockDetection(double SECONDS_TIMEOUT){
         boolean found = false;
@@ -299,13 +353,13 @@ public class DriveToDistance extends RobotCommand
 
         while( !endCommand && _drivetrain.isBusy() && _drivetrain.base().opMode.opModeIsActive() && Math.abs(System.currentTimeMillis() - startTime) < TIMEOUT)
         {
-            if (_drivetrain.touch.isPressed() || _drivetrain.front_range.distance(DistanceUnit.INCH) < 0.25){
+            if (_drivetrain.touch.isPressed() || _drivetrain.front_range.distance(DistanceUnit.INCH) < 1.5){
 
                 bumped = true;
                 break;
             }
             if (_drivetrain.front_range.distance(DistanceUnit.INCH) < 15){
-                _drivetrain.setAllMotorPower(0.3);
+                _drivetrain.setAllMotorPower(0.2);
                 _drivetrain.base().outTelemetry.write("SLOWING DOWN");
                 _drivetrain.base().outTelemetry.update();
             }
